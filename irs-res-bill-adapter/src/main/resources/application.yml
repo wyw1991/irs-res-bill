@@ -1,0 +1,24 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /irs-res-bill
+
+spring:
+  profiles:
+    active: dev
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      pool-name: ${spring.application.name}
+      idle-timeout: 30000
+      connection-timeout: 10000
+      maximum-pool-size: 15
+      minimum-idle: 5
+
+logging:
+  config: classpath:logback.xml
+  level:
+    root: info
+
+mybatis-plus:
+  mapper-locations: classpath*:mapper/*.xml
