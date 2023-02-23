@@ -8,7 +8,7 @@ import java.util.Date;
 @Getter
 @Setter
 @TableName(value = "report",autoResultMap = true)
-public class Report extends BaseDO{
+public class Report extends BaseDO {
 
     /**@Getter
      @Setter
