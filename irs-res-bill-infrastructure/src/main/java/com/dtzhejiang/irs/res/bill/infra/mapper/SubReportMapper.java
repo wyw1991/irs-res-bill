@@ -1,8 +1,9 @@
 package com.dtzhejiang.irs.res.bill.infra.mapper;
 
-import com.dtzhejiang.irs.res.bill.infra.model.SubReport;
-import com.dtzhejiang.irs.res.bill.infra.model.SubReportExample;
+import com.dtzhejiang.irs.res.bill.domain.model.SubReport;
+import com.dtzhejiang.irs.res.bill.domain.model.SubReportExample;
 import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 
 public interface SubReportMapper {

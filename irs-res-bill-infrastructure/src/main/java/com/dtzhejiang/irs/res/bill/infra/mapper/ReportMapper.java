@@ -1,7 +1,7 @@
 package com.dtzhejiang.irs.res.bill.infra.mapper;
 
-import com.dtzhejiang.irs.res.bill.infra.model.Report;
-import com.dtzhejiang.irs.res.bill.infra.model.ReportExample;
+import com.dtzhejiang.irs.res.bill.domain.model.Report;
+import com.dtzhejiang.irs.res.bill.domain.model.ReportExample;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
 

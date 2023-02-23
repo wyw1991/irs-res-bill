@@ -1,4 +1,4 @@
-package com.dtzhejiang.irs.res.bill.infra.model;
+package com.dtzhejiang.irs.res.bill.domain.model;
 
 import java.util.ArrayList;
 import java.util.Date;

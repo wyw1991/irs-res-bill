@@ -1,4 +1,4 @@
-package com.dtzhejiang.irs.res.bill.infra.model;
+package com.dtzhejiang.irs.res.bill.domain.model;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;

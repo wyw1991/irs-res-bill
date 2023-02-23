@@ -20,7 +20,7 @@
             <property name="forceBigDecimals" value="true"/>
         </javaTypeResolver>
         <!-- 生成模型的包名和位置 -->
-        <javaModelGenerator targetPackage="com.dtzhejiang.irs.res.bill.infra.model"
+        <javaModelGenerator targetPackage="com.dtzhejiang.irs.res.bill.domain.model"
                             targetProject="irs-res-bill-domain/src/main/java">
             <property name="enableSubPackages" value="true"/>
             <property name="trimStrings" value="true"/>

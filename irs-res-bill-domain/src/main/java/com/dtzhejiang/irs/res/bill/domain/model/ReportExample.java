@@ -1,4 +1,4 @@
-package com.dtzhejiang.irs.res.bill.infra.model;
+package com.dtzhejiang.irs.res.bill.domain.model;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -585,73 +585,73 @@ public class ReportExample {
             return (Criteria) this;
         }
 
-        public Criteria andSubReportStatusIsNull() {
-            addCriterion("sub_report_status is null");
+        public Criteria andStatusIsNull() {
+            addCriterion("status is null");
             return (Criteria) this;
         }
 
-        public Criteria andSubReportStatusIsNotNull() {
-            addCriterion("sub_report_status is not null");
+        public Criteria andStatusIsNotNull() {
+            addCriterion("status is not null");
             return (Criteria) this;
         }
 
-        public Criteria andSubReportStatusEqualTo(String value) {
-            addCriterion("sub_report_status =", value, "subReportStatus");
+        public Criteria andStatusEqualTo(String value) {
+            addCriterion("status =", value, "status");
             return (Criteria) this;
         }
 
-        public Criteria andSubReportStatusNotEqualTo(String value) {
-            addCriterion("sub_report_status <>", value, "subReportStatus");
+        public Criteria andStatusNotEqualTo(String value) {
+            addCriterion("status <>", value, "status");
             return (Criteria) this;
         }
 
-        public Criteria andSubReportStatusGreaterThan(String value) {
-            addCriterion("sub_report_status >", value, "subReportStatus");
+        public Criteria andStatusGreaterThan(String value) {
+            addCriterion("status >", value, "status");
             return (Criteria) this;
         }
 
-        public Criteria andSubReportStatusGreaterThanOrEqualTo(String value) {
-            addCriterion("sub_report_status >=", value, "subReportStatus");
+        public Criteria andStatusGreaterThanOrEqualTo(String value) {
+            addCriterion("status >=", value, "status");
             return (Criteria) this;
         }
 
-        public Criteria andSubReportStatusLessThan(String value) {
-            addCriterion("sub_report_status <", value, "subReportStatus");
+        public Criteria andStatusLessThan(String value) {
+            addCriterion("status <", value, "status");
             return (Criteria) this;
         }
 
-        public Criteria andSubReportStatusLessThanOrEqualTo(String value) {
-            addCriterion("sub_report_status <=", value, "subReportStatus");
+        public Criteria andStatusLessThanOrEqualTo(String value) {
+            addCriterion("status <=", value, "status");
             return (Criteria) this;
         }
 
-        public Criteria andSubReportStatusLike(String value) {
-            addCriterion("sub_report_status like", value, "subReportStatus");
+        public Criteria andStatusLike(String value) {
+            addCriterion("status like", value, "status");
             return (Criteria) this;
         }
 
-        public Criteria andSubReportStatusNotLike(String value) {
-            addCriterion("sub_report_status not like", value, "subReportStatus");
+        public Criteria andStatusNotLike(String value) {
+            addCriterion("status not like", value, "status");
             return (Criteria) this;
         }
 
-        public Criteria andSubReportStatusIn(List<String> values) {
-            addCriterion("sub_report_status in", values, "subReportStatus");
+        public Criteria andStatusIn(List<String> values) {
+            addCriterion("status in", values, "status");
             return (Criteria) this;
         }
 
-        public Criteria andSubReportStatusNotIn(List<String> values) {
-            addCriterion("sub_report_status not in", values, "subReportStatus");
+        public Criteria andStatusNotIn(List<String> values) {
+            addCriterion("status not in", values, "status");
             return (Criteria) this;
         }
 
-        public Criteria andSubReportStatusBetween(String value1, String value2) {
-            addCriterion("sub_report_status between", value1, value2, "subReportStatus");
+        public Criteria andStatusBetween(String value1, String value2) {
+            addCriterion("status between", value1, value2, "status");
             return (Criteria) this;
         }
 
-        public Criteria andSubReportStatusNotBetween(String value1, String value2) {
-            addCriterion("sub_report_status not between", value1, value2, "subReportStatus");
+        public Criteria andStatusNotBetween(String value1, String value2) {
+            addCriterion("status not between", value1, value2, "status");
             return (Criteria) this;
         }
 
