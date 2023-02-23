@@ -4,11 +4,11 @@
         "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
 <generatorConfiguration>
     <context id="base_resource" targetRuntime="MyBatis3" defaultModelType="flat">
-        <commentGenerator>
+        <commentGenerator type="com.dtzhejiang.irs.res.bill.infra.config.MySQLCommentGenerator">
             <!-- 是否去除自动生成的注释 true：是 / false:否，代码merge会被禁用 -->
-            <property name="suppressAllComments" value="false"/>
-            <property name="suppressDate" value="false"/>
-            <property name="addRemarkComments" value="false"/>
+            <property name="suppressAllComments" value="true"/>
+            <property name="suppressDate" value="true"/>
+            <property name="addRemarkComments" value="true"/>
         </commentGenerator>
 
         <!--数据库链接URL，用户名、密码 -->
@@ -21,23 +21,23 @@
         </javaTypeResolver>
         <!-- 生成模型的包名和位置 -->
         <javaModelGenerator targetPackage="com.dtzhejiang.irs.res.bill.infra.model"
-                            targetProject="src/main/java">
+                            targetProject="irs-res-bill-domain/src/main/java">
             <property name="enableSubPackages" value="true"/>
             <property name="trimStrings" value="true"/>
         </javaModelGenerator>
         <!-- 生成映射文件的包名和位置 -->
         <sqlMapGenerator targetPackage="mapper"
-                         targetProject="src/main/resources">
+                         targetProject="irs-res-bill-infrastructure/src/main/resources">
             <property name="enableSubPackages" value="true"/>
         </sqlMapGenerator>
         <!-- 生成DAO的包名和位置 -->
         <javaClientGenerator targetPackage="com.dtzhejiang.irs.res.bill.infra.mapper"
-                             targetProject="src/main/java"
+                             targetProject="irs-res-bill-infrastructure/src/main/java"
                              type="XMLMAPPER">
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
 
-        <table domainObjectName="SubReport" tableName="sub_report">
+        <table domainObjectName="Report" tableName="report">
             <generatedKey column="id" sqlStatement="MYSQL" identity="true" type="post"/>
         </table>
     </context>
