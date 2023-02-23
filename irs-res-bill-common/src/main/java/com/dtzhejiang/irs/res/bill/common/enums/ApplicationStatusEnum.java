@@ -1,5 +1,7 @@
 package com.dtzhejiang.irs.res.bill.common.enums;
 
+import com.baomidou.mybatisplus.annotation.EnumValue;
+
 /**
  * 应用状态
  */
@@ -15,7 +17,7 @@ public enum ApplicationStatusEnum {
     RUN("SUCCESS", "运行中")
     ;
 
-
+    @EnumValue
     private String code;
 
     private String name;

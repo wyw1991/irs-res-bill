@@ -1,30 +1,11 @@
 package com.dtzhejiang.irs.res.bill.infra.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.dtzhejiang.irs.res.bill.domain.model.Report;
-import com.dtzhejiang.irs.res.bill.domain.model.ReportExample;
-import java.util.List;
-import org.apache.ibatis.annotations.Param;
 
-public interface ReportMapper {
-    long countByExample(ReportExample example);
+import org.apache.ibatis.annotations.Mapper;
+@Mapper
+public interface ReportMapper extends BaseMapper<Report> {
 
-    int deleteByExample(ReportExample example);
 
-    int deleteByPrimaryKey(Long id);
-
-    int insert(Report record);
-
-    int insertSelective(Report record);
-
-    List<Report> selectByExample(ReportExample example);
-
-    Report selectByPrimaryKey(Long id);
-
-    int updateByExampleSelective(@Param("record") Report record, @Param("example") ReportExample example);
-
-    int updateByExample(@Param("record") Report record, @Param("example") ReportExample example);
-
-    int updateByPrimaryKeySelective(Report record);
-
-    int updateByPrimaryKey(Report record);
 }

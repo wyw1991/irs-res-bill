@@ -1,17 +1,18 @@
 package com.dtzhejiang.irs.res.bill.common.enums;
 
-/**
- * 应用类型
- **/
-public enum TypeEnum {
+import java.util.List;
 
-    OFFICE("OFFICE", "办公类"),
-    BUSINESS_APPLICATION("BUSINESS_APPLICATION", "业务应用类"),
-    PORTAL_SITE("PORTAL_SITE", "门户网站"),
-    WEIBO_OR_WECHAT_ACCOUNT("WEIBO_OR_WECHAT_ACCOUNT", "宣传微博\\微信公众号"),
-    HARDWARE("HARDWARE", "硬件类"),
-    TOOL("TOOL", "工具类"),
-    OTHER("OTHER", "其他"),
+/**
+ * 子报告类型
+ **/
+public enum SubTypeEnum {
+
+    BUSINESS_APPLICATION("BUSINESS_APPLICATION", "业务应用"),
+    NETWORK_SECURITY("NETWORK_SECURITY", "网络安全"),
+    OPERATION("OPERATION", "运行情况"),
+    APPLICATION_SUPPORT("WEIBO_OR_WECHAT_ACCOUNT", "应用支撑"),
+    DATA_RESOURCES("DATA_RESOURCES", "数据资源"),
+    BASIC_FACILITIES("TBASIC_FACILITIESOOL", "基层设施"),
     ;
 
 
@@ -19,7 +20,7 @@ public enum TypeEnum {
 
     private String name;
 
-    TypeEnum(String code, String name) {
+    SubTypeEnum(String code, String name) {
         this.code = code;
         this.name = name;
     }
@@ -39,8 +40,8 @@ public enum TypeEnum {
     public void setName(String name) {
         this.name = name;
     }
-    public static TypeEnum fromCode(String code) {
-        for (TypeEnum areaRangeEnum : values()) {
+    public static SubTypeEnum fromCode(String code) {
+        for (SubTypeEnum areaRangeEnum : values()) {
             if(areaRangeEnum.code.equals(code)) {
                 return areaRangeEnum;
             }

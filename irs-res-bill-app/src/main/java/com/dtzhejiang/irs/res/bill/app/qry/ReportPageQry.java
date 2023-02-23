@@ -1,4 +1,4 @@
-package com.dtzhejiang.irs.res.bill.qry;
+package com.dtzhejiang.irs.res.bill.app.qry;
 
 
 import com.dtzhejiang.irs.res.bill.common.dto.PageQuery;
@@ -43,6 +43,6 @@ public class ReportPageQry extends PageQuery {
     /**
      * 是否关联项目：true:是、false:否；
      */
-    private boolean linkProject;
+    private Boolean linkProject;
 
 }

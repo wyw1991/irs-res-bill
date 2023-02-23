@@ -1,25 +1,26 @@
 package com.dtzhejiang.irs.res.bill.common.enums;
 
+import com.baomidou.mybatisplus.annotation.EnumValue;
+
 /**
- * 应用类型
+ * 子报告状态
  **/
-public enum TypeEnum {
+public enum SubStatusEnum {
 
-    OFFICE("OFFICE", "办公类"),
-    BUSINESS_APPLICATION("BUSINESS_APPLICATION", "业务应用类"),
-    PORTAL_SITE("PORTAL_SITE", "门户网站"),
-    WEIBO_OR_WECHAT_ACCOUNT("WEIBO_OR_WECHAT_ACCOUNT", "宣传微博\\微信公众号"),
-    HARDWARE("HARDWARE", "硬件类"),
-    TOOL("TOOL", "工具类"),
-    OTHER("OTHER", "其他"),
+    UN_SUBMIT("UN_SUBMIT", "待提交"),
+
+    UN_COMMIT("UN_COMMIT", "待确认"),
+
+    UN_AUDIT("UN_AUDIT", "待审核"),
+
+    APPROVED("APPROVED", "已审核"),
     ;
-
 
     private String code;
 
     private String name;
 
-    TypeEnum(String code, String name) {
+    SubStatusEnum(String code, String name) {
         this.code = code;
         this.name = name;
     }
@@ -39,8 +40,8 @@ public enum TypeEnum {
     public void setName(String name) {
         this.name = name;
     }
-    public static TypeEnum fromCode(String code) {
-        for (TypeEnum areaRangeEnum : values()) {
+    public static SubStatusEnum fromCode(String code) {
+        for (SubStatusEnum areaRangeEnum : values()) {
             if(areaRangeEnum.code.equals(code)) {
                 return areaRangeEnum;
             }

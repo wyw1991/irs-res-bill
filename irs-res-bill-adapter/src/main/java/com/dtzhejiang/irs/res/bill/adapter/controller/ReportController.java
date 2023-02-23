@@ -1,11 +1,11 @@
 package com.dtzhejiang.irs.res.bill.adapter.controller;
 
 import com.dtzhejiang.irs.res.bill.domain.model.Report;
-import com.dtzhejiang.irs.res.bill.common.dto.MultiResponse;
-import com.dtzhejiang.irs.res.bill.common.dto.SingleResponse;
 import com.dtzhejiang.irs.res.bill.common.dto.PageResponse;
 import com.dtzhejiang.irs.res.bill.common.dto.Response;
-import com.dtzhejiang.irs.res.bill.qry.ReportPageQry;
+import com.dtzhejiang.irs.res.bill.app.qry.ReportPageQry;
+import com.dtzhejiang.irs.res.bill.app.service.ReportService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -13,14 +13,16 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping("/report")
-public class ComponentController {
+public class ReportController {
 
+    @Autowired
+    private  ReportService service;
     /**
      * 分页查询
      */
     @PostMapping("/page")
     public PageResponse<Report> page(@RequestBody ReportPageQry pageQry) {
-        return null;
+        return service.page(pageQry);
     }
     /**
      * 创建报告

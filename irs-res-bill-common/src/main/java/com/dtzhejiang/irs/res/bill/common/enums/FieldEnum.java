@@ -1,7 +1,7 @@
 package com.dtzhejiang.irs.res.bill.common.enums;
 
 /**
- * 建设层级
+ * 应用领域
  **/
 public enum FieldEnum {
     TOTAL_GOVERNMENT("TOTAL_GOVERNMENT", "政机关整体智治"),
