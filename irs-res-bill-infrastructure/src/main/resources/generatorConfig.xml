@@ -4,22 +4,11 @@
         "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
 <generatorConfiguration>
     <context id="base_resource" targetRuntime="MyBatis3" defaultModelType="flat">
-<!--        &lt;!&ndash; 分页插件 &ndash;&gt;-->
-<!--        <plugin type="com.cmcc.coc.ummp.common.common.mybatis.MySQLPhysicalDeletePlugin">-->
-<!--            &lt;!&ndash; 是否生成manager &ndash;&gt;-->
-<!--            <property name="generateManager" value="true"/>-->
-<!--            &lt;!&ndash; 是否生成controller &ndash;&gt;-->
-<!--            <property name="generateController" value="false"/>-->
-<!--            &lt;!&ndash; 是否使用lombok &ndash;&gt;-->
-<!--            <property name="enableLombok" value="true"/>-->
-<!--        </plugin>-->
-
-        <!-- 注释，修改配置会影响MySQLPaginationPlugin的执行 -->
         <commentGenerator>
             <!-- 是否去除自动生成的注释 true：是 / false:否，代码merge会被禁用 -->
             <property name="suppressAllComments" value="false"/>
             <property name="suppressDate" value="false"/>
-            <property name="addRemarkComments" value="true"/>
+            <property name="addRemarkComments" value="false"/>
         </commentGenerator>
 
         <!--数据库链接URL，用户名、密码 -->
