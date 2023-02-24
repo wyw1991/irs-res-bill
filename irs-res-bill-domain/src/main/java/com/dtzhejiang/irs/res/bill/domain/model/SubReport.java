@@ -16,7 +16,10 @@ public class SubReport {
      * 自增主键
      */
     private Long id;
-
+    /**
+     * 每一类的子报告ID(每次提交审批生成)
+     */
+    private String subReportId;
     /**
      * 子报告名称
      */

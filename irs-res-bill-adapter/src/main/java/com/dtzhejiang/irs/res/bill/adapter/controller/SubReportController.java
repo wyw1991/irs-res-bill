@@ -1,5 +1,6 @@
 package com.dtzhejiang.irs.res.bill.adapter.controller;
 
+import com.dtzhejiang.irs.res.bill.app.dto.SubReportDTO;
 import com.dtzhejiang.irs.res.bill.app.service.SubReportService;
 import com.dtzhejiang.irs.res.bill.common.dto.MultiResponse;
 import com.dtzhejiang.irs.res.bill.common.dto.SingleResponse;
@@ -20,20 +21,20 @@ public class SubReportController {
 
     /**
      * 异常结果汇总
-     * @param allSubIds 子报告IDs
+     * @param allSubReportIds 子报告IDs
      */
     @GetMapping("/fail/list")
-    public SingleResponse<SubReportFailDTO> failList(String allSubIds) {
+    public SingleResponse<SubReportFailDTO> failList(String allSubReportIds) {
 
-        return SingleResponse.of(subReportService.failList(allSubIds));
+        return SingleResponse.of(subReportService.failList(allSubReportIds));
     }
 
     /**
      * 子报告列表
      */
     @PostMapping("/list")
-    public MultiResponse<SubReport> getList(@RequestBody SubReportQry qry) {
-        return MultiResponse.of(subReportService.getList(qry));
+    public SingleResponse<SubReportDTO> getList(@RequestBody SubReportQry qry) {
+        return SingleResponse.of(subReportService.getList(qry));
     }
 
 }

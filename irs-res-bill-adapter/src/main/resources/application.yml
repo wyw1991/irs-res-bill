@@ -25,7 +25,7 @@ mybatis-plus:
 
 shiro:
   auth-mode: unitSession
-  enabled: true
+  enabled: false
   cookie-name: irs-workflow-cas
   #对不同的url做不同的拦截（list） 格式 路径匹配表达式 + : + 拦截器    anon代表白名单
   filter-chain-definitions:

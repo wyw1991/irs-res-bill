@@ -10,29 +10,30 @@ import java.util.List;
 @Getter
 @Setter
 public class SubReportFailDTO {
+
     /**
      * 基层设施
      */
-    private List<SubReport> basicFacilities;
+    private SubReportDTO basicFacilities;
     /**
      * 数据资源
      */
-    private List<SubReport> dataResources;
+    private SubReportDTO dataResources;
     /**
      * 应用支撑
      */
-    private List<SubReport> applicationSupport;
+    private SubReportDTO applicationSupport;
     /**
      * 运行情况
      */
-    private List<SubReport> operation;
+    private SubReportDTO operation;
     /**
      * 网络安全
      */
-    private List<SubReport> networkSecurity;
+    private SubReportDTO networkSecurity;
     /**
      * 业务应用
      */
-    private List<SubReport> businessApplication;
+    private SubReportDTO businessApplication;
 
 }
