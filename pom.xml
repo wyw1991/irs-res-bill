@@ -23,6 +23,7 @@
         <mybatis-plus.version>3.5.1</mybatis-plus.version>
         <smart-decrypt.version>1.0.1</smart-decrypt.version>
         <forest.version>1.5.25</forest.version>
+        <shirocas.version>1.2.12</shirocas.version>
     </properties>
 
     <modules>
@@ -80,6 +81,12 @@
                 <groupId>com.dtflys.forest</groupId>
                 <artifactId>forest-spring-boot-starter</artifactId>
                 <version>${forest.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.bees.shirocas</groupId>
+                <artifactId>shirocas-spring-boot-starter</artifactId>
+                <version>${shirocas.version}</version>
             </dependency>
 
             <!-- third dependencies  End-->
