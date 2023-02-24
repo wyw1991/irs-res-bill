@@ -22,3 +22,11 @@ logging:
 
 mybatis-plus:
   mapper-locations: classpath*:mapper/*.xml
+
+shiro:
+  auth-mode: unitSession
+  enabled: true
+  cookie-name: irs-workflow-cas
+  #对不同的url做不同的拦截（list） 格式 路径匹配表达式 + : + 拦截器    anon代表白名单
+  filter-chain-definitions:
+    - /events/**:anon
