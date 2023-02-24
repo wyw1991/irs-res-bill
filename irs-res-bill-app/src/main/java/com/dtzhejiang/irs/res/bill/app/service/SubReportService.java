@@ -35,9 +35,6 @@ public class SubReportService {
     private SubReportMapper mapper;
 
     public SubReportDTO getList(SubReportQry qry){
-        if(ObjectUtils.isEmpty(qry.getAllSubReportIds())){
-            throw  new BusinessException("allSubReportIds 不能为空");
-        }
         SubReportDTO dto=new SubReportDTO();
         LambdaQueryWrapper<SubReport> wrapper = new LambdaQueryWrapper<>();
         wrapper.in(!ObjectUtils.isEmpty(qry.getAllSubReportIds()), SubReport::getSubReportId, Arrays.asList(qry.getAllSubReportIds().split(",")));
@@ -51,9 +48,6 @@ public class SubReportService {
 
 
     public SubReportFailDTO failList(String allSubReportIds){
-        if(ObjectUtils.isEmpty(allSubReportIds)){
-            throw  new BusinessException("allSubReportIds 不能为空");
-        }
         SubReportFailDTO dto = new SubReportFailDTO();
         LambdaQueryWrapper<SubReport> wrapper = new LambdaQueryWrapper<>();
         wrapper.in( SubReport::getSubReportId,Arrays.asList(allSubReportIds.split(",")));

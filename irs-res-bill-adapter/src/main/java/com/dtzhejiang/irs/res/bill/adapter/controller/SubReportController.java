@@ -7,6 +7,7 @@ import com.dtzhejiang.irs.res.bill.common.dto.SingleResponse;
 import com.dtzhejiang.irs.res.bill.domain.model.SubReport;
 import com.dtzhejiang.irs.res.bill.app.dto.SubReportFailDTO;
 import com.dtzhejiang.irs.res.bill.app.qry.SubReportQry;
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,7 +25,7 @@ public class SubReportController {
      * @param allSubReportIds 子报告IDs
      */
     @GetMapping("/fail/list")
-    public SingleResponse<SubReportFailDTO> failList(String allSubReportIds) {
+    public SingleResponse<SubReportFailDTO> failList(@NonNull String allSubReportIds) {
 
         return SingleResponse.of(subReportService.failList(allSubReportIds));
     }
