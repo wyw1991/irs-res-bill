@@ -78,6 +78,10 @@ public class Report {
      * 是否关联项目：true:是、false:否；
      */
     private boolean linkProject;
+    /**
+     * 是否最新： 0 否，1 是
+     */
+    private boolean newReport;
 
     /**
      * 创建时间

@@ -1,7 +1,9 @@
 package com.dtzhejiang.irs.res.bill.domain.model;
 
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.dtzhejiang.irs.res.bill.common.enums.SubStatusEnum;
 import com.dtzhejiang.irs.res.bill.common.enums.SubTypeEnum;
+import com.dtzhejiang.irs.res.bill.common.enums.OperationResultsStatusEnum;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -46,14 +48,14 @@ public class SubReport {
     private String operationResults;
 
     /**
-     * 运行结果状态：success 成功，fail 失败
+     * 运行结果状态：SUCCESS 成功，FAIL 失败，QUESTION 有疑问
      */
-    private String operationResultsStatus;
+    private OperationResultsStatusEnum operationResultsStatus;
 
     /**
      * 子报告状态：UN_SUBMIT-待提交，UN_COMMIT-待确认，UN_AUDIT-待审核，APPROVED-已审核
      */
-    private SubReport subStatus;
+    private SubStatusEnum subStatus;
 
     /**
      * 备注
