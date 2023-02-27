@@ -57,12 +57,12 @@ public class Report {
     /**
      * 审核通过子报告IDS
      */
-    private String successSubReportIds;
+    private String successSubIds;
 
     /**
      * 子报告IDS
      */
-    private String allSubReportIds;
+    private String allSubIds;
 
     /**
      * 版本号
