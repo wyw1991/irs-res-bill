@@ -1,14 +1,14 @@
 spring:
   datasource:
-    url: jdbc:mysql://{ip}:{port}/{db}?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai
-    username:
-    password:
+    url: jdbc:mysql://59.202.48.91:3336/irs_res_bill?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai
+    username: irs_res_bill
+    password: 40ES9k1mT8IrLzl^ov%g
   redis:
-    host:
-    port:
-    password:
+    host: 59.202.48.91
+    port: 6379
+    password: Da(#Hfl0Sy
     timeout: 20000
-    database: 1
+    database: 10
     lettuce:
       pool:
         min-idle: 3
