@@ -14,10 +14,11 @@ public class SubReportQry {
     @NonNull
     private String subType;
 
+
     /**
-     * 子报告reportIDS
+     * 主报告ID
      */
     @NonNull
-    private String allSubReportIds;
+    private String reportId;
 
 }

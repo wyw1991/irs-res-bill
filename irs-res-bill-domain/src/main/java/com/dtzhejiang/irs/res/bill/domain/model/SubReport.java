@@ -21,7 +21,7 @@ public class SubReport {
     /**
      * 主报告ID
      */
-    private String reportId;
+    private Long reportId;
 
     /**
      * 子报告名称

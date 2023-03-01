@@ -1,6 +1,7 @@
 package com.dtzhejiang.irs.res.bill.app.dto;
 
 import com.dtzhejiang.irs.res.bill.common.enums.OperationResultsStatusEnum;
+import com.dtzhejiang.irs.res.bill.domain.model.HisIndices;
 import com.dtzhejiang.irs.res.bill.domain.model.SubReport;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,20 +22,23 @@ public class SubReportDTO {
     private Long failNum;
 
     /**
-     * 每一类的子报告ID(每次提交审批生成)
+     * 子报告信息(每次提交审批生成)
      */
-    private List<SubReport> subReport;
+    private SubReport subReport;
+
+
+    private List<HisIndices> hisIndicesList;
 
     public Integer getTotalNum() {
-        if(!CollectionUtils.isEmpty(subReport)){
-            return subReport.size();
+        if(!CollectionUtils.isEmpty(hisIndicesList)){
+            return hisIndicesList.size();
         }
         return 0;
     }
 
     public Long getFailNum() {
-        if(!CollectionUtils.isEmpty(subReport)){
-            return subReport.stream().filter(f->!f.getOperationResultsStatus().equals(OperationResultsStatusEnum.SUCCESS)).count();
+        if(!CollectionUtils.isEmpty(hisIndicesList)){
+            return hisIndicesList.stream().filter(f->!f.getOperationResultsStatus().equals(OperationResultsStatusEnum.SUCCESS)).count();
         }
         return 0L;
     }

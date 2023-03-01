@@ -1,9 +1,14 @@
 package com.dtzhejiang.irs.res.bill.domain.model;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.dtzhejiang.irs.res.bill.common.enums.SubTypeEnum;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Date;
-
+@Getter
+@Setter
+@TableName(value = "index_config",autoResultMap = true)
 public class IndexConfig {
     /**
      * 自增主键

@@ -1,9 +1,14 @@
 package com.dtzhejiang.irs.res.bill.domain.model;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.dtzhejiang.irs.res.bill.common.enums.OperationResultsStatusEnum;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Date;
-
+@Getter
+@Setter
+@TableName(value = "his_indices",autoResultMap = true)
 public class HisIndices {
     /**
      * 自增主键
@@ -13,7 +18,7 @@ public class HisIndices {
     /**
      * 每一类的子报告ID
      */
-    private String subReportId;
+    private Long subReportId;
 
     /**
      * 运行指标

@@ -7,12 +7,14 @@ import com.dtzhejiang.irs.res.bill.app.dto.SubReportFailDTO;
 import com.dtzhejiang.irs.res.bill.app.qry.SubReportQry;
 import com.dtzhejiang.irs.res.bill.common.enums.OperationResultsStatusEnum;
 import com.dtzhejiang.irs.res.bill.common.enums.SubTypeEnum;
+import com.dtzhejiang.irs.res.bill.domain.model.HisIndices;
 import com.dtzhejiang.irs.res.bill.domain.model.SubReport;
 import com.dtzhejiang.irs.res.bill.infra.mapper.SubReportMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,24 +25,29 @@ public class SubReportService {
 
     @Autowired
     private SubReportMapper mapper;
+    @Autowired
+    private HisIndicesService indicesService;
 
-    public SubReportDTO getList(SubReportQry qry){
+    public SubReportDTO getList(SubReportQry qry,Boolean success){
         SubReportDTO dto=new SubReportDTO();
         LambdaQueryWrapper<SubReport> wrapper = new LambdaQueryWrapper<>();
-        //wrapper.in(!ObjectUtils.isEmpty(qry.getAllSubReportIds()), SubReport::getSubReportId, Arrays.asList(qry.getAllSubReportIds().split(",")));
         wrapper.eq(!ObjectUtils.isEmpty(qry.getSubType()), SubReport::getSubType,qry.getSubType());
-        wrapper.orderBy(true,true, SubReport::getId);//按照类型正序
+        wrapper.eq(!ObjectUtils.isEmpty(qry.getReportId()), SubReport::getReportId,qry.getReportId());
+        wrapper.orderBy(true,true, SubReport::getId);//按照id正序
         List<SubReport> list=mapper.selectList(wrapper);
-        dto.setSubReport(list);
+        SubReport subReport=mapper.selectOne(wrapper);
+        dto.setSubReport(subReport);
+        dto.setHisIndicesList(indicesService.getList(subReport.getId(),success));
         return dto;
 
     }
 
 
-    public SubReportFailDTO failList(String allSubReportIds){
+    public SubReportFailDTO failList(Long reportId){
         SubReportFailDTO dto = new SubReportFailDTO();
         LambdaQueryWrapper<SubReport> wrapper = new LambdaQueryWrapper<>();
-        //wrapper.in( SubReport::getSubReportId,Arrays.asList(allSubReportIds.split(",")));
+
+        wrapper.eq(!ObjectUtils.isEmpty(reportId), SubReport::getReportId,reportId);
         //wrapper.ne(SubReport::getOperationResultsStatus, OperationResultsStatusEnum.SUCCESS);
         List<SubReport> list=mapper.selectList(wrapper);
         dto.setApplicationSupport(convert(list,SubTypeEnum.APPLICATION_SUPPORT));
@@ -60,7 +67,9 @@ public class SubReportService {
      */
     private SubReportDTO convert(List<SubReport> list, SubTypeEnum subType){
         SubReportDTO dto=new SubReportDTO();
-        dto.setSubReport(list.stream().filter(f->f.getSubType().equals(subType)).collect(Collectors.toList()));
+        SubReport subReport=list.stream().filter(f->f.getSubType().equals(subType)).findFirst().orElse(null);
+        dto.setSubReport(subReport);
+        dto.setHisIndicesList(subReport==null?new ArrayList<>():indicesService.getList(subReport.getId(),false));
         return dto;
     }
     
