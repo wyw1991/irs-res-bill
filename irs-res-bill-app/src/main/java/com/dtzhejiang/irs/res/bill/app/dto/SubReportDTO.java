@@ -1,15 +1,11 @@
 package com.dtzhejiang.irs.res.bill.app.dto;
 
-import com.baomidou.mybatisplus.annotation.TableName;
 import com.dtzhejiang.irs.res.bill.common.enums.OperationResultsStatusEnum;
-import com.dtzhejiang.irs.res.bill.common.enums.SubStatusEnum;
-import com.dtzhejiang.irs.res.bill.common.enums.SubTypeEnum;
 import com.dtzhejiang.irs.res.bill.domain.model.SubReport;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Date;
 import java.util.List;
 
 @Getter

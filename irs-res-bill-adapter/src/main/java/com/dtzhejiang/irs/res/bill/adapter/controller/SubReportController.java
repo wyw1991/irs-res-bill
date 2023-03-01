@@ -2,9 +2,7 @@ package com.dtzhejiang.irs.res.bill.adapter.controller;
 
 import com.dtzhejiang.irs.res.bill.app.dto.SubReportDTO;
 import com.dtzhejiang.irs.res.bill.app.service.SubReportService;
-import com.dtzhejiang.irs.res.bill.common.dto.MultiResponse;
 import com.dtzhejiang.irs.res.bill.common.dto.SingleResponse;
-import com.dtzhejiang.irs.res.bill.domain.model.SubReport;
 import com.dtzhejiang.irs.res.bill.app.dto.SubReportFailDTO;
 import com.dtzhejiang.irs.res.bill.app.qry.SubReportQry;
 import lombok.NonNull;

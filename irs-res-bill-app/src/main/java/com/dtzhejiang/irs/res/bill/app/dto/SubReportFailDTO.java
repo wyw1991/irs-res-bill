@@ -1,11 +1,7 @@
 package com.dtzhejiang.irs.res.bill.app.dto;
 
-import com.dtzhejiang.irs.res.bill.domain.model.SubReport;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.Date;
-import java.util.List;
 
 @Getter
 @Setter

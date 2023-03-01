@@ -45,4 +45,9 @@ public class ReportPageQry extends PageQuery {
      */
     private Boolean linkProject;
 
+    /**
+     * 是否已审核列表：true:是、false:否；
+     */
+    private Boolean myAudit;
+
 }
