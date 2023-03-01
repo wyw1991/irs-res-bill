@@ -19,3 +19,9 @@ spring:
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+
+workflow:
+  api-url: http://59.202.44.203/flowable/
+  ak:
+  sk:
