@@ -85,6 +85,11 @@ public class Report {
     private boolean linkProject;
 
     /**
+     * 问题数
+     */
+    private Long failNum;
+
+    /**
      * 创建时间
      */
     private Date createTime;

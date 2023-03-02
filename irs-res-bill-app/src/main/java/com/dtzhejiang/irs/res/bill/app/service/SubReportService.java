@@ -6,10 +6,13 @@ import com.dtzhejiang.irs.res.bill.app.dto.SubReportDTO;
 import com.dtzhejiang.irs.res.bill.app.dto.SubReportFailDTO;
 import com.dtzhejiang.irs.res.bill.app.qry.SubReportQry;
 import com.dtzhejiang.irs.res.bill.common.enums.OperationResultsStatusEnum;
+import com.dtzhejiang.irs.res.bill.common.enums.StatusEnum;
 import com.dtzhejiang.irs.res.bill.common.enums.SubTypeEnum;
 import com.dtzhejiang.irs.res.bill.domain.model.HisIndices;
+import com.dtzhejiang.irs.res.bill.domain.model.Report;
 import com.dtzhejiang.irs.res.bill.domain.model.SubReport;
 import com.dtzhejiang.irs.res.bill.infra.mapper.SubReportMapper;
+import com.dtzhejiang.irs.res.bill.infra.repository.SubReportRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
@@ -27,6 +30,9 @@ public class SubReportService {
     private SubReportMapper mapper;
     @Autowired
     private HisIndicesService indicesService;
+
+    @Autowired
+    private SubReportRepository subReportRepository;
 
     public SubReportDTO getList(SubReportQry qry,Boolean success){
         SubReportDTO dto=new SubReportDTO();
@@ -72,5 +78,27 @@ public class SubReportService {
         dto.setHisIndicesList(subReport==null?new ArrayList<>():indicesService.getList(subReport.getId(),false));
         return dto;
     }
-    
+
+
+    /**
+     * 保存子报告返回ID
+     * @param entity
+     * @return
+     */
+    public Long save(SubReport entity){
+        if(ObjectUtils.isEmpty(entity.getId())){
+            //查询符合条件更新的数据放入ID
+            LambdaQueryWrapper<SubReport> wrapper = new LambdaQueryWrapper<>();
+            wrapper.eq(SubReport::getReportId,entity.getReportId());
+            wrapper.eq(SubReport::getSubType,entity.getSubType());
+            SubReport oldSubReport=mapper.selectOne(wrapper);
+            if (oldSubReport != null) {
+                entity.setId(oldSubReport.getId());
+            }
+        }
+
+        subReportRepository.saveOrUpdate(entity);
+        return entity.getId();
+    }
+
 }

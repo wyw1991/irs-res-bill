@@ -4,10 +4,13 @@ package com.dtzhejiang.irs.res.bill.app.service;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dtzhejiang.irs.res.bill.common.dto.PageResponse;
+import com.dtzhejiang.irs.res.bill.common.enums.StatusEnum;
+import com.dtzhejiang.irs.res.bill.domain.model.AppInfo;
 import com.dtzhejiang.irs.res.bill.domain.model.Report;
 import com.dtzhejiang.irs.res.bill.domain.model.Report;
 import com.dtzhejiang.irs.res.bill.domain.model.SubReport;
 import com.dtzhejiang.irs.res.bill.infra.mapper.ReportMapper;
+import com.dtzhejiang.irs.res.bill.infra.repository.ReportRepository;
 import com.dtzhejiang.irs.res.bill.infra.util.PageUtilPlus;
 import com.dtzhejiang.irs.res.bill.app.qry.ReportPageQry;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +18,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -27,6 +31,8 @@ public class ReportService {
     private PageUtilPlus pageUtil;
     @Autowired
     private SubReportService subReportService;
+    @Autowired
+    private  ReportRepository reportRepository;
     public PageResponse<Report> page(ReportPageQry pageQry){
 
 
@@ -75,6 +81,31 @@ public class ReportService {
         wrapper.eq(Report::getApplicationId,applicationId);
         return mapper.selectList(wrapper);
     }
+
+    /**
+     * 保存报告返回ID
+     * @param entity
+     * @return
+     */
+    public Report save(Report entity){
+        if(ObjectUtils.isEmpty(entity.getId())) {
+            //查询符合条件更新的数据放入ID
+            LambdaQueryWrapper<Report> wrapper = new LambdaQueryWrapper<>();
+            wrapper.eq(Report::getApplicationId, entity.getApplicationId());
+            wrapper.eq(Report::isNewReport, true);
+            Report oldReport = mapper.selectOne(wrapper);
+            if (oldReport != null) {
+                //已出具的数据不更新
+                if (StatusEnum.SUCCESS.equals(oldReport.getStatus())) {
+                    return null;
+                }
+                entity.setId(oldReport.getId());
+            }
+        }
+        reportRepository.saveOrUpdate(entity);
+        return entity;
+    }
+
 
 
 }

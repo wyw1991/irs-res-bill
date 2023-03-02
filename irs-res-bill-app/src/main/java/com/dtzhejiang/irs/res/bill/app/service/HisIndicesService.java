@@ -7,7 +7,10 @@ import com.dtzhejiang.irs.res.bill.app.dto.SubReportFailDTO;
 import com.dtzhejiang.irs.res.bill.app.qry.SubReportQry;
 import com.dtzhejiang.irs.res.bill.common.enums.OperationResultsStatusEnum;
 import com.dtzhejiang.irs.res.bill.common.enums.SubTypeEnum;
+import com.dtzhejiang.irs.res.bill.common.util.ObjUtil;
+import com.dtzhejiang.irs.res.bill.domain.model.AppInfo;
 import com.dtzhejiang.irs.res.bill.domain.model.HisIndices;
+import com.dtzhejiang.irs.res.bill.domain.model.IndexConfig;
 import com.dtzhejiang.irs.res.bill.domain.model.SubReport;
 import com.dtzhejiang.irs.res.bill.infra.mapper.HisIndicesMapper;
 import com.dtzhejiang.irs.res.bill.infra.mapper.SubReportMapper;
@@ -25,7 +28,8 @@ public class HisIndicesService {
 
     @Autowired
     private HisIndicesMapper mapper;
-
+    @Autowired
+    private IndexConfigService indexConfigService;
     public List<HisIndices> getList(Long subReportId,Boolean success){
         if(subReportId==null){
             return new ArrayList<>();
@@ -38,6 +42,31 @@ public class HisIndicesService {
 
     }
 
+    public void creatHisIndices(List<SubReport> subReportList, AppInfo appInfo){
+        List<IndexConfig> listConfig=indexConfigService.getList();
+        listConfig.forEach(f->{
+            HisIndices hisIndices=new HisIndices();
+            String fileName=f.getIndexCode();
+            Object obj= ObjUtil.getValue(appInfo,fileName);
+            hisIndices.setOperationIndices(f.getIndexName());
+            hisIndices.setNormalValue(f.getNormalValue());
+            hisIndices.setOperationData(obj+"");
+            setResult(obj,f.getCheckRule(),hisIndices);
+        });
+
+
+
+    }
+
+
+    public  void setResult(Object obj,String elStr,HisIndices hisIndices){
+
+        Object result= ObjUtil.getElResult(obj,elStr);
+        if (result != null) {
+
+        }
+
+    }
 
     
 }

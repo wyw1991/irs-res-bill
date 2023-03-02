@@ -1,6 +1,10 @@
 package com.dtzhejiang.irs.res.bill.domain.model;
 
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.dtzhejiang.irs.res.bill.common.enums.ApplicationStatusEnum;
+import com.dtzhejiang.irs.res.bill.common.enums.FieldEnum;
+import com.dtzhejiang.irs.res.bill.common.enums.LevelEnum;
+import com.dtzhejiang.irs.res.bill.common.enums.TypeEnum;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -42,27 +46,27 @@ public class AppInfo {
     /**
      * 应用类型：OFFICE-办公类、BUSINESS_APPLICATION-业务应用类、PORTAL_SITE-门户网站、WEIBO_OR_WECHAT_ACCOUNT-宣传微博\微信公众号、HARDWARE-硬件类、TOOL-工具类、OTHER-其他；
      */
-    private String type;
+    private TypeEnum type;
 
     /**
      * 是否关联项目：true:是、false:否；
      */
-    private String linkProject;
+    private boolean linkProject;
 
     /**
      * 建设层级：PROVINCE-省级、CITY-县（市、区）、VILLAGE-村（社区）；
      */
-    private String level;
+    private LevelEnum level;
 
     /**
      * 应用状态：TEST_RUN-试运行，RUN-运行中
      */
-    private String applicationStatus;
+    private ApplicationStatusEnum applicationStatus;
 
     /**
      * 应用领域：TOTAL_GOVERNMENT-政机关整体智治、GOVERNMENT-数字政府、ECONOMY-数字经济、SOCIETY-数字社会、LAW-数字法治、CULTURE-数字文化；
      */
-    private String field;
+    private FieldEnum field;
 
     /**
      * 规范上云 

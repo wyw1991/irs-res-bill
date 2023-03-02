@@ -1,5 +1,7 @@
 package com.dtzhejiang.irs.res.bill.domain.model;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.dtzhejiang.irs.res.bill.common.enums.SubTypeEnum;
 import lombok.Getter;
@@ -13,6 +15,7 @@ public class IndexConfig {
     /**
      * 自增主键
      */
+    @TableId(type = IdType.AUTO)
     private Long id;
 
     /**
@@ -44,6 +47,11 @@ public class IndexConfig {
      * 校验规则
      */
     private String checkRule;
+
+    /**
+     * 正常区间
+     */
+    private String normalValue;
 
     /**
      * 异常提示

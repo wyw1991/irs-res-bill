@@ -3,6 +3,7 @@ package com.dtzhejiang.irs.res.bill.domain.model;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.dtzhejiang.irs.res.bill.common.enums.SubStatusEnum;
 import com.dtzhejiang.irs.res.bill.common.enums.SubTypeEnum;
 import lombok.Getter;
 import lombok.Setter;
@@ -32,6 +33,11 @@ public class SubReport {
      * 子报告类型: BUSINESS_APPLICATION-业务应用,NETWORK_SECURITY-网络安全,OPERATION-运行情况,APPLICATION_SUPPORT-应用支撑,DATA_RESOURCES-数据资源,BASIC_FACILITIES-基层设施
      */
     private SubTypeEnum subType;
+
+    /**
+     * 子报告状态：UN_SUBMIT-待提交，UN_COMMIT-待确认，UN_AUDIT-待审核，APPROVED-已审核
+     */
+    private SubStatusEnum subStatus;
 
     /**
      * 审批人IDS
