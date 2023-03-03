@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class SubReportAssignCmd {
+public class SubReportUpdateProcessInfoCmd {
     /**
      * 流程编号
      */

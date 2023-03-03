@@ -55,6 +55,11 @@ public class SubReport {
     private String approvalId;
 
     /**
+     * 流程是否结束 0-未结束，1-已结束
+     */
+    private Integer processEnd;
+
+    /**
      * 当前任务节点id
      */
     private String taskId;

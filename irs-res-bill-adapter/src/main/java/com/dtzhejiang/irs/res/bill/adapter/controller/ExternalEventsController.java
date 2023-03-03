@@ -1,6 +1,6 @@
 package com.dtzhejiang.irs.res.bill.adapter.controller;
 
-import com.dtzhejiang.irs.res.bill.app.command.cmd.SubReportAssignCmd;
+import com.dtzhejiang.irs.res.bill.app.command.cmd.SubReportUpdateProcessInfoCmd;
 import com.dtzhejiang.irs.res.bill.app.command.handler.SubReportCommandHandler;
 import com.dtzhejiang.irs.res.bill.common.dto.Response;
 import com.dtzhejiang.irs.res.bill.common.enums.FlowableEventType;
@@ -41,12 +41,17 @@ public class ExternalEventsController {
         String processInstanceId = (String) eventBody.get("processInstanceId");
         if (FlowableEventType.TASK_CREATED.name().equals(eventType)) {
             List<String> taskGroup = Optional.ofNullable((List<String>) eventBody.get("taskGroup")).orElse(new ArrayList<>());
-            subReportCommandHandler.updateAssignInfo(SubReportAssignCmd.builder()
+            subReportCommandHandler.updateAssignInfo(SubReportUpdateProcessInfoCmd.builder()
                     .processInstanceId(processInstanceId)
                     .taskId(eventBody.get("taskId").toString())
                     .taskName(eventBody.get("taskName").toString())
                     .assignee(eventBody.get("taskAssignee").toString())
                     .role(String.join(",", taskGroup))
+                    .build());
+        }
+        if (FlowableEventType.PROCESS_COMPLETED.name().equals(eventType)) {
+            subReportCommandHandler.updateProcessEnd(SubReportUpdateProcessInfoCmd.builder()
+                    .processInstanceId(processInstanceId)
                     .build());
         }
         return Response.buildSuccess();
