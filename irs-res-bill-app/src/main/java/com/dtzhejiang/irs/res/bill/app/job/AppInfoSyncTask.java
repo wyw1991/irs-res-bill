@@ -41,28 +41,7 @@ public class AppInfoSyncTask {
     //@Scheduled(cron = "0 0 1 * * ?")
     public void execute() {
       List<AppInfo> list=appInfoRepository.list();
-
-      List<IndexConfig> listConfig=indexConfigService.getList();
-      list.forEach(v->{
-          Report report=reportService.save(convertToReport(v));
-            if(report!=null){
-                listConfig.forEach(f->{
-                    HisIndices hisIndices=new HisIndices();
-                    String fileName=f.getIndexCode();
-                    Object obj= ObjUtil.getValue(v,fileName);
-                    hisIndices.setOperationIndices(f.getIndexName());
-                    hisIndices.setNormalValue(f.getNormalValue());
-
-                });
-
-            }
-
-      });
-
-
-
-
-
+      list.forEach(v->reportService.save(convertToReport(v)));
     }
 
 
@@ -76,22 +55,10 @@ public class AppInfoSyncTask {
         report.setLinkProject(appInfo.isLinkProject());
         report.setType(appInfo.getType());
         report.setApplicationStatus(appInfo.getApplicationStatus());
-        report.setVersion("1.0");//新数据默认为1.0
         return report;
     }
 
-    private void convertToSubReport(AppInfo appInfo,Long reportId){
-        List<IndexConfig> listConfig=indexConfigService.getList();
-        Arrays.stream(SubTypeEnum.values()).forEach(f->{
-            SubReport subReport=new SubReport();
-            subReport.setSubType(f);
-            subReport.setName(f.getName());
-            subReport.setReportId(reportId);
-            subReport.setSubStatus(SubStatusEnum.UN_SUBMIT);//初始化数据
 
-        });
-
-    }
 
 
 }

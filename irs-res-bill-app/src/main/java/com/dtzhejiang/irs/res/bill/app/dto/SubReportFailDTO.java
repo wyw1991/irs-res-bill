@@ -1,11 +1,21 @@
 package com.dtzhejiang.irs.res.bill.app.dto;
 
+import com.dtzhejiang.irs.res.bill.common.enums.OperationResultsStatusEnum;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.util.CollectionUtils;
 
 @Getter
 @Setter
 public class SubReportFailDTO {
+    /**
+     * 总数
+     */
+    private Integer totalNum=38;
+    /**
+     * 问题数
+     */
+    private Long failNum;
 
     /**
      * 基层设施
@@ -31,5 +41,13 @@ public class SubReportFailDTO {
      * 业务应用
      */
     private SubReportDTO businessApplication;
+
+    //public Integer getTotalNum() {
+    //    return basicFacilities.getTotalNum()+dataResources.getTotalNum()+applicationSupport.getTotalNum()+operation.getTotalNum()+networkSecurity.getTotalNum()+businessApplication.getTotalNum();
+    //}
+
+    public Long getFailNum() {
+        return basicFacilities.getFailNum()+dataResources.getFailNum()+applicationSupport.getFailNum()+operation.getFailNum()+networkSecurity.getFailNum()+businessApplication.getFailNum();
+    }
 
 }

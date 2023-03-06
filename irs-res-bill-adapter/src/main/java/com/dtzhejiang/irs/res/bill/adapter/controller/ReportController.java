@@ -1,6 +1,8 @@
 package com.dtzhejiang.irs.res.bill.adapter.controller;
 
+import com.dtzhejiang.irs.res.bill.app.qry.SubReportQry;
 import com.dtzhejiang.irs.res.bill.common.dto.MultiResponse;
+import com.dtzhejiang.irs.res.bill.common.dto.SingleResponse;
 import com.dtzhejiang.irs.res.bill.domain.model.Report;
 import com.dtzhejiang.irs.res.bill.common.dto.PageResponse;
 import com.dtzhejiang.irs.res.bill.common.dto.Response;
@@ -42,5 +44,14 @@ public class ReportController {
         return MultiResponse.of(service.getList(applicationId));
     }
 
+    /**
+     * 生成报告/重新生成
+     * @param reportId 主报告ID
+     */
+    @GetMapping("/generate")
+    public SingleResponse saveSubReport(Long reportId) {
+        service.generateReport(reportId);
+        return SingleResponse.buildSuccess();
+    }
 
 }

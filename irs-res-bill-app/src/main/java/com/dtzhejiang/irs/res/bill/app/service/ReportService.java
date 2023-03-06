@@ -4,7 +4,9 @@ package com.dtzhejiang.irs.res.bill.app.service;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dtzhejiang.irs.res.bill.common.dto.PageResponse;
+import com.dtzhejiang.irs.res.bill.common.enums.ApplicationStatusEnum;
 import com.dtzhejiang.irs.res.bill.common.enums.StatusEnum;
+import com.dtzhejiang.irs.res.bill.domain.exception.BusinessException;
 import com.dtzhejiang.irs.res.bill.domain.model.AppInfo;
 import com.dtzhejiang.irs.res.bill.domain.model.Report;
 import com.dtzhejiang.irs.res.bill.domain.model.Report;
@@ -19,6 +21,7 @@ import org.springframework.util.ObjectUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 
@@ -67,19 +70,41 @@ public class ReportService {
 
     }
 
-    //public LambdaQueryWrapper<Report> wrapper getWaitAduitList(LambdaQueryWrapper<Report> wrapper){
-    //    List<String> listIDS=new ArrayList<>();
-    //
-    //    return
-    //}
 
 
+    /**
+     * 生成报告、重新生成
+     */
+    public void generateReport(Long reportId){
+        Report report=getReport(reportId);
+        if (report == null) {
+            throw new BusinessException("reportId 有误");
+        }
 
-
-    public List<Report> getList(String applicationId){
-        LambdaQueryWrapper<Report> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(Report::getApplicationId,applicationId);
-        return mapper.selectList(wrapper);
+        //首次手动生成报告
+        if(ObjectUtils.isEmpty(report.getVersion())){
+            report.setVersion("1.0");
+            report.setCreateTime(new Date());
+            report.setStatus(StatusEnum.PROCESS);
+            saveOrUpdate(report);
+            subReportService.createSubReport(reportId);
+        }else if(StatusEnum.FAIL.equals(report.getStatus())) {
+            //将此份报告更改为旧报告
+            report.setNewReport(false);
+            saveOrUpdate(report);
+            //拒绝后重新生成报告
+            report.setId(null);
+            Report newReport=report;
+            newReport.setStatus(StatusEnum.PROCESS);
+            int newVersion=Integer.parseInt(newReport.getVersion().replace(".0",""))+1;
+            newReport.setVersion(newVersion+".0");
+            newReport.setNewReport(true);
+            saveOrUpdate(newReport);
+            subReportService.reSubmit(newReport,reportId);
+        }else {
+            throw new BusinessException("报告状态是"+report.getStatus().getName()+",不能生成！");
+        }
+        saveOrUpdate(report);
     }
 
     /**
@@ -95,17 +120,39 @@ public class ReportService {
             wrapper.eq(Report::isNewReport, true);
             Report oldReport = mapper.selectOne(wrapper);
             if (oldReport != null) {
-                //已出具的数据不更新
-                if (StatusEnum.SUCCESS.equals(oldReport.getStatus())) {
+                //已出具/失败 的数据不更新
+                if (Arrays.asList(StatusEnum.FAIL,StatusEnum.SUCCESS).contains(oldReport.getStatus())) {
                     return null;
                 }
                 entity.setId(oldReport.getId());
+                entity.setVersion(oldReport.getVersion());
+                entity.setStatus(oldReport.getStatus());
+                saveOrUpdate(entity);
+                subReportService.createSubReport(entity.getId());
+
+            }else if (entity.isLinkProject() && entity.getApplicationStatus().equals(ApplicationStatusEnum.TEST_RUN)) {
+                //关联项目且 试运行的数据自动新增
+                entity.setStatus(StatusEnum.PROCESS);
+                entity.setVersion("1.0");//新数据默认为1.0
+
+                saveOrUpdate(entity);
+                subReportService.createSubReport(entity.getId());
             }
         }
-        reportRepository.saveOrUpdate(entity);
-        return entity;
+        return saveOrUpdate(entity);
     }
 
-
+    public Report  saveOrUpdate(Report report){
+        reportRepository.saveOrUpdate(report);
+        return report;
+    }
+    public List<Report> getList(String applicationId){
+        LambdaQueryWrapper<Report> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Report::getApplicationId,applicationId);
+        return mapper.selectList(wrapper);
+    }
+    public Report getReport(Long reportId){
+        return reportRepository.getById(reportId);
+    }
 
 }

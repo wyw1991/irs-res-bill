@@ -19,6 +19,7 @@ import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.List;
 
 @SpringBootTest
@@ -61,7 +62,12 @@ public class HisTest {
         Expression expression = parser.parseExpression(template, new TemplateParserContext());
 
         //使用Expression.getValue()获取表达式的值，这里传入了Evaluation上下文，第二个参数是类型参数，表示返回值的类型。
-        System.out.println(expression.getValue(context, String.class));
+        Object result=expression.getValue(context, String.class);
+        System.out.println(result);
+
+        if (Arrays.asList("true","false").contains(result)) {
+            System.out.println(true);
+        }
 
     }
 }

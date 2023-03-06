@@ -6,8 +6,8 @@ package com.dtzhejiang.irs.res.bill.common.enums;
 public enum OperationResultsStatusEnum {
 
     SUCCESS("SUCCESS", "成功"),
-    FAIL("FAIL", "失败"),
-    QUESTION("QUESTION", "有问题"),
+    ERROR("ERROR", "失败"),
+    WARN("WARN", "有问题"),
     ;
 
 

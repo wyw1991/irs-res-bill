@@ -44,6 +44,11 @@ public class IndexConfig {
     private String indexSource;
 
     /**
+     * 指标类型：string 字符串，int 数字
+     */
+    private String indexType;
+
+    /**
      * 校验规则
      */
     private String checkRule;

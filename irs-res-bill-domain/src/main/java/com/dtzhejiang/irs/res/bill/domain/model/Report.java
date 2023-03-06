@@ -54,15 +54,6 @@ public class Report {
      */
     private StatusEnum status;
 
-    /**
-     * 审核通过子报告IDS
-     */
-    private String successSubReportIds;
-
-    /**
-     * 子报告IDS
-     */
-    private String allSubReportIds;
 
     /**
      * 是否最新： 0 否，1 是

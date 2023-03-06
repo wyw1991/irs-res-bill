@@ -33,7 +33,16 @@ public class SubReportController {
      */
     @PostMapping("/list")
     public SingleResponse<SubReportDTO> getList(@RequestBody SubReportQry qry) {
-        return SingleResponse.of(subReportService.getList(qry,true));
+        return SingleResponse.of(subReportService.getSubReportDTO(qry));
+    }
+
+    /**
+     * 提交
+     */
+    @GetMapping("/submit")
+    public SingleResponse createSubReport(@NonNull Long reportId) {
+        subReportService.submitSubReport(reportId);
+        return SingleResponse.buildSuccess();
     }
 
 }

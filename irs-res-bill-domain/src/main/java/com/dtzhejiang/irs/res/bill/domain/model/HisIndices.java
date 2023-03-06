@@ -44,7 +44,7 @@ public class HisIndices {
     private String operationResults;
 
     /**
-     * 运行结果状态：success 成功，fail 失败，question 有疑问
+     * 运行结果状态：SUCCESS 成功，ERROR 失败，WARN 有疑问
      */
     private OperationResultsStatusEnum operationResultsStatus;
 
