@@ -4,6 +4,7 @@ package com.dtzhejiang.irs.res.bill.app.qry;
 import com.dtzhejiang.irs.res.bill.common.dto.PageQuery;
 import com.dtzhejiang.irs.res.bill.common.enums.*;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 
 import java.util.List;
@@ -49,5 +50,11 @@ public class ReportPageQry extends PageQuery {
      * 是否已审核列表：true:是、false:否；默认否
      */
     private Boolean myAudit=false;
+
+    /**
+     * 当前处理角色
+     */
+    @NonNull
+    private String currentRole;
 
 }

@@ -48,7 +48,7 @@ public class SubReportService {
     private SubReportRepository subReportRepository;
 
     public SubReportDTO getSubReportDTO(SubReportQry qry){
-        UserInfo userInfo=userGateway.getCurrentUser();
+
         SubReportDTO dto=new SubReportDTO();
         LambdaQueryWrapper<SubReport> wrapper = new LambdaQueryWrapper<>();
         if (qry.getReportId()== null) {
@@ -57,7 +57,9 @@ public class SubReportService {
         wrapper.eq(!ObjectUtils.isEmpty(qry.getSubType()), SubReport::getSubType,qry.getSubType());
         wrapper.eq(!ObjectUtils.isEmpty(qry.getReportId()), SubReport::getReportId,qry.getReportId());
         //默认需要进行权限控制
-        wrapper.in(qry.getPermission(),SubReport::getSubType,userInfo.getPermissionList());
+        //todo 待开启权限
+        //UserInfo userInfo=userGateway.getCurrentUser();
+        //wrapper.in(userInfo!=null && qry.getPermission(),SubReport::getSubType,userInfo.getPermissionList());
         wrapper.orderBy(true,true, SubReport::getId);//按照id正序
         SubReport subReport=mapper.selectOne(wrapper);
         dto.setSubReport(subReport);
@@ -66,18 +68,19 @@ public class SubReportService {
     }
 
     public List<SubReport> getList (SubReportQry qry){
-        UserInfo userInfo=userGateway.getCurrentUser();
         LambdaQueryWrapper<SubReport> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(!ObjectUtils.isEmpty(qry.getSubType()), SubReport::getSubType,qry.getSubType());
         wrapper.eq(!ObjectUtils.isEmpty(qry.getReportId()), SubReport::getReportId,qry.getReportId());
         //默认需要进行权限控制
-        wrapper.in(qry.getPermission(),SubReport::getSubType,userInfo.getPermissionList());
+        //todo 待开启权限
+        //UserInfo userInfo=userGateway.getCurrentUser();
+        //wrapper.in(userInfo!=null && qry.getPermission(),SubReport::getSubType,userInfo.getPermissionList());
         if(qry.getMyAudit()){
             //已审核列表
             wrapper.like(SubReport::getHistoryHandler,"<"+qry.getUserName()+">-"+qry.getCurrentRole());
         }else{
             //待审核列表
-            wrapper.eq(!ObjectUtils.isEmpty(qry.getCurrentRole()), SubReport::getCurrentRole,qry.getCurrentRole());
+            wrapper.eq(SubReport::getCurrentRole,qry.getCurrentRole());
         }
         wrapper.orderBy(true,false, SubReport::getUpdateTime);//按照更新时间倒序
         return mapper.selectList(wrapper);
@@ -86,12 +89,14 @@ public class SubReportService {
 
 
     public SubReportFailDTO failList(SubReportQry qry){
-        UserInfo userInfo=userGateway.getCurrentUser();
         SubReportFailDTO dto = new SubReportFailDTO();
         LambdaQueryWrapper<SubReport> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(!ObjectUtils.isEmpty(qry.getReportId()), SubReport::getReportId,qry.getReportId());
+
         //默认需要进行权限控制
-        wrapper.in(qry.getPermission(),SubReport::getSubType,userInfo.getPermissionList());
+        //todo 待开启权限
+        //UserInfo userInfo=userGateway.getCurrentUser();
+        //wrapper.in(userInfo!=null && qry.getPermission(),SubReport::getSubType,userInfo.getPermissionList());
         List<SubReport> list=mapper.selectList(wrapper);
         dto.setApplicationSupport(convert(list,SubTypeEnum.APPLICATION_SUPPORT));
         dto.setOperation(convert(list,SubTypeEnum.OPERATION));

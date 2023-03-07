@@ -38,4 +38,10 @@ public class SubReportQry {
      */
     private Boolean permission=true;
 
+    public SubReportQry(Long reportId) {
+        this.reportId = reportId;
+    }
+
+    public SubReportQry() {
+    }
 }
