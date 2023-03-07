@@ -14,7 +14,7 @@
     <!--根据日志级别分文件存储-->
     <appender name="Debug_File" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <!--正在存储的文件名-->
-        <file>../logs/debug.log</file>
+        <file>/data/logs/irs-res-bill/debug.log</file>
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
             <level>DEBUG</level>
             <onMatch>ACCEPT</onMatch>
@@ -28,7 +28,7 @@
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <!-- rollover daily -->
             <!--日志的存档名-->
-            <fileNamePattern>../logs/app_debug-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <fileNamePattern>/data/logs/irs-res-bill/app_debug-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <!-- each file should be at most 100MB, keep 60 days worth of history, but at most 20GB -->
             <maxFileSize>100MB</maxFileSize>
             <maxHistory>30</maxHistory>
@@ -37,7 +37,7 @@
     </appender>
     <appender name="Info_File" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <!--正在存储的文件名-->
-        <file>../logs/info.log</file>
+        <file>/data/logs/irs-res-bill/info.log</file>
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
             <level>INFO</level>
             <onMatch>ACCEPT</onMatch>
@@ -51,7 +51,7 @@
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <!-- rollover daily -->
             <!--日志的存档名-->
-            <fileNamePattern>../logs/app_info-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <fileNamePattern>/data/logs/irs-res-bill/app_info-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <!-- each file should be at most 100MB, keep 60 days worth of history, but at most 20GB -->
             <maxFileSize>100MB</maxFileSize>
             <maxHistory>30</maxHistory>
@@ -60,7 +60,7 @@
     </appender>
     <appender name="Warn_File" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <!--正在存储的文件名-->
-        <file>../logs/warn.log</file>
+        <file>/data/logs/irs-res-bill/warn.log</file>
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
             <level>WARN</level>
             <onMatch>ACCEPT</onMatch>
@@ -74,7 +74,7 @@
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <!-- rollover daily -->
             <!--日志的存档名-->
-            <fileNamePattern>../logs/app_warn-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <fileNamePattern>/data/logs/irs-res-bill/app_warn-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <!-- each file should be at most 100MB, keep 60 days worth of history, but at most 20GB -->
             <maxFileSize>100MB</maxFileSize>
             <maxHistory>30</maxHistory>
@@ -82,7 +82,7 @@
         </rollingPolicy>
     </appender>
     <appender name="Error_File" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>../logs/error.log</file>
+        <file>/data/logs/irs-res-bill/error.log</file>
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
             <level>ERROR</level>
             <onMatch>ACCEPT</onMatch>
@@ -95,7 +95,7 @@
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <!-- rollover daily -->
-            <fileNamePattern>../logs/app_error-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <fileNamePattern>/data/logs/irs-res-bill/app_error-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <!-- each file should be at most 100MB, keep 60 days worth of history, but at most 20GB -->
             <maxFileSize>100MB</maxFileSize>
             <maxHistory>30</maxHistory>
