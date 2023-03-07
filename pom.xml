@@ -89,6 +89,18 @@
                 <version>${shirocas.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>com.dtzhejiang</groupId>
+                <artifactId>user-center-client</artifactId>
+                <version>1.0.7-SNAPSHOT</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-openfeign</artifactId>
+                <version>3.0.3</version>
+            </dependency>
+
             <!-- third dependencies  End-->
         </dependencies>
     </dependencyManagement>

@@ -23,6 +23,12 @@ mybatis-plus:
 shiro:
   enabled: true
 
+
+feign:
+  userClientHost: http://59.202.44.204/cas
+  appKey: irs-res-bill
+  appSecret:
+
 workflow:
   api-url: http://{pro-slbIp}/flowable
   ak: fxn5oNYX

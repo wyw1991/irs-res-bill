@@ -7,10 +7,12 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.Locale;
 
 public class DateUtil {
 
     private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    public static final String DEFAULT_DATE_PATTERN_WITHOUT_HYPHEN = "yyyyMMdd";
     private static final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private static final DateTimeFormatter cnDateFormatter = DateTimeFormatter.ofPattern("yyyy年MM月dd日");
 
@@ -50,6 +52,18 @@ public class DateUtil {
             return null;
         }
         return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
+    }
+
+    public static Date toDate(LocalDateTime dateTime) {
+        return Date.from(dateTime.atZone(ZoneId.systemDefault()).toInstant());
+    }
+
+    public static String format(LocalDateTime dateTime, String pattern) {
+        return dateTime.format(formatter(pattern));
+    }
+
+    private static DateTimeFormatter formatter(String pattern) {
+        return DateTimeFormatter.ofPattern(pattern, Locale.CHINA);
     }
 
     public static LocalDate toLocalDate(Date date) {

@@ -37,10 +37,10 @@ public class ProcessGatewayImpl implements ProcessGateway {
 
 
     @Override
-    public ProcessInstance startProcess(String processKey, Long subReportId, Map<String, Object> variables) {
+    public ProcessInstance startProcess(String processKey, String businessKey, Map<String, Object> variables) {
         FlowInstanceRequest instanceRequest = FlowInstanceRequest.builder()
                 .processDefinitionKey(processKey)
-                .businessKey(String.valueOf(subReportId))
+                .businessKey(businessKey)
                 .variables(variables)
                 .build();
         log.info("starProcess,request:{}", JsonUtil.toJsonString(instanceRequest));
