@@ -55,7 +55,7 @@ public class ReportService {
         wrapper.eq(!ObjectUtils.isEmpty(pageQry.getApplicationStatus()), Report::getApplicationStatus,pageQry.getApplicationStatus());
         wrapper.eq(!ObjectUtils.isEmpty(pageQry.getLinkProject()), Report::isLinkProject,pageQry.getLinkProject());
         wrapper.eq(!ObjectUtils.isEmpty(pageQry.getField()), Report::getField,pageQry.getField());
-        wrapper.eq(!ObjectUtils.isEmpty(reportIdList), Report::getId,reportIdList);
+        wrapper.in(Report::getId,reportIdList==null?Arrays.asList(0):reportIdList);
         wrapper.eq(Report::isNewReport,true);//以最新一条为准
         //wrapper.orderBy(true,false, Report::getId);//按照ID倒序
         wrapper.groupBy(Report::getApplicationId);
@@ -66,15 +66,23 @@ public class ReportService {
 
     }
 
+    public List<Report> getList(String applicationId){
+        LambdaQueryWrapper<Report> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Report::getApplicationId,applicationId);
+        List<Report> list=mapper.selectList(wrapper);
+        list.forEach(f->f.setFailNum(subReportService.failList(new SubReportQry(f.getId())).getFailNum()));
+        return list;
+    }
 
     private List<Long> getReportIdList(ReportPageQry qry){
-        UserInfo userInfo=userGateway.getCurrentUser();
+        // todo 开启权限
+        //UserInfo userInfo=userGateway.getCurrentUser();
         SubReportQry subQry=new SubReportQry();
         BeanUtils.copyProperties(qry,subQry);
-        subQry.setUserName(userInfo.getUserName());
+        //subQry.setUserName(userInfo.getUserName());
         List<SubReport> list=subReportService.getList(subQry);
         if (CollectionUtils.isEmpty(list)) {
-            return new ArrayList<>();
+            return null;
         }else {
             return list.stream().map(SubReport::getReportId).distinct().collect(Collectors.toList());
         }
@@ -156,11 +164,7 @@ public class ReportService {
         reportRepository.saveOrUpdate(report);
         return report;
     }
-    public List<Report> getList(String applicationId){
-        LambdaQueryWrapper<Report> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(Report::getApplicationId,applicationId);
-        return mapper.selectList(wrapper);
-    }
+
     public Report getReport(Long reportId){
         return reportRepository.getById(reportId);
     }

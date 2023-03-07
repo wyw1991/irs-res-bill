@@ -2,11 +2,11 @@ spring:
   datasource:
     url: jdbc:mysql://59.202.48.91:3336/irs-res-bill?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai
     username: irs_res_bill
-    password: SM4[793fba22c58be0b357d18479ea727a7ba54e24449616549fef5f379c98f39ef8]
+    password: 40ES9k1mT8IrLzl^ov%g
   redis:
     host: 59.202.48.91
     port: 6379
-    password: SM4[216ee52010e61a7ec79d9af129357b52]
+    password: Da(#Hfl0Sy
     timeout: 20000
     database: 1
     lettuce:

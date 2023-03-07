@@ -40,7 +40,7 @@ public class ReportController {
      * @param applicationId 应用ID
      */
     @GetMapping("/list")
-    public MultiResponse<Report> aggRegister(String applicationId) {
+    public MultiResponse<Report> appRegister(String applicationId) {
         return MultiResponse.of(service.getList(applicationId));
     }
 
