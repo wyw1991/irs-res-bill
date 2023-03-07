@@ -30,10 +30,6 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>com.dtzj.basicservice.cedt</groupId>
-            <artifactId>config-smart-decrypt-spring-boot-starter</artifactId>
-        </dependency>
     </dependencies>
 
     <build>

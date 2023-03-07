@@ -4,7 +4,7 @@ spring:
     username: irs_res_bill
     password: SM4[793fba22c58be0b357d18479ea727a7ba54e24449616549fef5f379c98f39ef8]
   redis:
-    host: 59.202.48.91
+    host: r-vy26ed4485bab654.redis.rds.cloud-inner.zj.gov.cn
     port: 6379
     password: SM4[216ee52010e61a7ec79d9af129357b52]
     timeout: 20000
