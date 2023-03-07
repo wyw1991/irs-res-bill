@@ -20,8 +20,10 @@ mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
+shiro:
+  enabled: true
 
 workflow:
-  api-url: http://59.202.44.204/flowable
+  api-url: http://{pro-slbIp}/flowable
   ak: fxn5oNYX
   sk: 9066746a00b0fb0ce16a935413684a2a
