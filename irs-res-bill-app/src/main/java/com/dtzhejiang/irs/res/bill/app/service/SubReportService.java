@@ -9,10 +9,13 @@ import com.dtzhejiang.irs.res.bill.common.enums.OperationResultsStatusEnum;
 import com.dtzhejiang.irs.res.bill.common.enums.StatusEnum;
 import com.dtzhejiang.irs.res.bill.common.enums.SubStatusEnum;
 import com.dtzhejiang.irs.res.bill.common.enums.SubTypeEnum;
+import com.dtzhejiang.irs.res.bill.domain.exception.BusinessException;
 import com.dtzhejiang.irs.res.bill.domain.model.AppInfo;
 import com.dtzhejiang.irs.res.bill.domain.model.HisIndices;
 import com.dtzhejiang.irs.res.bill.domain.model.Report;
 import com.dtzhejiang.irs.res.bill.domain.model.SubReport;
+import com.dtzhejiang.irs.res.bill.domain.user.gateway.UserGateway;
+import com.dtzhejiang.irs.res.bill.domain.user.valueobject.UserInfo;
 import com.dtzhejiang.irs.res.bill.infra.mapper.SubReportMapper;
 import com.dtzhejiang.irs.res.bill.infra.repository.ReportRepository;
 import com.dtzhejiang.irs.res.bill.infra.repository.SubReportRepository;
@@ -39,13 +42,22 @@ public class SubReportService {
     @Autowired
     private ReportService reportService;
     @Autowired
+    private UserGateway userGateway;
+
+    @Autowired
     private SubReportRepository subReportRepository;
 
     public SubReportDTO getSubReportDTO(SubReportQry qry){
+        UserInfo userInfo=userGateway.getCurrentUser();
         SubReportDTO dto=new SubReportDTO();
         LambdaQueryWrapper<SubReport> wrapper = new LambdaQueryWrapper<>();
+        if (qry.getReportId()== null) {
+            throw new BusinessException("reportId不能为空！");
+        }
         wrapper.eq(!ObjectUtils.isEmpty(qry.getSubType()), SubReport::getSubType,qry.getSubType());
         wrapper.eq(!ObjectUtils.isEmpty(qry.getReportId()), SubReport::getReportId,qry.getReportId());
+        //默认需要进行权限控制
+        wrapper.in(qry.getPermission(),SubReport::getSubType,userInfo.getPermissionList());
         wrapper.orderBy(true,true, SubReport::getId);//按照id正序
         SubReport subReport=mapper.selectOne(wrapper);
         dto.setSubReport(subReport);
@@ -53,21 +65,33 @@ public class SubReportService {
         return dto;
     }
 
-    public List<SubReport> getList (Long reportId,String subType){
+    public List<SubReport> getList (SubReportQry qry){
+        UserInfo userInfo=userGateway.getCurrentUser();
         LambdaQueryWrapper<SubReport> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(!ObjectUtils.isEmpty(subType), SubReport::getSubType,subType);
-        wrapper.eq(!ObjectUtils.isEmpty(reportId), SubReport::getReportId,reportId);
-        wrapper.orderBy(true,true, SubReport::getId);//按照id正序
+        wrapper.eq(!ObjectUtils.isEmpty(qry.getSubType()), SubReport::getSubType,qry.getSubType());
+        wrapper.eq(!ObjectUtils.isEmpty(qry.getReportId()), SubReport::getReportId,qry.getReportId());
+        //默认需要进行权限控制
+        wrapper.in(qry.getPermission(),SubReport::getSubType,userInfo.getPermissionList());
+        if(qry.getMyAudit()){
+            //已审核列表
+            wrapper.like(SubReport::getHistoryHandler,"<"+qry.getUserName()+">-"+qry.getCurrentRole());
+        }else{
+            //待审核列表
+            wrapper.eq(!ObjectUtils.isEmpty(qry.getCurrentRole()), SubReport::getCurrentRole,qry.getCurrentRole());
+        }
+        wrapper.orderBy(true,false, SubReport::getUpdateTime);//按照更新时间倒序
         return mapper.selectList(wrapper);
     }
 
 
 
-    public SubReportFailDTO failList(Long reportId){
+    public SubReportFailDTO failList(SubReportQry qry){
+        UserInfo userInfo=userGateway.getCurrentUser();
         SubReportFailDTO dto = new SubReportFailDTO();
         LambdaQueryWrapper<SubReport> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(!ObjectUtils.isEmpty(reportId), SubReport::getReportId,reportId);
-        //wrapper.ne(SubReport::getOperationResultsStatus, OperationResultsStatusEnum.SUCCESS);
+        wrapper.eq(!ObjectUtils.isEmpty(qry.getReportId()), SubReport::getReportId,qry.getReportId());
+        //默认需要进行权限控制
+        wrapper.in(qry.getPermission(),SubReport::getSubType,userInfo.getPermissionList());
         List<SubReport> list=mapper.selectList(wrapper);
         dto.setApplicationSupport(convert(list,SubTypeEnum.APPLICATION_SUPPORT));
         dto.setOperation(convert(list,SubTypeEnum.OPERATION));
@@ -112,7 +136,9 @@ public class SubReportService {
      * @param reportId
      */
     public void submitSubReport(Long reportId){
-        List<SubReport> list=getList(reportId,null);
+        SubReportQry qry=new SubReportQry();
+        qry.setReportId(reportId);
+        List<SubReport> list=getList(qry);
         //todo 提交流程
     }
 
@@ -133,9 +159,6 @@ public class SubReportService {
             save(subReport);
             indicesService.saveHisIndices(subReport.getId(),f,info);
         });
-        //更新不合格数
-        Long failNum=failList(reportId).getFailNum();
-        report.setFailNum(failNum);
         reportService.saveOrUpdate(report);
     }
 

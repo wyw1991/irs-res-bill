@@ -32,6 +32,10 @@ public class IndexConfig {
      * 指标编码
      */
     private String indexCode;
+    /**
+     * 指标状态类型
+     */
+    private String indexStatusType;
 
     /**
      * 指标单位

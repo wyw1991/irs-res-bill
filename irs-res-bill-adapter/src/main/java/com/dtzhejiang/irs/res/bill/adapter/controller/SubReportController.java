@@ -20,12 +20,12 @@ public class SubReportController {
 
     /**
      * 异常结果汇总
-     * @param reportId 子报告IDs
+     * @param qry
      */
     @GetMapping("/fail/list")
-    public SingleResponse<SubReportFailDTO> failList(@NonNull Long reportId) {
+    public SingleResponse<SubReportFailDTO> failList(@RequestBody SubReportQry qry) {
 
-        return SingleResponse.of(subReportService.failList(reportId));
+        return SingleResponse.of(subReportService.failList(qry));
     }
 
     /**

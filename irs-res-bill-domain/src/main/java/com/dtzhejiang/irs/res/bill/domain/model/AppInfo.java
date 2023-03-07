@@ -258,5 +258,35 @@ public class AppInfo {
      */
     private String applyInvokeQuantity;
 
+    /**
+     * 项目编码
+     */
+    private String projectId;
+    /**
+     * 项目名称
+     */
+    private String projectName;
+
+    /**
+     * 应用建设单位
+     */
+    private String appBuildOrg;
+    /**
+     * 应用管理员
+     */
+    private String appAdmin;
+    /**
+     * 上线时间
+     */
+    private Date onlineTime;
+    /**
+     * 统建范围
+     */
+    private String areaRange;
+    /**
+     * 访问地址
+     */
+    private String appUrl;
+
 
 }

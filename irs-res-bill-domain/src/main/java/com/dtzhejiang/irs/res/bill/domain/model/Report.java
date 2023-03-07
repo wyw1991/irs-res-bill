@@ -1,6 +1,7 @@
 package com.dtzhejiang.irs.res.bill.domain.model;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.dtzhejiang.irs.res.bill.common.enums.*;
@@ -78,6 +79,7 @@ public class Report {
     /**
      * 问题数
      */
+    @TableField(exist = false)
     private Long failNum;
 
     /**

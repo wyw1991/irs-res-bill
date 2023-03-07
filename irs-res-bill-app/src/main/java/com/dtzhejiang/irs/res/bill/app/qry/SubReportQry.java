@@ -7,7 +7,6 @@ import lombok.NonNull;
 @Data
 public class SubReportQry {
 
-
     /**
      * 子报告类型： BUSINESS_APPLICATION-业务应用,NETWORK_SECURITY-网络安全,OPERATION-运行情况,APPLICATION_SUPPORT-应用支撑,DATA_RESOURCES-数据资源,BASIC_FACILITIES-基层设施
      */
@@ -17,7 +16,26 @@ public class SubReportQry {
     /**
      * 主报告ID
      */
-    @NonNull
     private Long reportId;
+
+    /**
+     * 当前处理角色
+     */
+    private String currentRole;
+
+    /**
+     * 是否已审核列表：true:是、false:否；默认否
+     */
+    private Boolean myAudit=false;
+
+    /**
+     * 用户
+     */
+    private String userName;
+
+    /**
+     * 是否过滤权限 默认是
+     */
+    private Boolean permission=true;
 
 }

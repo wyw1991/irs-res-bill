@@ -40,11 +40,6 @@ public class SubReport {
     private SubStatusEnum subStatus;
 
     /**
-     * 审批人IDS
-     */
-    private String auditIds;
-
-    /**
      * 备注
      */
     private String remark;
