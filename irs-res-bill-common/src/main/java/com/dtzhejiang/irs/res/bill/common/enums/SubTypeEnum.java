@@ -1,7 +1,5 @@
 package com.dtzhejiang.irs.res.bill.common.enums;
 
-import java.util.List;
-
 /**
  * 子报告类型
  **/
@@ -12,7 +10,7 @@ public enum SubTypeEnum {
     OPERATION("OPERATION", "运行情况"),
     APPLICATION_SUPPORT("WEIBO_OR_WECHAT_ACCOUNT", "应用支撑"),
     DATA_RESOURCES("DATA_RESOURCES", "数据资源"),
-    BASIC_FACILITIES("TBASIC_FACILITIESOOL", "基层设施"),
+    BASIC_FACILITIES("BASIC_FACILITIES", "基层设施"),
     ;
 
 

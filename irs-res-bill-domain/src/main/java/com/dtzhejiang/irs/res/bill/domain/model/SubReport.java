@@ -30,6 +30,11 @@ public class SubReport {
     private String name;
 
     /**
+     * 子报告编号（用于流程引擎侧关联）
+     */
+    private String subNo;
+
+    /**
      * 子报告类型: BUSINESS_APPLICATION-业务应用,NETWORK_SECURITY-网络安全,OPERATION-运行情况,APPLICATION_SUPPORT-应用支撑,DATA_RESOURCES-数据资源,BASIC_FACILITIES-基层设施
      */
     private SubTypeEnum subType;

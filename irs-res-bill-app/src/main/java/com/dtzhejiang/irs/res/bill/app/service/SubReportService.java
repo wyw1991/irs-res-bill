@@ -2,6 +2,8 @@ package com.dtzhejiang.irs.res.bill.app.service;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.dtzhejiang.irs.res.bill.app.command.cmd.StartProcessCmd;
+import com.dtzhejiang.irs.res.bill.app.command.handler.ProcessCommandHandler;
 import com.dtzhejiang.irs.res.bill.app.dto.SubReportDTO;
 import com.dtzhejiang.irs.res.bill.app.dto.SubReportFailDTO;
 import com.dtzhejiang.irs.res.bill.app.qry.SubReportQry;
@@ -14,11 +16,14 @@ import com.dtzhejiang.irs.res.bill.domain.model.AppInfo;
 import com.dtzhejiang.irs.res.bill.domain.model.HisIndices;
 import com.dtzhejiang.irs.res.bill.domain.model.Report;
 import com.dtzhejiang.irs.res.bill.domain.model.SubReport;
+import com.dtzhejiang.irs.res.bill.domain.process.gateway.ProcessGateway;
+import com.dtzhejiang.irs.res.bill.domain.subreport.SubReportNoGateway;
 import com.dtzhejiang.irs.res.bill.domain.user.gateway.UserGateway;
 import com.dtzhejiang.irs.res.bill.domain.user.valueobject.UserInfo;
 import com.dtzhejiang.irs.res.bill.infra.mapper.SubReportMapper;
 import com.dtzhejiang.irs.res.bill.infra.repository.ReportRepository;
 import com.dtzhejiang.irs.res.bill.infra.repository.SubReportRepository;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -27,6 +32,7 @@ import org.springframework.util.ObjectUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 
@@ -41,6 +47,10 @@ public class SubReportService {
     private AppInfoService appInfoService;
     @Autowired
     private ReportService reportService;
+    @Autowired
+    private SubReportNoGateway subReportNoGateway;
+    @Autowired
+    private ProcessCommandHandler processCommandHandler;
     @Autowired
     private UserGateway userGateway;
 
@@ -144,7 +154,13 @@ public class SubReportService {
         SubReportQry qry=new SubReportQry();
         qry.setReportId(reportId);
         List<SubReport> list=getList(qry);
-        //todo 提交流程
+        list.forEach(subReport -> {
+            StartProcessCmd cmd = StartProcessCmd.builder()
+                    .processKey(subReport.getSubType().getCode().toLowerCase(Locale.ROOT) + "-process")
+                    .businessKey(subReport.getSubNo())
+                    .build();
+            processCommandHandler.start(cmd);
+        });
     }
 
 
@@ -158,6 +174,8 @@ public class SubReportService {
         Arrays.stream(SubTypeEnum.values()).forEach(f->{
             SubReport subReport=new SubReport();
             subReport.setReportId(reportId);
+            // 新增编号
+            subReport.setSubNo(subReportNoGateway.getSubReportNo());
             subReport.setSubType(f);
             subReport.setName(f.getName());
             subReport.setSubStatus(SubStatusEnum.UN_SUBMIT);
