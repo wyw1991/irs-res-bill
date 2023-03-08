@@ -69,7 +69,7 @@ public class AppInfo {
     private FieldEnum field;
 
     /**
-     * 规范上云 
+     * 规范上云
      */
     private String basicStatus;
 
@@ -79,27 +79,27 @@ public class AppInfo {
     private String complianceUse;
 
     /**
-     * 目录归集数据总量 
+     * 目录归集数据总量
      */
     private String dataGatherCount;
 
     /**
-     * 云资源总数 
+     * 云资源总数
      */
     private String cloudSum;
 
     /**
-     * CPU平均利用率 
+     * CPU平均利用率
      */
     private String cpuAvg;
 
     /**
-     * 硬盘平均利用率 
+     * 硬盘平均利用率
      */
     private String ioAvg;
 
     /**
-     * 内存平均利用率 
+     * 内存平均利用率
      */
     private String memAvg;
 
@@ -109,37 +109,37 @@ public class AppInfo {
     private String dataCatalog;
 
     /**
-     * 数据按需归集 
+     * 数据按需归集
      */
     private String dataGather;
 
     /**
-     * 数据编目数量 
+     * 数据编目数量
      */
     private String dataCatalogQuantity;
 
     /**
-     * 已归集目录数量 
+     * 已归集目录数量
      */
     private String dataGatherQuantity;
 
     /**
-     * 批量数据申请数量 
+     * 批量数据申请数量
      */
     private String batchDataApply;
 
     /**
-     * 接口申请数量 
+     * 接口申请数量
      */
     private String apiApplyQuantity;
 
     /**
-     * 接口调用数量 
+     * 接口调用数量
      */
     private String apiInvokeQuantity;
 
     /**
-     * 统一组件规范使用 
+     * 统一组件规范使用
      */
     private String appStatus;
 
@@ -149,22 +149,22 @@ public class AppInfo {
     private String decoupling;
 
     /**
-     * 注册组件量 
+     * 注册组件量
      */
     private String registerComponent;
 
     /**
-     * 注册组件申请量 
+     * 注册组件申请量
      */
     private String registerComponentApplyQuantity;
 
     /**
-     * 统一组件申请量 
+     * 统一组件申请量
      */
     private String unifyComponentApplyQuantity;
 
     /**
-     * 统一组件调用量 
+     * 统一组件调用量
      */
     private String unifyComponentInvokeQuantity;
 
@@ -179,77 +179,77 @@ public class AppInfo {
     private String serverPublish;
 
     /**
-     * 浙里办发布数 
+     * 浙里办发布数
      */
     private String zlbPub;
 
     /**
-     * 浙里办月访问量 
+     * 浙里办月访问量
      */
     private String zlbPv;
 
     /**
-     * 浙里办用户数 
+     * 浙里办用户数
      */
     private String zlbUser;
 
     /**
-     * 浙政钉发布数 
+     * 浙政钉发布数
      */
     private String zzdPub;
 
     /**
-     * 浙政钉月访问量 
+     * 浙政钉月访问量
      */
     private String zzdPv;
 
     /**
-     * 浙政钉用户数 
+     * 浙政钉用户数
      */
     private String zzdUser;
 
     /**
-     * 市县贯通情况 
+     * 市县贯通情况
      */
     private String regionConnect;
 
     /**
-     * ISV规范登记 
+     * ISV规范登记
      */
     private String isvPermit;
 
     /**
-     * 通过代码检测 
+     * 通过代码检测
      */
     private String codeCheck;
 
     /**
-     * 通过等保评测 
+     * 通过等保评测
      */
     private String securityProtect;
 
     /**
-     * 通过密码评测 
+     * 通过密码评测
      */
     private String secretCheck;
 
     /**
-     * 是否业务协同 
+     * 是否业务协同
      */
     private String coordination;
 
     /**
-     * 协同接口注册量 
+     * 协同接口注册量
      */
     private String registQuantity;
 
     /**
-     * 注册协同接口调用量 
+     * 注册协同接口调用量
      */
     private String invokeQuantity;
 
     /**
-     * 协同接口申请量 
+     * 协同接口申请量
      */
     private String applyQuantity;
 
@@ -271,6 +271,10 @@ public class AppInfo {
      * 应用建设单位
      */
     private String appBuildOrg;
+    /**
+     * 应用管理员id
+     */
+    private String appAdminId;
     /**
      * 应用管理员
      */
