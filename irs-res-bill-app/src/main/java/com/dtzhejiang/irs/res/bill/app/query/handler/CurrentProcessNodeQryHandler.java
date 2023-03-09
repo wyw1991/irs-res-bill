@@ -11,9 +11,11 @@ import com.dtzhejiang.irs.res.bill.domain.user.gateway.UserGateway;
 import com.dtzhejiang.irs.res.bill.domain.user.valueobject.UserInfo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.function.Function;
 
+@Component
 public class CurrentProcessNodeQryHandler implements Function<String, SingleResponse<ProcessNodeDTO>> {
 
     @Autowired
