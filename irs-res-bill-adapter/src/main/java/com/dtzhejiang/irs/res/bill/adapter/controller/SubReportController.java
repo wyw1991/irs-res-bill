@@ -1,5 +1,6 @@
 package com.dtzhejiang.irs.res.bill.adapter.controller;
 
+import com.dtzhejiang.irs.res.bill.app.command.cmd.SubReportSingleSubmitCmd;
 import com.dtzhejiang.irs.res.bill.app.dto.SubReportDTO;
 import com.dtzhejiang.irs.res.bill.app.service.SubReportService;
 import com.dtzhejiang.irs.res.bill.common.dto.MultiResponse;
@@ -51,6 +52,15 @@ public class SubReportController {
     @GetMapping("/submit")
     public SingleResponse createSubReport(@NonNull Long reportId) {
         subReportService.submitSubReport(reportId);
+        return SingleResponse.buildSuccess();
+    }
+
+    /**
+     * 详情页-提交
+     */
+    @PostMapping("/single/submit")
+    public SingleResponse submitSubReport(@RequestBody SubReportSingleSubmitCmd cmd) {
+        subReportService.submitSingleSubReport(cmd);
         return SingleResponse.buildSuccess();
     }
 

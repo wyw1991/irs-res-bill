@@ -3,10 +3,10 @@ package com.dtzhejiang.irs.res.bill.app.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.dtzhejiang.irs.res.bill.app.command.cmd.StartProcessCmd;
+import com.dtzhejiang.irs.res.bill.app.command.cmd.SubReportSingleSubmitCmd;
 import com.dtzhejiang.irs.res.bill.app.command.handler.ProcessCommandHandler;
 import com.dtzhejiang.irs.res.bill.app.dto.SubReportDTO;
 import com.dtzhejiang.irs.res.bill.app.dto.SubReportFailDTO;
-import com.dtzhejiang.irs.res.bill.app.qry.ReportPageQry;
 import com.dtzhejiang.irs.res.bill.app.qry.SubReportQry;
 import com.dtzhejiang.irs.res.bill.common.enums.*;
 import com.dtzhejiang.irs.res.bill.domain.exception.BusinessException;
@@ -14,15 +14,11 @@ import com.dtzhejiang.irs.res.bill.domain.model.AppInfo;
 import com.dtzhejiang.irs.res.bill.domain.model.HisIndices;
 import com.dtzhejiang.irs.res.bill.domain.model.Report;
 import com.dtzhejiang.irs.res.bill.domain.model.SubReport;
-import com.dtzhejiang.irs.res.bill.domain.process.gateway.ProcessGateway;
 import com.dtzhejiang.irs.res.bill.domain.subreport.SubReportNoGateway;
 import com.dtzhejiang.irs.res.bill.domain.user.gateway.UserGateway;
 import com.dtzhejiang.irs.res.bill.domain.user.valueobject.UserInfo;
 import com.dtzhejiang.irs.res.bill.infra.mapper.SubReportMapper;
-import com.dtzhejiang.irs.res.bill.infra.repository.ReportRepository;
 import com.dtzhejiang.irs.res.bill.infra.repository.SubReportRepository;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -166,6 +162,17 @@ public class SubReportService {
                     .build();
             processCommandHandler.start(cmd);
         });
+    }
+
+    /**
+     * 详情页提交
+     */
+    public void submitSingleSubReport(SubReportSingleSubmitCmd cmd){
+        SubReport subReport = subReportRepository.getById(cmd.getSubReportId());
+        if(subReport == null){
+            throw new BusinessException("404", "子报告不存在");
+        }
+        processCommandHandler.complete(subReport.getTaskId(), cmd.getVariable());
     }
 
 
