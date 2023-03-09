@@ -3,32 +3,25 @@ package com.dtzhejiang.irs.res.bill.app.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.dtzhejiang.irs.res.bill.app.qry.SubReportQry;
+import com.dtzhejiang.irs.res.bill.app.query.qry.SubReportQry;
 import com.dtzhejiang.irs.res.bill.common.dto.PageResponse;
 import com.dtzhejiang.irs.res.bill.common.enums.ApplicationStatusEnum;
 import com.dtzhejiang.irs.res.bill.common.enums.StatusEnum;
 import com.dtzhejiang.irs.res.bill.domain.exception.BusinessException;
-import com.dtzhejiang.irs.res.bill.domain.model.AppInfo;
 import com.dtzhejiang.irs.res.bill.domain.model.Report;
-import com.dtzhejiang.irs.res.bill.domain.model.Report;
-import com.dtzhejiang.irs.res.bill.domain.model.SubReport;
 import com.dtzhejiang.irs.res.bill.domain.user.gateway.UserGateway;
 import com.dtzhejiang.irs.res.bill.domain.user.valueobject.UserInfo;
 import com.dtzhejiang.irs.res.bill.infra.mapper.ReportMapper;
 import com.dtzhejiang.irs.res.bill.infra.repository.ReportRepository;
 import com.dtzhejiang.irs.res.bill.infra.util.PageUtilPlus;
-import com.dtzhejiang.irs.res.bill.app.qry.ReportPageQry;
-import org.springframework.beans.BeanUtils;
+import com.dtzhejiang.irs.res.bill.app.query.qry.ReportPageQry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Component

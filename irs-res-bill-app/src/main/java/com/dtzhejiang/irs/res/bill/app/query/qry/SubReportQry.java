@@ -1,4 +1,4 @@
-package com.dtzhejiang.irs.res.bill.app.qry;
+package com.dtzhejiang.irs.res.bill.app.query.qry;
 
 
 import com.dtzhejiang.irs.res.bill.common.enums.BillPermissionEnum;

@@ -1,4 +1,4 @@
-package com.dtzhejiang.irs.res.bill.app.qry;
+package com.dtzhejiang.irs.res.bill.app.query.qry;
 
 
 import com.dtzhejiang.irs.res.bill.common.dto.PageQuery;
@@ -6,8 +6,6 @@ import com.dtzhejiang.irs.res.bill.common.enums.*;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
-
-import java.util.List;
 
 @Getter
 @Setter

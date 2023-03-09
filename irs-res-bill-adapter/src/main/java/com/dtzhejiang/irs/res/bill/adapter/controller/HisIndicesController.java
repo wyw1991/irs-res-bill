@@ -1,13 +1,8 @@
 package com.dtzhejiang.irs.res.bill.adapter.controller;
 
-import com.dtzhejiang.irs.res.bill.app.dto.SubReportDTO;
-import com.dtzhejiang.irs.res.bill.app.dto.SubReportFailDTO;
-import com.dtzhejiang.irs.res.bill.app.qry.SubReportQry;
 import com.dtzhejiang.irs.res.bill.app.service.HisIndicesService;
-import com.dtzhejiang.irs.res.bill.app.service.SubReportService;
 import com.dtzhejiang.irs.res.bill.common.dto.SingleResponse;
 import com.dtzhejiang.irs.res.bill.domain.model.HisIndices;
-import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

@@ -7,7 +7,7 @@ import com.dtzhejiang.irs.res.bill.app.command.cmd.SubReportSingleSubmitCmd;
 import com.dtzhejiang.irs.res.bill.app.command.handler.ProcessCommandHandler;
 import com.dtzhejiang.irs.res.bill.app.dto.SubReportDTO;
 import com.dtzhejiang.irs.res.bill.app.dto.SubReportFailDTO;
-import com.dtzhejiang.irs.res.bill.app.qry.SubReportQry;
+import com.dtzhejiang.irs.res.bill.app.query.qry.SubReportQry;
 import com.dtzhejiang.irs.res.bill.common.enums.*;
 import com.dtzhejiang.irs.res.bill.domain.exception.BusinessException;
 import com.dtzhejiang.irs.res.bill.domain.model.AppInfo;

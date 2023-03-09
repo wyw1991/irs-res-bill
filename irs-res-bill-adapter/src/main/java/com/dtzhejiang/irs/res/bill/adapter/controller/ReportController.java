@@ -1,12 +1,11 @@
 package com.dtzhejiang.irs.res.bill.adapter.controller;
 
-import com.dtzhejiang.irs.res.bill.app.qry.SubReportQry;
 import com.dtzhejiang.irs.res.bill.common.dto.MultiResponse;
 import com.dtzhejiang.irs.res.bill.common.dto.SingleResponse;
 import com.dtzhejiang.irs.res.bill.domain.model.Report;
 import com.dtzhejiang.irs.res.bill.common.dto.PageResponse;
 import com.dtzhejiang.irs.res.bill.common.dto.Response;
-import com.dtzhejiang.irs.res.bill.app.qry.ReportPageQry;
+import com.dtzhejiang.irs.res.bill.app.query.qry.ReportPageQry;
 import com.dtzhejiang.irs.res.bill.app.service.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

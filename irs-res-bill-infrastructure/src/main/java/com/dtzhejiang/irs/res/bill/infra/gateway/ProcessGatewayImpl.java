@@ -6,12 +6,16 @@ import com.dtflys.forest.utils.TypeReference;
 import com.dtzhejiang.irs.res.bill.common.util.JsonUtil;
 import com.dtzhejiang.irs.res.bill.domain.exception.BusinessException;
 import com.dtzhejiang.irs.res.bill.domain.process.gateway.ProcessGateway;
+import com.dtzhejiang.irs.res.bill.domain.process.valueobject.Operation;
 import com.dtzhejiang.irs.res.bill.domain.process.valueobject.ProcessInstance;
+import com.dtzhejiang.irs.res.bill.domain.process.valueobject.ProcessLog;
+import com.dtzhejiang.irs.res.bill.domain.process.valueobject.ProcessTask;
 import com.dtzhejiang.irs.res.bill.domain.user.gateway.UserGateway;
 import com.dtzhejiang.irs.res.bill.domain.user.valueobject.UserInfo;
 import com.dtzhejiang.irs.res.bill.infra.config.WorkflowConfig;
 import com.dtzhejiang.irs.res.bill.infra.gateway.req.FlowInstanceRequest;
 import com.dtzhejiang.irs.res.bill.infra.gateway.resp.ProcessInstanceResp;
+import com.dtzhejiang.irs.res.bill.infra.gateway.resp.TaskResp;
 import com.dtzhejiang.irs.res.bill.infra.gateway.resp.WorkflowResp;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +24,7 @@ import org.springframework.util.Base64Utils;
 
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -62,9 +67,9 @@ public class ProcessGatewayImpl implements ProcessGateway {
     }
 
     @Override
-    public void completeProcessTask(String processTaskId, Map<String, Object> variables, String username) {
+    public void completeProcessTask(String taskId, Map<String, Object> variables, String username) {
         Map<String, Object> requestBody = new HashMap<>();
-        requestBody.put("taskId", processTaskId);
+        requestBody.put("taskId", taskId);
         requestBody.put("variables", variables);
         log.info("completeProcessTask,request:{}", JsonUtil.toJsonString(requestBody));
         WorkflowResp<?> completeTaskResp = Forest.post(workflowConfig.getApiUrl() + COMPLETE_TASK_API_URI)
@@ -75,6 +80,56 @@ public class ProcessGatewayImpl implements ProcessGateway {
         if (!completeTaskResp.getSuccess()) {
             throw new BusinessException("任务处理失败", completeTaskResp.getMsg());
         }
+    }
+
+    @Override
+    public ProcessTask getCurrentProcessTask(String processId, String username) {
+        log.info("getCurrentTask,processId:{}",processId);
+        WorkflowResp<TaskResp> currentTaskResp = Forest.get(workflowConfig.getApiUrl() + "/task/current")
+                .addHeader("Authorization", buildBasicCredentials(username))
+                .addQuery("processInstanceId",processId)
+                .execute(new TypeReference<WorkflowResp<TaskResp>>() {});
+        log.info("getCurrentTask,response:{}",JsonUtil.toJsonString(currentTaskResp));
+        TaskResp taskResp = currentTaskResp.getData();
+        if(taskResp == null) {
+            return null;
+        }
+        return ProcessTask.builder()
+                .id(taskResp.getId())
+                .processId(taskResp.getProcessInstanceId())
+                .name(taskResp.getName())
+                .category(taskResp.getCategory())
+                .currentHandler(taskResp.getAssignee())
+                .currentHandlerName(taskResp.getAssigneeName())
+                .currentGroups(taskResp.getGroups())
+                .currentGroupNames(taskResp.getGroupNames())
+                .build();
+    }
+
+    @Override
+    public Operation getCurrentOperation(String processId, String username) {
+        log.info("getCurrentOperation,processId:{},username:{}",processId,username);
+        WorkflowResp<Operation> getCurrentOperationResp = Forest.get(workflowConfig.getApiUrl() + "/processInstance/currentOperation")
+                .addHeader("Authorization", buildBasicCredentials(username))
+                .addQuery("processInstanceId",processId)
+                .execute(new TypeReference<WorkflowResp<Operation>>() {});
+        log.info("getCurrentOperation,response:{}",JsonUtil.toJsonString(getCurrentOperationResp));
+        return getCurrentOperationResp.getData();
+    }
+
+    @Override
+    public List<ProcessLog> listProcessLogs(String processId, String username) {
+        log.info("listProcessLogs,processId:{},username:{}",processId,username);
+        WorkflowResp<List<ProcessLog>> resp = Forest.get(workflowConfig.getApiUrl() + "/processInstance/logs")
+                .addHeader("Authorization", buildBasicCredentials(username))
+                .addQuery("processInstanceId",processId)
+                .execute(new TypeReference<WorkflowResp<List<ProcessLog>>>() {
+                });
+        log.info("getCurrentOperation,response:{}",JsonUtil.toJsonString(resp));
+        if(!resp.getSuccess()) {
+            throw new BusinessException(resp.getCode(),resp.getMsg());
+        }
+        return resp.getData();
     }
 
 
