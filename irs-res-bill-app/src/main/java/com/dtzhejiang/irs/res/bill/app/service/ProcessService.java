@@ -1,6 +1,7 @@
 package com.dtzhejiang.irs.res.bill.app.service;
 
 
+import com.dtzhejiang.irs.res.bill.app.command.handler.CompleteSubReportCmdHandler;
 import com.dtzhejiang.irs.res.bill.app.dto.OperateLogDTO;
 import com.dtzhejiang.irs.res.bill.app.dto.ProcessNodeDTO;
 import com.dtzhejiang.irs.res.bill.app.query.handler.CurrentProcessNodeQryHandler;
@@ -19,6 +20,9 @@ public class ProcessService {
 
     @Autowired
     private CurrentProcessNodeQryHandler currentProcessNodeQryHandler;
+
+    @Autowired
+    private CompleteSubReportCmdHandler completeProcessTaskCmdHandler;
 
 
     public MultiResponse<OperateLogDTO> listProcessLogs(String processId) {

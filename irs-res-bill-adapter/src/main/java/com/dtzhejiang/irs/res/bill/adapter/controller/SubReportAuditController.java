@@ -1,8 +1,14 @@
 package com.dtzhejiang.irs.res.bill.adapter.controller;
 
+import com.dtzhejiang.irs.res.bill.app.command.cmd.CompleteReportCmd;
+import com.dtzhejiang.irs.res.bill.app.command.cmd.CompleteSubReportCmd;
+import com.dtzhejiang.irs.res.bill.app.service.SubReportAuditService;
+import com.dtzhejiang.irs.res.bill.common.dto.Response;
 import com.dtzhejiang.irs.res.bill.common.dto.SingleResponse;
 import org.apache.shiro.authz.annotation.RequiresRoles;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -13,44 +19,36 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/sub/report/audit")
 public class SubReportAuditController {
 
+    @Autowired
+    private SubReportAuditService subReportAuditService;
+
     /**
-     * 单个审核(通过)
+     * 操作子报告(通过/驳回)
      */
-    @PostMapping("/agree")
-    public SingleResponse agree() {
-        return SingleResponse.buildSuccess();
+    @PostMapping("/complete/subReport")
+    public Response completeSubReport(@RequestBody CompleteSubReportCmd cmd){
+        return subReportAuditService.completeSubReport(cmd);
     }
 
     /**
-     * 单个审核(驳回)
+     * 操作主报告(通过/驳回)
      */
-    @PostMapping("/backoff")
-    public SingleResponse backoff() {
-        return SingleResponse.buildSuccess();
+    @PostMapping("/complete/report")
+    public Response completeReport(@RequestBody CompleteReportCmd cmd){
+        return subReportAuditService.completeReport(cmd);
     }
 
     /**
-     * 全部通过
+     * 业务终审全部通过
      */
-    @RequiresRoles(value = {"irs-res-bill_business_leader", "irs-res-bill_compliance_confirm", "irs-res-bill_compliance_leader"})
     @PostMapping("/allAgree")
     public SingleResponse allAgree() {
         return SingleResponse.buildSuccess();
     }
 
     /**
-     * 全部退回
+     * 业务终审部分退回
      */
-    @RequiresRoles(value = {"irs-res-bill_compliance_confirm", "irs-res-bill_compliance_leader"})
-    @PostMapping("/allBackoff")
-    public SingleResponse allbackoff() {
-        return SingleResponse.buildSuccess();
-    }
-
-    /**
-     * 部分退回
-     */
-    @RequiresRoles(value = {"irs-res-bill_business_leader"})
     @PostMapping("/someBackoff")
     public SingleResponse someBackoff() {
         return SingleResponse.buildSuccess();
