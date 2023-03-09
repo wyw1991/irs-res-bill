@@ -207,7 +207,21 @@ public class SubReportService {
         return dto;
     }
 
-
+    /**
+     * dtoList转换(增加his数据)
+     * @param list
+     * @return
+     */
+    public List<SubReportDTO> convertToList(List<SubReport> list){
+        List<SubReportDTO> dtoList=new ArrayList<>();
+           list.forEach(f->{
+               SubReportDTO dto= new SubReportDTO();
+               dto.setSubReport(f);
+               dto.setHisIndicesList(indicesService.getList(f.getId()));
+               dtoList.add(dto);
+           });
+        return dtoList;
+    }
     /**
      * 保存子报告返回ID
      * @param entity
