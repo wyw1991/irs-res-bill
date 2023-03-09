@@ -6,6 +6,7 @@ import com.dtzhejiang.irs.res.bill.app.command.cmd.StartProcessCmd;
 import com.dtzhejiang.irs.res.bill.app.command.handler.ProcessCommandHandler;
 import com.dtzhejiang.irs.res.bill.app.dto.SubReportDTO;
 import com.dtzhejiang.irs.res.bill.app.dto.SubReportFailDTO;
+import com.dtzhejiang.irs.res.bill.app.qry.ReportPageQry;
 import com.dtzhejiang.irs.res.bill.app.qry.SubReportQry;
 import com.dtzhejiang.irs.res.bill.common.enums.OperationResultsStatusEnum;
 import com.dtzhejiang.irs.res.bill.common.enums.StatusEnum;
@@ -24,6 +25,7 @@ import com.dtzhejiang.irs.res.bill.infra.mapper.SubReportMapper;
 import com.dtzhejiang.irs.res.bill.infra.repository.ReportRepository;
 import com.dtzhejiang.irs.res.bill.infra.repository.SubReportRepository;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -82,32 +84,21 @@ public class SubReportService {
         wrapper.eq(!ObjectUtils.isEmpty(qry.getSubType()), SubReport::getSubType,qry.getSubType());
         wrapper.eq(!ObjectUtils.isEmpty(qry.getReportId()), SubReport::getReportId,qry.getReportId());
         //默认需要进行权限控制
-        //todo 待开启权限
-        //UserInfo userInfo=userGateway.getCurrentUser();
-        //wrapper.in(userInfo!=null && qry.getPermission(),SubReport::getSubType,userInfo.getPermissionList());
+        UserInfo userInfo=userGateway.getCurrentUser();
         if(qry.getMyAudit()){
             //已审核列表
-            wrapper.like(SubReport::getHistoryHandler,"<"+qry.getUserName()+">-"+qry.getCurrentRole());
+            wrapper.like(SubReport::getHistoryHandler,"<"+qry.getBillPermission()+">-"+userInfo.getUserName());
         }else{
             //待审核列表
-            wrapper.eq(SubReport::getCurrentRole,qry.getCurrentRole());
+            wrapper.in(SubReport::getCurrentRole,userInfo.getPermissionList(qry.getBillPermission()));
         }
         wrapper.orderBy(true,false, SubReport::getUpdateTime);//按照更新时间倒序
         return mapper.selectList(wrapper);
     }
 
-
-
     public SubReportFailDTO failList(SubReportQry qry){
         SubReportFailDTO dto = new SubReportFailDTO();
-        LambdaQueryWrapper<SubReport> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(!ObjectUtils.isEmpty(qry.getReportId()), SubReport::getReportId,qry.getReportId());
-
-        //默认需要进行权限控制
-        //todo 待开启权限
-        //UserInfo userInfo=userGateway.getCurrentUser();
-        //wrapper.in(userInfo!=null && qry.getPermission(),SubReport::getSubType,userInfo.getPermissionList());
-        List<SubReport> list=mapper.selectList(wrapper);
+        List<SubReport> list=getList(qry);
         dto.setApplicationSupport(convert(list,SubTypeEnum.APPLICATION_SUPPORT));
         dto.setOperation(convert(list,SubTypeEnum.OPERATION));
         dto.setBasicFacilities(convert(list,SubTypeEnum.BASIC_FACILITIES));
@@ -118,12 +109,29 @@ public class SubReportService {
     }
 
     /**
+     * 查询符合当前角色权限列表的主报告IDlist
+     * @param billPermission
+     * @param myAudit
+     * @return
+     */
+    public List<Long> getReportIdList( String billPermission,Boolean myAudit){
+        SubReportQry qry = new SubReportQry();
+        qry.setBillPermission(billPermission);
+        qry.setMyAudit(myAudit);
+        List<SubReport> list=getList(qry);
+        if (CollectionUtils.isEmpty(list)) {
+            return null;
+        }else {
+            return list.stream().map(SubReport::getReportId).distinct().collect(Collectors.toList());
+        }
+    }
+
+    /**
      * 重新提交
      * @param newReport
      * @param oldReportId
      */
     public void reSubmit(Report newReport,Long oldReportId){
-        AppInfo info=appInfoService.getAppInfo(newReport.getApplicationId());
         LambdaQueryWrapper<SubReport> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(!ObjectUtils.isEmpty(oldReportId), SubReport::getReportId,oldReportId);
         wrapper.ne(SubReport::getSubStatus, OperationResultsStatusEnum.SUCCESS);

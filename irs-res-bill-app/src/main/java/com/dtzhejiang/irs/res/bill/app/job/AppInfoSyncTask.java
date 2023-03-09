@@ -10,6 +10,7 @@ import com.dtzhejiang.irs.res.bill.common.util.ObjUtil;
 import com.dtzhejiang.irs.res.bill.domain.model.*;
 import com.dtzhejiang.irs.res.bill.infra.repository.AppInfoRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -47,6 +48,7 @@ public class AppInfoSyncTask {
 
     private Report convertToReport(AppInfo appInfo){
         Report report=new Report();
+        BeanUtils.copyProperties(appInfo, report);
         report.setNewReport(true);
         report.setField(appInfo.getField());
         report.setName(appInfo.getName());
@@ -54,6 +56,8 @@ public class AppInfoSyncTask {
         report.setApplicationId(appInfo.getApplicationId());
         report.setLinkProject(appInfo.isLinkProject());
         report.setType(appInfo.getType());
+        report.setAppAdmin(appInfo.getAppAdmin());
+        report.setAppAdminId(appInfo.getAppAdminId());
         report.setApplicationStatus(appInfo.getApplicationStatus());
         return report;
     }

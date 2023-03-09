@@ -32,17 +32,17 @@ import java.util.concurrent.TimeUnit;
 @ConfigurationProperties("feign")
 public class FeignClientConfig {
 
-    @Value("${forest.variables.casBaseUrl}")
+    @Value("${feign.userClientHost}")
     private String userClientHost;
-    @Value("${user-center.auth.ak}")
+    @Value("${feign.appKey}")
     private String appKey;
-    @Value("${user-center.auth.sk}")
-    private String appScret;
+    @Value("${feign.appSecret}")
+    private String appSecret;
 
     @Bean
     public RequestInterceptor headerInterceptor() {
         return requestTemplate -> {
-            Map<String,String> headers = RpcSignUtils.gererateSignHeaders(appKey,appScret);
+            Map<String,String> headers = RpcSignUtils.gererateSignHeaders(appKey,appSecret);
             headers.keySet().forEach(key -> requestTemplate.header(key, headers.get(key)));
         };
     }

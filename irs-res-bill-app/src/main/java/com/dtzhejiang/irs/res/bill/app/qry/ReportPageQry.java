@@ -52,9 +52,9 @@ public class ReportPageQry extends PageQuery {
     private Boolean myAudit=false;
 
     /**
-     * 当前处理角色
+     * 当前查询列表
      */
     @NonNull
-    private String currentRole;
+    private String billPermission;
 
 }

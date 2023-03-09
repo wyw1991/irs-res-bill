@@ -46,7 +46,7 @@ public class ReportService {
     private  ReportRepository reportRepository;
     public PageResponse<Report> page(ReportPageQry pageQry){
         //获取子报告对应的主报告ID
-        List<Long> reportIdList=getReportIdList(pageQry);
+        List<Long> reportIdList=subReportService.getReportIdList(pageQry.getBillPermission(),pageQry.getMyAudit());
         LambdaQueryWrapper<Report> wrapper = new LambdaQueryWrapper<>();
         wrapper.like(!ObjectUtils.isEmpty(pageQry.getKeyword()), Report::getName,pageQry.getKeyword());
         wrapper.eq(!ObjectUtils.isEmpty(pageQry.getType()), Report::getType,pageQry.getType());
@@ -55,15 +55,16 @@ public class ReportService {
         wrapper.eq(!ObjectUtils.isEmpty(pageQry.getApplicationStatus()), Report::getApplicationStatus,pageQry.getApplicationStatus());
         wrapper.eq(!ObjectUtils.isEmpty(pageQry.getLinkProject()), Report::isLinkProject,pageQry.getLinkProject());
         wrapper.eq(!ObjectUtils.isEmpty(pageQry.getField()), Report::getField,pageQry.getField());
+        //只有应用管理员可以生成报告
+        UserInfo user = userGateway.getCurrentUser();
+        wrapper.eq(!ObjectUtils.isEmpty(pageQry.getBillPermission()) && pageQry.getBillPermission().equals("irs-res-bill_generate"), Report::getAppAdminId,user.getUserName());
         wrapper.in(Report::getId,reportIdList==null?Arrays.asList(0):reportIdList);
         wrapper.eq(Report::isNewReport,true);//以最新一条为准
         //wrapper.orderBy(true,false, Report::getId);//按照ID倒序
         wrapper.groupBy(Report::getApplicationId);
-
         Page<Report> queryPage = new Page<>(pageQry.getPageIndex(),pageQry.getPageSize());
         Page<Report> page = mapper.selectPage(queryPage, wrapper);
         return PageResponse.of(page.getRecords(),page.getTotal(), page.getSize(), page.getCurrent());
-
     }
 
     public List<Report> getList(String applicationId){
@@ -74,19 +75,7 @@ public class ReportService {
         return list;
     }
 
-    private List<Long> getReportIdList(ReportPageQry qry){
-        // todo 开启权限
-        //UserInfo userInfo=userGateway.getCurrentUser();
-        SubReportQry subQry=new SubReportQry();
-        BeanUtils.copyProperties(qry,subQry);
-        //subQry.setUserName(userInfo.getUserName());
-        List<SubReport> list=subReportService.getList(subQry);
-        if (CollectionUtils.isEmpty(list)) {
-            return null;
-        }else {
-            return list.stream().map(SubReport::getReportId).distinct().collect(Collectors.toList());
-        }
-    }
+
 
 
 

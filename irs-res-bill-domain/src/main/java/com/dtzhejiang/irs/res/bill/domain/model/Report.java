@@ -49,6 +49,14 @@ public class Report {
      * 建设层级：PROVINCE-省级、CITY-县（市、区）、VILLAGE-村（社区）；
      */
     private LevelEnum level;
+    /**
+     * 应用管理员
+     */
+    private String appAdmin;
+    /**
+     * 应用管理员id
+     */
+    private String appAdminId;
 
     /**
      * 报告状态：PROCESS-处理中，SUCCESS-已出具，FAIL-不通过

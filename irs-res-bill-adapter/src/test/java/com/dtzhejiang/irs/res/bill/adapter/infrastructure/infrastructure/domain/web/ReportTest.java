@@ -8,6 +8,8 @@ import com.dtzhejiang.irs.res.bill.common.enums.StatusEnum;
 import com.dtzhejiang.irs.res.bill.common.util.JsonUtil;
 import com.dtzhejiang.irs.res.bill.domain.model.Report;
 import com.dtzhejiang.irs.res.bill.domain.model.SubReport;
+import com.dtzhejiang.irs.res.bill.domain.user.valueobject.UserInfo;
+import com.dtzhejiang.irs.res.bill.infra.gateway.UserGatewayImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,7 +17,9 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @SpringBootTest
@@ -25,7 +29,6 @@ public class ReportTest {
     private ReportService reportService;
     @Autowired
     private  AppInfoSyncTask task;
-
     @Test
     public void testId(){
         Report report=new Report();
@@ -52,7 +55,14 @@ public class ReportTest {
     }
     @Test
     public void testList(){
-        List<SubReport> list=null;
+        Set<String> roleCodes=new HashSet<>();
+        roleCodes.add("a");
+        roleCodes.add("b");
+        roleCodes.add("c");
 
+        List<String> list= roleCodes.stream().map(s -> "<"+"per"+">-"+s).collect(Collectors.toList());;
+        Boolean a=list.contains("<per>-a");
+        System.out.println( list.toString());
+        System.out.println( a);
     }
 }

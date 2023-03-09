@@ -19,9 +19,9 @@ public class SubReportQry {
     private Long reportId;
 
     /**
-     * 当前处理角色
+     * 当前查询列表
      */
-    private String currentRole;
+    private String billPermission;
 
     /**
      * 是否已审核列表：true:是、false:否；默认否
@@ -29,14 +29,15 @@ public class SubReportQry {
     private Boolean myAudit=false;
 
     /**
-     * 用户
+     * 用户Id
      */
-    private String userName;
+    private String userId;
 
     /**
      * 是否过滤权限 默认是
      */
     private Boolean permission=true;
+
 
     public SubReportQry(Long reportId) {
         this.reportId = reportId;
