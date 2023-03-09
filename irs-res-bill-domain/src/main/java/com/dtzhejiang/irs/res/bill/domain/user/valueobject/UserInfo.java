@@ -1,5 +1,6 @@
 package com.dtzhejiang.irs.res.bill.domain.user.valueobject;
 
+import com.dtzhejiang.irs.res.bill.common.enums.BillPermissionEnum;
 import lombok.Builder;
 import lombok.Data;
 
@@ -32,8 +33,8 @@ public class UserInfo {
     private String currentPermission;
 
 
-    public List<String> getPermissionList(String currentPermission){
-        return roleCodes.stream().map(s -> "<"+currentPermission+">-"+s).collect(Collectors.toList());
+    public List<String> getPermissionList(BillPermissionEnum currentPermission){
+        return roleCodes.stream().map(s -> "<irs-res-bill_"+currentPermission+">-"+s).collect(Collectors.toList());
     }
 
 }

@@ -52,9 +52,9 @@ public class ReportPageQry extends PageQuery {
     private Boolean myAudit=false;
 
     /**
-     * 当前查询列表
+     * 当前查询列表权限  VALID_CONFIRM-合规性确认,VALID_PASS-合规性出具,GENERATE-报告生成,REVIEW-报告初审,CONFIRM-报告确认,AUDIT-报告审核,PASS-报告出具
      */
     @NonNull
-    private String billPermission;
+    private BillPermissionEnum billPermission;
 
 }

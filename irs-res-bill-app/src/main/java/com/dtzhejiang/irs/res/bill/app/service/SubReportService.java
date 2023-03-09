@@ -8,10 +8,7 @@ import com.dtzhejiang.irs.res.bill.app.dto.SubReportDTO;
 import com.dtzhejiang.irs.res.bill.app.dto.SubReportFailDTO;
 import com.dtzhejiang.irs.res.bill.app.qry.ReportPageQry;
 import com.dtzhejiang.irs.res.bill.app.qry.SubReportQry;
-import com.dtzhejiang.irs.res.bill.common.enums.OperationResultsStatusEnum;
-import com.dtzhejiang.irs.res.bill.common.enums.StatusEnum;
-import com.dtzhejiang.irs.res.bill.common.enums.SubStatusEnum;
-import com.dtzhejiang.irs.res.bill.common.enums.SubTypeEnum;
+import com.dtzhejiang.irs.res.bill.common.enums.*;
 import com.dtzhejiang.irs.res.bill.domain.exception.BusinessException;
 import com.dtzhejiang.irs.res.bill.domain.model.AppInfo;
 import com.dtzhejiang.irs.res.bill.domain.model.HisIndices;
@@ -114,7 +111,7 @@ public class SubReportService {
      * @param myAudit
      * @return
      */
-    public List<Long> getReportIdList( String billPermission,Boolean myAudit){
+    public List<Long> getReportIdList(BillPermissionEnum billPermission, Boolean myAudit){
         SubReportQry qry = new SubReportQry();
         qry.setBillPermission(billPermission);
         qry.setMyAudit(myAudit);

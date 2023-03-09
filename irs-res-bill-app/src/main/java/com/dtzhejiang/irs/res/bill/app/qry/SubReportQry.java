@@ -1,6 +1,7 @@
 package com.dtzhejiang.irs.res.bill.app.qry;
 
 
+import com.dtzhejiang.irs.res.bill.common.enums.BillPermissionEnum;
 import lombok.Data;
 import lombok.NonNull;
 
@@ -19,9 +20,10 @@ public class SubReportQry {
     private Long reportId;
 
     /**
-     * 当前查询列表
+     * 当前查询列表权限  VALID_CONFIRM-合规性确认,VALID_PASS-合规性出具,GENERATE-报告生成,REVIEW-报告初审,CONFIRM-报告确认,AUDIT-报告审核,PASS-报告出具
      */
-    private String billPermission;
+    @NonNull
+    private BillPermissionEnum billPermission;
 
     /**
      * 是否已审核列表：true:是、false:否；默认否
