@@ -46,7 +46,7 @@ public class ReportService {
 
         if(!ObjectUtils.isEmpty(pageQry.getBillPermission())){
             if (pageQry.getBillPermission() == BillPermissionEnum.generate) {
-                //应用管理员列表(角色待审批+初始化状态为0数据)
+                //应用管理员列表(角色待审批+初始化状态为init数据)
                 wrapper.in(Report::getId, CollectionUtils.isEmpty(reportIdList) ? Arrays.asList(0) : reportIdList).or(o->o.eq(Report::getAppAdminId, user.getUserName()).eq(Report::getStatus,StatusEnum.INIT));
             } else {
                 wrapper.in(Report::getId, CollectionUtils.isEmpty(reportIdList) ? Arrays.asList(0) : reportIdList);

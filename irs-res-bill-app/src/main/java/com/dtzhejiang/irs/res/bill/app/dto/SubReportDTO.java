@@ -19,7 +19,7 @@ public class SubReportDTO {
     /**
      * 问题数
      */
-    private Long failNum;
+    private Long failNum=0L;
 
     /**
      * 子报告信息(每次提交审批生成)

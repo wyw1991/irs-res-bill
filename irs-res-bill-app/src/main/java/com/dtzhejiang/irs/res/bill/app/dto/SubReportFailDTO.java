@@ -15,7 +15,7 @@ public class SubReportFailDTO {
     /**
      * 问题数
      */
-    private Long failNum;
+    private Long failNum=0L;
     /**
      * 基层设施
      */
@@ -46,7 +46,13 @@ public class SubReportFailDTO {
     //}
 
     public Long getFailNum() {
-        return BUSINESS_APPLICATION.getFailNum()+NETWORK_SECURITY.getFailNum()+OPERATION.getFailNum()+APPLICATION_SUPPORT.getFailNum()+DATA_RESOURCES.getFailNum()+BASIC_FACILITIES.getFailNum();
+        return (BUSINESS_APPLICATION!=null?BUSINESS_APPLICATION.getFailNum():0)
+                +( NETWORK_SECURITY!=null? NETWORK_SECURITY.getFailNum():0)
+                +(OPERATION.getFailNum())
+                +(OPERATION!=null?OPERATION.getFailNum():0)
+                +( APPLICATION_SUPPORT!=null?APPLICATION_SUPPORT.getFailNum():0)
+                +(DATA_RESOURCES!=null?DATA_RESOURCES.getFailNum():0)
+                +(BASIC_FACILITIES!=null?BASIC_FACILITIES.getFailNum():0);
     }
 
 }

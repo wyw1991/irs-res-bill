@@ -88,13 +88,14 @@ public class SubReportService {
         UserInfo userInfo=userGateway.getCurrentUser();
         List<SubTypeEnum> typeList=getSubReportPermissionList(userInfo.getRoleCodes());
         wrapper.in(!ObjectUtils.isEmpty(typeList),SubReport::getSubType,typeList);
-
-        if(qry.getMyAudit()){
-            //已审核列表
-            wrapper.like(SubReport::getHistoryHandler,"<"+qry.getBillPermission()+">_"+userInfo.getUserName());
-        }else{
-            //待审核列表
-            wrapper.in(SubReport::getCurrentRole,userInfo.getPermissionList(qry.getBillPermission()));
+        if (!ObjectUtils.isEmpty(qry.getBillPermission())) {
+            if (qry.getMyAudit()) {
+                //已审核列表
+                wrapper.like(SubReport::getHistoryHandler, "<" + qry.getBillPermission() + ">_" + userInfo.getUserName());
+            } else {
+                //待审核列表
+                wrapper.in(SubReport::getCurrentRole, userInfo.getPermissionList(qry.getBillPermission()));
+            }
         }
         wrapper.orderBy(true,false, SubReport::getUpdateTime);//按照更新时间倒序
         return mapper.selectList(wrapper);
