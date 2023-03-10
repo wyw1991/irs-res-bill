@@ -4,13 +4,18 @@ package com.dtzhejiang.irs.res.bill.common.enums;
  * 子报告类型
  **/
 public enum SubTypeEnum {
-
-    BUSINESS_APPLICATION("BUSINESS_APPLICATION", "业务应用"),
-    NETWORK_SECURITY("NETWORK_SECURITY", "网络安全"),
-    OPERATION("OPERATION", "运行情况"),
-    APPLICATION_SUPPORT("WEIBO_OR_WECHAT_ACCOUNT", "应用支撑"),
-    DATA_RESOURCES("DATA_RESOURCES", "数据资源"),
-    BASIC_FACILITIES("BASIC_FACILITIES", "基层设施"),
+// (basic_facilities!=null?basic_facilities.getFailNum():0)
+//                +( data_resources!=null? data_resources.getFailNum():0)
+//                +(application_support!=null?application_Support.getFailNum():0)
+//                +( operation!=null?operation.getFailNum():0)
+//                +(network_security!=null?network_security.getFailNum():0)
+//                +(business_application!=null?business_application.getFailNum():0);
+    business_application("business_application", "业务应用"),
+    network_security("network_security", "网络安全"),
+    operation("operation", "运行情况"),
+    application_support("application_support", "应用支撑"),
+    data_resources("data_resources", "数据资源"),
+    basic_facilities("basic_facilities", "基层设施"),
     ;
 
 

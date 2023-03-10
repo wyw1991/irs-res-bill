@@ -19,40 +19,39 @@ public class SubReportFailDTO {
     /**
      * 基层设施
      */
-    private SubReportDTO BASIC_FACILITIES;
+    private SubReportDTO basic_facilities;
     /**
      * 数据资源
      */
-    private SubReportDTO DATA_RESOURCES;
+    private SubReportDTO data_resources;
     /**
      * 应用支撑
      */
-    private SubReportDTO APPLICATION_SUPPORT;
+    private SubReportDTO application_support;
     /**
      * 运行情况
      */
-    private SubReportDTO OPERATION;
+    private SubReportDTO operation;
     /**
      * 网络安全
      */
-    private SubReportDTO NETWORK_SECURITY;
+    private SubReportDTO network_security;
     /**
      * 业务应用
      */
-    private SubReportDTO BUSINESS_APPLICATION;
+    private SubReportDTO business_application;
 
     //public Integer getTotalNum() {
     //    return basicFacilities.getTotalNum()+dataResources.getTotalNum()+applicationSupport.getTotalNum()+operation.getTotalNum()+networkSecurity.getTotalNum()+businessApplication.getTotalNum();
     //}
 
     public Long getFailNum() {
-        return (BUSINESS_APPLICATION!=null?BUSINESS_APPLICATION.getFailNum():0)
-                +( NETWORK_SECURITY!=null? NETWORK_SECURITY.getFailNum():0)
-                +(OPERATION.getFailNum())
-                +(OPERATION!=null?OPERATION.getFailNum():0)
-                +( APPLICATION_SUPPORT!=null?APPLICATION_SUPPORT.getFailNum():0)
-                +(DATA_RESOURCES!=null?DATA_RESOURCES.getFailNum():0)
-                +(BASIC_FACILITIES!=null?BASIC_FACILITIES.getFailNum():0);
+        return (basic_facilities!=null?basic_facilities.getFailNum():0)
+                +( data_resources!=null? data_resources.getFailNum():0)
+                +(application_support!=null?application_support.getFailNum():0)
+                +( operation!=null?operation.getFailNum():0)
+                +(network_security!=null?network_security.getFailNum():0)
+                +(business_application!=null?business_application.getFailNum():0);
     }
 
 }

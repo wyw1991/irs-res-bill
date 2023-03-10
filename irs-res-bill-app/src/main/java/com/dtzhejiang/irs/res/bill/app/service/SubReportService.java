@@ -71,12 +71,12 @@ public class SubReportService {
         //根据角色列表查询对应的子报告权限
         //todo -------------------------------------------------
         List<SubTypeEnum> list=new ArrayList<>();
-        list.add(SubTypeEnum.BASIC_FACILITIES);
-        list.add(SubTypeEnum.BUSINESS_APPLICATION);
-        list.add(SubTypeEnum.APPLICATION_SUPPORT);
-        list.add(SubTypeEnum.OPERATION);
-        list.add(SubTypeEnum.DATA_RESOURCES);
-        list.add(SubTypeEnum.NETWORK_SECURITY);
+        list.add(SubTypeEnum.basic_facilities);
+        list.add(SubTypeEnum.business_application);
+        list.add(SubTypeEnum.application_support);
+        list.add(SubTypeEnum.operation);
+        list.add(SubTypeEnum.data_resources);
+        list.add(SubTypeEnum.network_security);
         return list;
     }
 
@@ -104,12 +104,12 @@ public class SubReportService {
     public SubReportFailDTO failList(SubReportQry qry){
         SubReportFailDTO dto = new SubReportFailDTO();
         List<SubReport> list=getList(qry);
-        dto.setAPPLICATION_SUPPORT(convert(list,SubTypeEnum.APPLICATION_SUPPORT));
-        dto.setOPERATION(convert(list,SubTypeEnum.OPERATION));
-        dto.setBUSINESS_APPLICATION(convert(list,SubTypeEnum.BASIC_FACILITIES));
-        dto.setDATA_RESOURCES(convert(list,SubTypeEnum.DATA_RESOURCES));
-        dto.setBUSINESS_APPLICATION(convert(list,SubTypeEnum.BUSINESS_APPLICATION));
-        dto.setNETWORK_SECURITY(convert(list,SubTypeEnum.NETWORK_SECURITY));
+        dto.setApplication_support(convert(list,SubTypeEnum.application_support));
+        dto.setOperation(convert(list,SubTypeEnum.operation));
+        dto.setBasic_facilities(convert(list,SubTypeEnum.basic_facilities));
+        dto.setData_resources(convert(list,SubTypeEnum.data_resources));
+        dto.setBusiness_application(convert(list,SubTypeEnum.business_application));
+        dto.setNetwork_security(convert(list,SubTypeEnum.network_security));
         return dto;
     }
 

@@ -26,7 +26,6 @@ public class SubReportController {
      */
     @PostMapping("/fail/list")
     public SingleResponse<SubReportFailDTO> failList(@RequestBody SubReportQry qry) {
-
         return SingleResponse.of(subReportService.failList(qry));
     }
 
