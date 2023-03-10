@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dtzhejiang.irs.res.bill.app.query.qry.SubReportQry;
 import com.dtzhejiang.irs.res.bill.common.dto.PageResponse;
 import com.dtzhejiang.irs.res.bill.common.enums.ApplicationStatusEnum;
+import com.dtzhejiang.irs.res.bill.common.enums.BillPermissionEnum;
 import com.dtzhejiang.irs.res.bill.common.enums.StatusEnum;
 import com.dtzhejiang.irs.res.bill.domain.exception.BusinessException;
 import com.dtzhejiang.irs.res.bill.domain.model.Report;
@@ -38,9 +39,16 @@ public class ReportService {
     @Autowired
     private  ReportRepository reportRepository;
     public PageResponse<Report> page(ReportPageQry pageQry){
-        //获取子报告对应的主报告ID
-        List<Long> reportIdList=subReportService.getReportIdList(pageQry.getBillPermission(),pageQry.getMyAudit());
         LambdaQueryWrapper<Report> wrapper = new LambdaQueryWrapper<>();
+        //应用管理员列表
+        if(!ObjectUtils.isEmpty(pageQry.getBillPermission()) && pageQry.getBillPermission().equals(BillPermissionEnum.generate)){
+            UserInfo user = userGateway.getCurrentUser();
+            wrapper.eq( Report::getAppAdminId,user.getUserName());
+        }else {
+            //获取子报告对应的主报告ID
+            List<Long> reportIdList=subReportService.getReportIdList(pageQry.getBillPermission(),pageQry.getMyAudit());
+            wrapper.in(Report::getId,reportIdList==null?Arrays.asList(0):reportIdList);
+        }
         wrapper.like(!ObjectUtils.isEmpty(pageQry.getKeyword()), Report::getName,pageQry.getKeyword());
         wrapper.eq(!ObjectUtils.isEmpty(pageQry.getType()), Report::getType,pageQry.getType());
         wrapper.eq(!ObjectUtils.isEmpty(pageQry.getStatus()), Report::getStatus,pageQry.getStatus());
@@ -48,10 +56,6 @@ public class ReportService {
         wrapper.eq(!ObjectUtils.isEmpty(pageQry.getApplicationStatus()), Report::getApplicationStatus,pageQry.getApplicationStatus());
         wrapper.eq(!ObjectUtils.isEmpty(pageQry.getLinkProject()), Report::isLinkProject,pageQry.getLinkProject());
         wrapper.eq(!ObjectUtils.isEmpty(pageQry.getField()), Report::getField,pageQry.getField());
-        //只有应用管理员可以生成报告
-        UserInfo user = userGateway.getCurrentUser();
-        wrapper.eq(!ObjectUtils.isEmpty(pageQry.getBillPermission()) && pageQry.getBillPermission().equals("irs-res-bill_generate"), Report::getAppAdminId,user.getUserName());
-        wrapper.in(Report::getId,reportIdList==null?Arrays.asList(0):reportIdList);
         wrapper.eq(Report::isNewReport,true);//以最新一条为准
         //wrapper.orderBy(true,false, Report::getId);//按照ID倒序
         wrapper.groupBy(Report::getApplicationId);

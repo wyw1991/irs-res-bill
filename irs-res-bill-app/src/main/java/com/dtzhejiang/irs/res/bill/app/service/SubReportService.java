@@ -80,7 +80,7 @@ public class SubReportService {
         UserInfo userInfo=userGateway.getCurrentUser();
         if(qry.getMyAudit()){
             //已审核列表
-            wrapper.like(SubReport::getHistoryHandler,"<"+qry.getBillPermission()+">-"+userInfo.getUserName());
+            wrapper.like(SubReport::getHistoryHandler,"<irs-res-bill_"+qry.getBillPermission()+">-"+userInfo.getUserName());
         }else{
             //待审核列表
             wrapper.in(SubReport::getCurrentRole,userInfo.getPermissionList(qry.getBillPermission()));

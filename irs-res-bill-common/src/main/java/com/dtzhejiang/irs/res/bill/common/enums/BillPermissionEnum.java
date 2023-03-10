@@ -5,13 +5,14 @@ package com.dtzhejiang.irs.res.bill.common.enums;
  **/
 public enum BillPermissionEnum {
 
-    VALID_CONFIRM("VALID_CONFIRM", "合规性确认"),
-    VALID_PASS("VALID_PASS", "合规性出具"),
-    GENERATE("GENERATE", "报告生成"),
-    REVIEW("REVIEW", "报告初审"),
-    CONFIRM("CONFIRM", "报告确认"),
-    AUDIT("AUDIT", "报告审核"),
-    PASS("PASS", "报告出具"),
+
+    valid_confirm("valid_confirm", "合规性确认"),
+    generate("generate", "报告生成"),
+    review("review", "报告初审"),
+    confirm("confirm", "报告确认"),
+    audit("audit", "报告确认"),
+    pass("pass", "报告出具"),
+    valid_pass("valid_pass", "合规性出具"),
     ;
 
 
