@@ -4,17 +4,12 @@ package com.dtzhejiang.irs.res.bill.common.enums;
  * 主报告状态
  **/
 public enum StatusEnum {
-    /**
-     * 省域
-     */
+
+    INIT("INIT", "初始化"),
     PROCESS("PROCESS", "处理中"),
-    /**
-     * 市域
-     */
+
     SUCCESS("SUCCESS", "已出具"),
-    /**
-     * 县域
-     */
+
     FAIL("FAIL", "不通过"),
     ;
 

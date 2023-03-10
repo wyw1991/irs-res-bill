@@ -24,7 +24,7 @@ public class SubReportController {
      * 异常结果汇总
      * @param qry
      */
-    @GetMapping("/fail/list")
+    @PostMapping("/fail/list")
     public SingleResponse<SubReportFailDTO> failList(@RequestBody SubReportQry qry) {
 
         return SingleResponse.of(subReportService.failList(qry));

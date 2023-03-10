@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -59,7 +60,7 @@ public class Report {
     private String appAdminId;
 
     /**
-     * 报告状态：PROCESS-处理中，SUCCESS-已出具，FAIL-不通过
+     * 报告状态：INIT-初始化，PROCESS-处理中，SUCCESS-已出具，FAIL-不通过
      */
     private StatusEnum status;
 
@@ -99,6 +100,12 @@ public class Report {
      * 更新时间
      */
     private Date updateTime;
+
+    /**
+     * 子报告权限列表
+     */
+    @TableField(exist = false)
+    private List<SubTypeEnum> typeList;
 
 
 }

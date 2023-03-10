@@ -35,7 +35,7 @@ public class UserInfo {
 
 
     public List<String> getPermissionList(BillPermissionEnum currentPermission){
-        return roleCodes.stream().map(s -> "<irs-res-bill_"+currentPermission+">-"+s).collect(Collectors.toList());
+        return roleCodes.stream().map(s -> "<"+currentPermission+">_"+s.replace("irs-res-bill_","")).collect(Collectors.toList());
     }
 
 }

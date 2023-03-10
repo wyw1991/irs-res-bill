@@ -4,6 +4,7 @@ import com.dtzhejiang.irs.res.bill.app.service.AppInfoService;
 import com.dtzhejiang.irs.res.bill.app.service.IndexConfigService;
 import com.dtzhejiang.irs.res.bill.app.service.ReportService;
 import com.dtzhejiang.irs.res.bill.app.service.SubReportService;
+import com.dtzhejiang.irs.res.bill.common.enums.StatusEnum;
 import com.dtzhejiang.irs.res.bill.common.enums.SubStatusEnum;
 import com.dtzhejiang.irs.res.bill.common.enums.SubTypeEnum;
 import com.dtzhejiang.irs.res.bill.common.util.ObjUtil;
@@ -59,6 +60,7 @@ public class AppInfoSyncTask {
         report.setAppAdmin(appInfo.getAppAdmin());
         report.setAppAdminId(appInfo.getAppAdminId());
         report.setApplicationStatus(appInfo.getApplicationStatus());
+        report.setStatus(StatusEnum.INIT);
         return report;
     }
 

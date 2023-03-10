@@ -24,10 +24,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -53,7 +50,6 @@ public class SubReportService {
     private SubReportRepository subReportRepository;
 
     public SubReportDTO getSubReportDTO(SubReportQry qry){
-
         SubReportDTO dto=new SubReportDTO();
         LambdaQueryWrapper<SubReport> wrapper = new LambdaQueryWrapper<>();
         if (qry.getReportId()== null) {
@@ -62,14 +58,26 @@ public class SubReportService {
         wrapper.eq(!ObjectUtils.isEmpty(qry.getSubType()), SubReport::getSubType,qry.getSubType());
         wrapper.eq(!ObjectUtils.isEmpty(qry.getReportId()), SubReport::getReportId,qry.getReportId());
         //默认需要进行权限控制
-        //todo 待开启权限
-        //UserInfo userInfo=userGateway.getCurrentUser();
-        //wrapper.in(userInfo!=null && qry.getPermission(),SubReport::getSubType,userInfo.getPermissionList());
+        UserInfo userInfo=userGateway.getCurrentUser();
+        List<SubTypeEnum> typeList=getSubReportPermissionList(userInfo.getRoleCodes());
+        wrapper.in(!ObjectUtils.isEmpty(typeList),SubReport::getSubType,typeList);
         wrapper.orderBy(true,true, SubReport::getId);//按照id正序
         SubReport subReport=mapper.selectOne(wrapper);
         dto.setSubReport(subReport);
         dto.setHisIndicesList(indicesService.getList(subReport.getId()));
         return dto;
+    }
+    public List<SubTypeEnum> getSubReportPermissionList(Set<String> set){
+        //根据角色列表查询对应的子报告权限
+        //todo -------------------------------------------------
+        List<SubTypeEnum> list=new ArrayList<>();
+        list.add(SubTypeEnum.BASIC_FACILITIES);
+        list.add(SubTypeEnum.BUSINESS_APPLICATION);
+        list.add(SubTypeEnum.APPLICATION_SUPPORT);
+        list.add(SubTypeEnum.OPERATION);
+        list.add(SubTypeEnum.DATA_RESOURCES);
+        list.add(SubTypeEnum.NETWORK_SECURITY);
+        return list;
     }
 
     public List<SubReport> getList (SubReportQry qry){
@@ -78,9 +86,12 @@ public class SubReportService {
         wrapper.eq(!ObjectUtils.isEmpty(qry.getReportId()), SubReport::getReportId,qry.getReportId());
         //默认需要进行权限控制
         UserInfo userInfo=userGateway.getCurrentUser();
+        List<SubTypeEnum> typeList=getSubReportPermissionList(userInfo.getRoleCodes());
+        wrapper.in(!ObjectUtils.isEmpty(typeList),SubReport::getSubType,typeList);
+
         if(qry.getMyAudit()){
             //已审核列表
-            wrapper.like(SubReport::getHistoryHandler,"<irs-res-bill_"+qry.getBillPermission()+">-"+userInfo.getUserName());
+            wrapper.like(SubReport::getHistoryHandler,"<"+qry.getBillPermission()+">_"+userInfo.getUserName());
         }else{
             //待审核列表
             wrapper.in(SubReport::getCurrentRole,userInfo.getPermissionList(qry.getBillPermission()));
@@ -92,12 +103,12 @@ public class SubReportService {
     public SubReportFailDTO failList(SubReportQry qry){
         SubReportFailDTO dto = new SubReportFailDTO();
         List<SubReport> list=getList(qry);
-        dto.setApplicationSupport(convert(list,SubTypeEnum.APPLICATION_SUPPORT));
-        dto.setOperation(convert(list,SubTypeEnum.OPERATION));
-        dto.setBasicFacilities(convert(list,SubTypeEnum.BASIC_FACILITIES));
-        dto.setDataResources(convert(list,SubTypeEnum.DATA_RESOURCES));
-        dto.setBusinessApplication(convert(list,SubTypeEnum.BUSINESS_APPLICATION));
-        dto.setNetworkSecurity(convert(list,SubTypeEnum.NETWORK_SECURITY));
+        dto.setAPPLICATION_SUPPORT(convert(list,SubTypeEnum.APPLICATION_SUPPORT));
+        dto.setOPERATION(convert(list,SubTypeEnum.OPERATION));
+        dto.setBUSINESS_APPLICATION(convert(list,SubTypeEnum.BASIC_FACILITIES));
+        dto.setDATA_RESOURCES(convert(list,SubTypeEnum.DATA_RESOURCES));
+        dto.setBUSINESS_APPLICATION(convert(list,SubTypeEnum.BUSINESS_APPLICATION));
+        dto.setNETWORK_SECURITY(convert(list,SubTypeEnum.NETWORK_SECURITY));
         return dto;
     }
 
@@ -112,11 +123,20 @@ public class SubReportService {
         qry.setBillPermission(billPermission);
         qry.setMyAudit(myAudit);
         List<SubReport> list=getList(qry);
-        if (CollectionUtils.isEmpty(list)) {
-            return null;
-        }else {
-            return list.stream().map(SubReport::getReportId).distinct().collect(Collectors.toList());
+        List<Long> idList=new ArrayList<>();
+        if (!CollectionUtils.isEmpty(list)) {
+            UserInfo userInfo=userGateway.getCurrentUser();
+            List<SubTypeEnum> typeList=getSubReportPermissionList(userInfo.getRoleCodes());
+            //在 报告生成，合规确认,合规审核，报告出具 4个列表 需要6个子报告一起操作
+            if(Arrays.asList(BillPermissionEnum.valid_confirm,BillPermissionEnum.valid_pass,BillPermissionEnum.pass,BillPermissionEnum.generate).contains(qry.getBillPermission()) ){
+                //统计同一个主报告下的子报告数量,过滤出子报告个数为6个的
+                Map<Long,Long> map = list.stream().collect(Collectors.groupingBy(SubReport::getReportId,Collectors.counting()));
+                idList=map.entrySet().stream().filter(v->v.getValue()==6).map(m->m.getKey()).collect(Collectors.toList());
+            }else {
+                idList=list.stream().filter(f->typeList.contains(f.getSubType())).map(SubReport::getReportId).distinct().collect(Collectors.toList());
+            }
         }
+        return idList;
     }
 
     /**

@@ -8,6 +8,7 @@ import com.dtzhejiang.irs.res.bill.common.dto.PageResponse;
 import com.dtzhejiang.irs.res.bill.common.enums.ApplicationStatusEnum;
 import com.dtzhejiang.irs.res.bill.common.enums.BillPermissionEnum;
 import com.dtzhejiang.irs.res.bill.common.enums.StatusEnum;
+import com.dtzhejiang.irs.res.bill.common.enums.SubTypeEnum;
 import com.dtzhejiang.irs.res.bill.domain.exception.BusinessException;
 import com.dtzhejiang.irs.res.bill.domain.model.Report;
 import com.dtzhejiang.irs.res.bill.domain.user.gateway.UserGateway;
@@ -18,11 +19,10 @@ import com.dtzhejiang.irs.res.bill.infra.util.PageUtilPlus;
 import com.dtzhejiang.irs.res.bill.app.query.qry.ReportPageQry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 
 @Component
@@ -40,14 +40,17 @@ public class ReportService {
     private  ReportRepository reportRepository;
     public PageResponse<Report> page(ReportPageQry pageQry){
         LambdaQueryWrapper<Report> wrapper = new LambdaQueryWrapper<>();
-        //应用管理员列表
-        if(!ObjectUtils.isEmpty(pageQry.getBillPermission()) && pageQry.getBillPermission().equals(BillPermissionEnum.generate)){
-            UserInfo user = userGateway.getCurrentUser();
-            wrapper.eq( Report::getAppAdminId,user.getUserName());
-        }else {
-            //获取子报告对应的主报告ID
-            List<Long> reportIdList=subReportService.getReportIdList(pageQry.getBillPermission(),pageQry.getMyAudit());
-            wrapper.in(Report::getId,reportIdList==null?Arrays.asList(0):reportIdList);
+        UserInfo user = userGateway.getCurrentUser();
+        //获取子报告对应的主报告ID
+        List<Long> reportIdList=subReportService.getReportIdList(pageQry.getBillPermission(),pageQry.getMyAudit());
+
+        if(!ObjectUtils.isEmpty(pageQry.getBillPermission())){
+            if (pageQry.getBillPermission() == BillPermissionEnum.generate) {
+                //应用管理员列表(角色待审批+初始化状态为0数据)
+                wrapper.in(Report::getId, CollectionUtils.isEmpty(reportIdList) ? Arrays.asList(0) : reportIdList).or(o->o.eq(Report::getAppAdminId, user.getUserName()).eq(Report::getStatus,StatusEnum.INIT));
+            } else {
+                wrapper.in(Report::getId, CollectionUtils.isEmpty(reportIdList) ? Arrays.asList(0) : reportIdList);
+            }
         }
         wrapper.like(!ObjectUtils.isEmpty(pageQry.getKeyword()), Report::getName,pageQry.getKeyword());
         wrapper.eq(!ObjectUtils.isEmpty(pageQry.getType()), Report::getType,pageQry.getType());
@@ -89,7 +92,6 @@ public class ReportService {
         if(ObjectUtils.isEmpty(report.getVersion())){
             report.setVersion("1.0");
             report.setCreateTime(new Date());
-            report.setStatus(StatusEnum.PROCESS);
             saveOrUpdate(report);
             subReportService.createSubReport(reportId);
         }else if(StatusEnum.FAIL.equals(report.getStatus())) {
@@ -99,7 +101,7 @@ public class ReportService {
             //拒绝后重新生成报告
             report.setId(null);
             Report newReport=report;
-            newReport.setStatus(StatusEnum.PROCESS);
+            newReport.setStatus(StatusEnum.INIT);
             int newVersion=Integer.parseInt(newReport.getVersion().replace(".0",""))+1;
             newReport.setVersion(newVersion+".0");
             newReport.setNewReport(true);
