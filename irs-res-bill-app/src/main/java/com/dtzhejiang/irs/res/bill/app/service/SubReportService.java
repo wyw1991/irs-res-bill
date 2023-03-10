@@ -55,28 +55,43 @@ public class SubReportService {
         if (qry.getReportId()== null) {
             throw new BusinessException("reportId不能为空！");
         }
-        wrapper.eq(!ObjectUtils.isEmpty(qry.getSubType()), SubReport::getSubType,qry.getSubType());
-        wrapper.eq(!ObjectUtils.isEmpty(qry.getReportId()), SubReport::getReportId,qry.getReportId());
-        //默认需要进行权限控制
-        UserInfo userInfo=userGateway.getCurrentUser();
-        List<SubTypeEnum> typeList=getSubReportPermissionList(userInfo.getRoleCodes());
-        wrapper.in(!ObjectUtils.isEmpty(typeList),SubReport::getSubType,typeList);
+        if(ObjectUtils.isEmpty(qry.getSubType())){
+            throw new BusinessException("subType不能为空！");
+        }
+        wrapper.eq(SubReport::getSubType,qry.getSubType());
+        wrapper.eq(SubReport::getReportId,qry.getReportId());
+        //应用管理员不过滤子报告权限
+        List<SubTypeEnum> typeList=getSubReportPermissionList();
+        wrapper.in(!ObjectUtils.isEmpty(qry.getBillPermission()) && qry.getBillPermission()!=BillPermissionEnum.generate,SubReport::getSubType,typeList==null?"0":typeList);
         wrapper.orderBy(true,true, SubReport::getId);//按照id正序
         SubReport subReport=mapper.selectOne(wrapper);
         dto.setSubReport(subReport);
         dto.setHisIndicesList(indicesService.getList(subReport.getId()));
         return dto;
     }
-    public List<SubTypeEnum> getSubReportPermissionList(Set<String> set){
+    public List<SubTypeEnum> getSubReportPermissionList(){
+        //默认需要进行权限控制
+        UserInfo userInfo=userGateway.getCurrentUser();
         //根据角色列表查询对应的子报告权限
-        //todo -------------------------------------------------
         List<SubTypeEnum> list=new ArrayList<>();
-        list.add(SubTypeEnum.BUSINESS_APPLICATION);
-        list.add(SubTypeEnum.BASIC_FACILITIES);
-        list.add(SubTypeEnum.APPLICATION_SUPPORT);
-        list.add(SubTypeEnum.OPERATION);
-        list.add(SubTypeEnum.DATA_RESOURCES);
-        list.add(SubTypeEnum.NETWORK_SECURITY);
+        List<String> bfList=Arrays.asList("compliance_confirm","basic_confirm","basic_audit","compliance_leader","business_leader");
+        List<String> asList=Arrays.asList("compliance_confirm","data_confirm","data_audit","compliance_leader","business_leader");
+        List<String> drList=Arrays.asList("compliance_confirm","app_confirm","app_audit","compliance_leader","business_leader");
+        List<String> oList=Arrays.asList("compliance_confirm","point_pre_confirm","point_confirm","point_audit","compliance_leader","business_leader");
+        List<String> nsList=Arrays.asList("compliance_confirm","security_pre_confirm","security_confirm","security_audit","compliance_leader","business_leader");
+        List<String> baList=Arrays.asList("compliance_confirm","business_confirm","business_audit","compliance_leader","business_leader");
+
+        userInfo.getRoleCodes().stream().map(m->m.replace("irs-res-bill_","")).forEach(f->{
+            if (bfList.contains(f)){list.add(SubTypeEnum.BASIC_FACILITIES);}
+            if (asList.contains(f)) {list.add(SubTypeEnum.APPLICATION_SUPPORT);}
+            if (drList.contains(f)) {list.add(SubTypeEnum.DATA_RESOURCES);}
+            if (oList.contains(f)) {list.add(SubTypeEnum.OPERATION);}
+            if (nsList.contains(f)) {list.add(SubTypeEnum.NETWORK_SECURITY);}
+            if (baList.contains(f)) {list.add(SubTypeEnum.BUSINESS_APPLICATION);}
+        });
+        if(CollectionUtils.isEmpty(list)){
+            return null;
+        }
         return list;
     }
 
@@ -85,10 +100,11 @@ public class SubReportService {
         wrapper.eq(!ObjectUtils.isEmpty(qry.getSubType()), SubReport::getSubType,qry.getSubType());
         wrapper.eq(!ObjectUtils.isEmpty(qry.getReportId()), SubReport::getReportId,qry.getReportId());
         //默认需要进行权限控制
-        UserInfo userInfo=userGateway.getCurrentUser();
-        List<SubTypeEnum> typeList=getSubReportPermissionList(userInfo.getRoleCodes());
-        wrapper.in(!ObjectUtils.isEmpty(typeList),SubReport::getSubType,typeList);
-        if (!ObjectUtils.isEmpty(qry.getBillPermission())) {
+        if (!ObjectUtils.isEmpty(qry.getPermission()) && qry.getPermission()) {
+            UserInfo userInfo=userGateway.getCurrentUser();
+            //应用管理员不过滤子报告权限
+            List<SubTypeEnum> typeList=getSubReportPermissionList();
+            wrapper.in(!ObjectUtils.isEmpty(qry.getBillPermission()) && qry.getBillPermission()!=BillPermissionEnum.generate,SubReport::getSubType,typeList==null?"0":typeList);
             if (qry.getMyAudit()) {
                 //已审核列表
                 wrapper.like(SubReport::getHistoryHandler, "<" + qry.getBillPermission() + ">_" + userInfo.getUserName());
@@ -103,6 +119,7 @@ public class SubReportService {
 
     public SubReportFailDTO failList(SubReportQry qry){
         SubReportFailDTO dto = new SubReportFailDTO();
+        qry.setPermission(false);//应用管理员不限制子报告权限
         List<SubReport> list=getList(qry);
         dto.setApplication_support(convert(list,SubTypeEnum.APPLICATION_SUPPORT));
         dto.setOperation(convert(list,SubTypeEnum.OPERATION));
@@ -126,15 +143,13 @@ public class SubReportService {
         List<SubReport> list=getList(qry);
         List<Long> idList=new ArrayList<>();
         if (!CollectionUtils.isEmpty(list)) {
-            UserInfo userInfo=userGateway.getCurrentUser();
-            List<SubTypeEnum> typeList=getSubReportPermissionList(userInfo.getRoleCodes());
             //在 报告生成，合规确认,合规审核，报告出具 4个列表 需要6个子报告一起操作
             if(Arrays.asList(BillPermissionEnum.valid_confirm,BillPermissionEnum.valid_pass,BillPermissionEnum.pass,BillPermissionEnum.generate).contains(qry.getBillPermission()) ){
                 //统计同一个主报告下的子报告数量,过滤出子报告个数为6个的
                 Map<Long,Long> map = list.stream().collect(Collectors.groupingBy(SubReport::getReportId,Collectors.counting()));
                 idList=map.entrySet().stream().filter(v->v.getValue()==6).map(m->m.getKey()).collect(Collectors.toList());
             }else {
-                idList=list.stream().filter(f->typeList.contains(f.getSubType())).map(SubReport::getReportId).distinct().collect(Collectors.toList());
+                idList=list.stream().map(SubReport::getReportId).distinct().collect(Collectors.toList());
             }
         }
         return idList;

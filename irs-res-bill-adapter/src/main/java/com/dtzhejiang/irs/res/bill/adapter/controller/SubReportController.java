@@ -7,9 +7,12 @@ import com.dtzhejiang.irs.res.bill.common.dto.MultiResponse;
 import com.dtzhejiang.irs.res.bill.common.dto.SingleResponse;
 import com.dtzhejiang.irs.res.bill.app.dto.SubReportFailDTO;
 import com.dtzhejiang.irs.res.bill.app.query.qry.SubReportQry;
+import com.dtzhejiang.irs.res.bill.common.enums.SubTypeEnum;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  *子报告
@@ -43,6 +46,14 @@ public class SubReportController {
     @PostMapping("/allList")
     public MultiResponse<SubReportDTO> getDTOList(@RequestBody SubReportQry qry) {
         return MultiResponse.of(subReportService.convertToList(subReportService.getList(qry)));
+    }
+
+    /**
+     * 子报告权限列表
+     */
+    @PostMapping("/perList")
+    public MultiResponse<SubTypeEnum> getSubReportPermissionList() {
+        return MultiResponse.of(subReportService.getSubReportPermissionList());
     }
 
     /**
