@@ -1,20 +1,37 @@
-package com.dtzhejiang.irs.res.bill.app.query.qry;
+package com.dtzhejiang.irs.res.bill.app.dto;
 
-
-import com.dtzhejiang.irs.res.bill.common.dto.PageQuery;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.dtzhejiang.irs.res.bill.common.enums.*;
+import com.dtzhejiang.irs.res.bill.domain.model.HisIndices;
+import com.dtzhejiang.irs.res.bill.domain.model.SubReport;
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.Setter;
+import org.springframework.util.CollectionUtils;
+
+import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
-public class ReportPageQry extends PageQuery {
+public class ReportDTO {
 
     /**
-     * 搜索关键词
+     * 自增主键
      */
-    private String keyword;
+    @TableId(type = IdType.AUTO)
+    private Long id;
+
+    /**
+     * 应用名称
+     */
+    private String name;
+
+    /**
+     * 应用ID
+     */
+    private String applicationId;
+
     /**
      * 应用状态：TEST_RUN-试运行，RUN-运行中
      */
@@ -30,29 +47,37 @@ public class ReportPageQry extends PageQuery {
      */
     private FieldEnum field;
 
+
     /**
      * 建设层级：PROVINCE-省级、CITY-县（市、区）、VILLAGE-村（社区）；
      */
     private LevelEnum level;
+    /**
+     * 应用管理员
+     */
+    private String appAdmin;
+    /**
+     * 应用管理员id
+     */
+    private String appAdminId;
 
     /**
      * 报告状态：UN_INIT-待生成,INIT-待提交,PROCESS-处理中，SUCCESS-已出具，FAIL-不通过
      */
     private StatusEnum status;
-    /**
-     * 是否关联项目：true:是、false:否；
-     */
-    private Boolean linkProject;
 
     /**
-     * 是否已审核列表：true:是、false:否；默认否
+     * 出具时间
      */
-    private Boolean myAudit=false;
+    private Date finishTime;
 
     /**
-     * 当前查询列表权限  VALID_CONFIRM-合规性确认,VALID_PASS-合规性出具,GENERATE-报告生成,REVIEW-报告初审,CONFIRM-报告确认,AUDIT-报告审核,PASS-报告出具
+     * 显示的权限列表
      */
-    @NonNull
-    private BillPermissionEnum billPermission;
+    private List<SubTypeEnum> typeList;
 
+    /**
+     * 是否可操作 true 是 false 否
+     */
+    private Boolean canOperate=false;
 }

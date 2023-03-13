@@ -5,11 +5,11 @@ package com.dtzhejiang.irs.res.bill.common.enums;
  **/
 public enum StatusEnum {
 
-    INIT("INIT", "初始化"),
+    UN_INIT("UN_INIT", "待生成"),
+    INIT("INIT", "待提交"),
     PROCESS("PROCESS", "处理中"),
 
     SUCCESS("SUCCESS", "已出具"),
-
     FAIL("FAIL", "不通过"),
     ;
 

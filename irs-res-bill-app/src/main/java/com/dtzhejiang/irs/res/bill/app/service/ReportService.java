@@ -3,26 +3,27 @@ package com.dtzhejiang.irs.res.bill.app.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.dtzhejiang.irs.res.bill.app.dto.ReportDTO;
 import com.dtzhejiang.irs.res.bill.app.query.qry.SubReportQry;
 import com.dtzhejiang.irs.res.bill.common.dto.PageResponse;
-import com.dtzhejiang.irs.res.bill.common.enums.ApplicationStatusEnum;
-import com.dtzhejiang.irs.res.bill.common.enums.BillPermissionEnum;
-import com.dtzhejiang.irs.res.bill.common.enums.StatusEnum;
-import com.dtzhejiang.irs.res.bill.common.enums.SubTypeEnum;
+import com.dtzhejiang.irs.res.bill.common.enums.*;
 import com.dtzhejiang.irs.res.bill.domain.exception.BusinessException;
 import com.dtzhejiang.irs.res.bill.domain.model.Report;
+import com.dtzhejiang.irs.res.bill.domain.model.SubReport;
 import com.dtzhejiang.irs.res.bill.domain.user.gateway.UserGateway;
 import com.dtzhejiang.irs.res.bill.domain.user.valueobject.UserInfo;
 import com.dtzhejiang.irs.res.bill.infra.mapper.ReportMapper;
 import com.dtzhejiang.irs.res.bill.infra.repository.ReportRepository;
 import com.dtzhejiang.irs.res.bill.infra.util.PageUtilPlus;
 import com.dtzhejiang.irs.res.bill.app.query.qry.ReportPageQry;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Component
@@ -43,14 +44,18 @@ public class ReportService {
         UserInfo user = userGateway.getCurrentUser();
         //获取子报告对应的主报告ID
         List<Long> reportIdList=subReportService.getReportIdList(pageQry.getBillPermission(),pageQry.getMyAudit());
-
-        if(!ObjectUtils.isEmpty(pageQry.getBillPermission())){
-            if (pageQry.getBillPermission() == BillPermissionEnum.generate) {
-                //应用管理员列表(角色待审批+初始化状态为init数据)
-                wrapper.in(Report::getId, CollectionUtils.isEmpty(reportIdList) ? Arrays.asList(0) : reportIdList).or(o->o.eq(Report::getAppAdminId, user.getUserName()).eq(Report::getStatus,StatusEnum.INIT));
-            } else {
-                wrapper.in(Report::getId, CollectionUtils.isEmpty(reportIdList) ? Arrays.asList(0) : reportIdList);
+        //应用管理员列表特殊处理
+        if(!ObjectUtils.isEmpty(pageQry.getBillPermission())&& pageQry.getBillPermission() == BillPermissionEnum.generate ){
+            wrapper.eq(Report::getAppAdminId, user.getUserName());
+            if (!pageQry.getMyAudit()) {
+                //待审核列表
+                wrapper.in(Report::getStatus,Arrays.asList(StatusEnum.UN_INIT,StatusEnum.INIT));
+            }else {
+                //已审核列表
+                wrapper.notIn(Report::getStatus,Arrays.asList(StatusEnum.UN_INIT,StatusEnum.INIT));
             }
+        }else {
+            wrapper.in(Report::getId, reportIdList);
         }
         wrapper.like(!ObjectUtils.isEmpty(pageQry.getKeyword()), Report::getName,pageQry.getKeyword());
         wrapper.eq(!ObjectUtils.isEmpty(pageQry.getType()), Report::getType,pageQry.getType());
@@ -75,8 +80,23 @@ public class ReportService {
         return list;
     }
 
-
-
+    /**
+     * 查询报告详情
+     * @return
+     */
+    public ReportDTO getDetail(Long reportId){
+        ReportDTO detail=new ReportDTO();
+        Report report=getReport(reportId);
+        BeanUtils.copyProperties(report,detail);
+        List<SubReport> list=subReportService.getList(reportId);
+        detail.setTypeList(list.stream().map(SubReport::getSubType).collect(Collectors.toList()));
+        Set<SubStatusEnum> set=list.stream().map(SubReport::getSubStatus).collect(Collectors.toSet());
+        //所有报告权限一致且在
+        if (!CollectionUtils.isEmpty(set) &&set.size() == 1 && SubStatusEnum.unifyList.contains(set.iterator().next())) {
+            detail.setCanOperate(true);
+        }
+        return detail;
+    }
 
 
     /**
@@ -113,6 +133,7 @@ public class ReportService {
         saveOrUpdate(report);
     }
 
+
     /**
      * 保存报告返回ID
      * @param entity
@@ -135,12 +156,10 @@ public class ReportService {
                 entity.setStatus(oldReport.getStatus());
                 saveOrUpdate(entity);
                 subReportService.createSubReport(entity.getId());
-
             }else if (entity.isLinkProject() && entity.getApplicationStatus().equals(ApplicationStatusEnum.TEST_RUN)) {
                 //关联项目且 试运行的数据自动新增
                 entity.setStatus(StatusEnum.PROCESS);
                 entity.setVersion("1.0");//新数据默认为1.0
-
                 saveOrUpdate(entity);
                 subReportService.createSubReport(entity.getId());
             }

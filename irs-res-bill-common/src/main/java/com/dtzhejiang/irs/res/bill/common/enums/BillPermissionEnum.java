@@ -1,18 +1,24 @@
 package com.dtzhejiang.irs.res.bill.common.enums;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * 流程节点
  **/
 public enum BillPermissionEnum {
 
-
-    valid_confirm("valid_confirm", "合规性确认"),
     generate("generate", "报告生成"),
-    review("review", "报告初审"),
-    confirm("confirm", "报告确认"),
-    audit("audit", "报告确认"),
-    pass("pass", "报告出具"),
-    valid_pass("valid_pass", "合规性出具"),
+    //valid_confirm("valid_confirm", "合规性确认"),
+
+    //review("review", "报告初审"),
+    //confirm("confirm", "报告确认"),
+
+    audit("audit", "报告审核"),
+
+    //valid_pass("valid_pass", "合规性出具"),
+
+    //pass("pass", "报告出具"),
     ;
 
 
@@ -48,6 +54,5 @@ public enum BillPermissionEnum {
         }
         return null;
     }
-
 
 }

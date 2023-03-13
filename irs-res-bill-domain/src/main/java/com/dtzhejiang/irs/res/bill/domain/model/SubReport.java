@@ -40,7 +40,7 @@ public class SubReport {
     private SubTypeEnum subType;
 
     /**
-     * 子报告状态：UN_SUBMIT-待提交，UN_COMMIT-待确认，UN_AUDIT-待审核，APPROVED-已审核
+     * 子报告状态： UN_SUBMIT-待提交,UN_VALID_CONFIRM-待合规性确认,UN_RE_SUBMIT-待重新提交,UN_COMMIT-待确认,UN_DOUBLE_COMMIT-待确认(复审),UN_AUDIT-待审核,UN_AUDIT_ISSUE-待合规性出具,UN_REPORT_ISSUE-待报告出具,SUCCESS-已出具,FAIL-不通过
      */
     private SubStatusEnum subStatus;
 

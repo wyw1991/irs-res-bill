@@ -48,13 +48,7 @@ public class SubReportController {
         return MultiResponse.of(subReportService.convertToList(subReportService.getList(qry)));
     }
 
-    /**
-     * 子报告权限列表
-     */
-    @PostMapping("/perList")
-    public MultiResponse<SubTypeEnum> getSubReportPermissionList() {
-        return MultiResponse.of(subReportService.getSubReportPermissionList());
-    }
+
 
     /**
      * 提交

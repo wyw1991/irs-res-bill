@@ -19,7 +19,7 @@ public class HisIndicesController {
      * 保存接口
      * @param entity 保存实体
      */
-    @GetMapping("/save")
+    @PostMapping("/save")
     public SingleResponse save(@RequestBody HisIndices entity) {
         return SingleResponse.of(hisIndicesService.save(entity));
     }

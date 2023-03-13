@@ -60,7 +60,7 @@ public class AppInfoSyncTask {
         report.setAppAdmin(appInfo.getAppAdmin());
         report.setAppAdminId(appInfo.getAppAdminId());
         report.setApplicationStatus(appInfo.getApplicationStatus());
-        report.setStatus(StatusEnum.INIT);
+        report.setStatus(StatusEnum.UN_INIT);
         return report;
     }
 

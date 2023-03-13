@@ -51,6 +51,7 @@ public class SubReportService {
 
     public SubReportDTO getSubReportDTO(SubReportQry qry){
         SubReportDTO dto=new SubReportDTO();
+        UserInfo userInfo=userGateway.getCurrentUser();
         LambdaQueryWrapper<SubReport> wrapper = new LambdaQueryWrapper<>();
         if (qry.getReportId()== null) {
             throw new BusinessException("reportId不能为空！");
@@ -60,39 +61,20 @@ public class SubReportService {
         }
         wrapper.eq(SubReport::getSubType,qry.getSubType());
         wrapper.eq(SubReport::getReportId,qry.getReportId());
-        //应用管理员不过滤子报告权限
-        List<SubTypeEnum> typeList=getSubReportPermissionList();
-        wrapper.in(!ObjectUtils.isEmpty(qry.getBillPermission()) && qry.getBillPermission()!=BillPermissionEnum.generate,SubReport::getSubType,typeList==null?"0":typeList);
         wrapper.orderBy(true,true, SubReport::getId);//按照id正序
         SubReport subReport=mapper.selectOne(wrapper);
         dto.setSubReport(subReport);
         dto.setHisIndicesList(indicesService.getList(subReport.getId()));
         return dto;
     }
-    public List<SubTypeEnum> getSubReportPermissionList(){
-        //默认需要进行权限控制
-        UserInfo userInfo=userGateway.getCurrentUser();
-        //根据角色列表查询对应的子报告权限
-        List<SubTypeEnum> list=new ArrayList<>();
-        List<String> bfList=Arrays.asList("compliance_confirm","basic_confirm","basic_audit","compliance_leader","business_leader");
-        List<String> asList=Arrays.asList("compliance_confirm","data_confirm","data_audit","compliance_leader","business_leader");
-        List<String> drList=Arrays.asList("compliance_confirm","app_confirm","app_audit","compliance_leader","business_leader");
-        List<String> oList=Arrays.asList("compliance_confirm","point_pre_confirm","point_confirm","point_audit","compliance_leader","business_leader");
-        List<String> nsList=Arrays.asList("compliance_confirm","security_pre_confirm","security_confirm","security_audit","compliance_leader","business_leader");
-        List<String> baList=Arrays.asList("compliance_confirm","business_confirm","business_audit","compliance_leader","business_leader");
 
-        userInfo.getRoleCodes().stream().map(m->m.replace("irs-res-bill_","")).forEach(f->{
-            if (bfList.contains(f)){list.add(SubTypeEnum.BASIC_FACILITIES);}
-            if (asList.contains(f)) {list.add(SubTypeEnum.APPLICATION_SUPPORT);}
-            if (drList.contains(f)) {list.add(SubTypeEnum.DATA_RESOURCES);}
-            if (oList.contains(f)) {list.add(SubTypeEnum.OPERATION);}
-            if (nsList.contains(f)) {list.add(SubTypeEnum.NETWORK_SECURITY);}
-            if (baList.contains(f)) {list.add(SubTypeEnum.BUSINESS_APPLICATION);}
-        });
-        if(CollectionUtils.isEmpty(list)){
-            return null;
+    public List<SubReport> getList (Long reportId){
+        if (reportId == null) {
+            throw new BusinessException("reportId 不能为空！");
         }
-        return list;
+        SubReportQry qry=new SubReportQry();
+        qry.setReportId(reportId);
+       return getList(qry);
     }
 
     public List<SubReport> getList (SubReportQry qry){
@@ -102,15 +84,11 @@ public class SubReportService {
         //默认需要进行权限控制
         if (!ObjectUtils.isEmpty(qry.getPermission()) && qry.getPermission()) {
             UserInfo userInfo=userGateway.getCurrentUser();
-            //应用管理员不过滤子报告权限
-            List<SubTypeEnum> typeList=getSubReportPermissionList();
-            wrapper.in(!ObjectUtils.isEmpty(qry.getBillPermission()) && qry.getBillPermission()!=BillPermissionEnum.generate,SubReport::getSubType,typeList==null?"0":typeList);
-            if (qry.getMyAudit()) {
+           if (qry.getMyAudit()) {
                 //已审核列表
-                wrapper.like(SubReport::getHistoryHandler, "<" + qry.getBillPermission() + ">_" + userInfo.getUserName());
+                wrapper.like(SubReport::getHistoryHandler,  userInfo.getUserName());
             } else {
-                //待审核列表
-                wrapper.in(SubReport::getCurrentRole, userInfo.getPermissionList(qry.getBillPermission()));
+               wrapper.in(SubReport::getCurrentRole, userInfo.getRoleCodes());
             }
         }
         wrapper.orderBy(true,false, SubReport::getUpdateTime);//按照更新时间倒序
@@ -141,18 +119,14 @@ public class SubReportService {
         qry.setBillPermission(billPermission);
         qry.setMyAudit(myAudit);
         List<SubReport> list=getList(qry);
-        List<Long> idList=new ArrayList<>();
-        if (!CollectionUtils.isEmpty(list)) {
-            //在 报告生成，合规确认,合规审核，报告出具 4个列表 需要6个子报告一起操作
-            if(Arrays.asList(BillPermissionEnum.valid_confirm,BillPermissionEnum.valid_pass,BillPermissionEnum.pass,BillPermissionEnum.generate).contains(qry.getBillPermission()) ){
-                //统计同一个主报告下的子报告数量,过滤出子报告个数为6个的
-                Map<Long,Long> map = list.stream().collect(Collectors.groupingBy(SubReport::getReportId,Collectors.counting()));
-                idList=map.entrySet().stream().filter(v->v.getValue()==6).map(m->m.getKey()).collect(Collectors.toList());
-            }else {
-                idList=list.stream().map(SubReport::getReportId).distinct().collect(Collectors.toList());
-            }
+        List<Long> idList=list.stream().map(SubReport::getReportId).distinct().collect(Collectors.toList());//防止查到所有
+        //待审核列表特殊处理 在 合规确认,合规审核，报告出具 3个状态 需要6个子报告一起操作
+        if (Boolean.TRUE.equals(!CollectionUtils.isEmpty(list) && !myAudit) && BillPermissionEnum.audit.equals(qry.getBillPermission())) {
+            //统计同一个主报告下的子报告数量,过滤出子报告个数为6个的
+            Map<Long,Long> map = list.stream().filter(f->SubStatusEnum.unifyList.contains(f.getSubStatus())).collect(Collectors.groupingBy(SubReport::getReportId,Collectors.counting()));
+            idList=map.entrySet().stream().filter(v->v.getValue()==6).map(m->m.getKey()).collect(Collectors.toList());
         }
-        return idList;
+        return  CollectionUtils.isEmpty(idList)?Arrays.asList(0L):idList;
     }
 
     /**
@@ -163,10 +137,9 @@ public class SubReportService {
     public void reSubmit(Report newReport,Long oldReportId){
         LambdaQueryWrapper<SubReport> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(!ObjectUtils.isEmpty(oldReportId), SubReport::getReportId,oldReportId);
-        wrapper.ne(SubReport::getSubStatus, OperationResultsStatusEnum.SUCCESS);
         List<SubReport> list=mapper.selectList(wrapper);
         //已审核的保持不变
-        list.stream().filter(f->SubStatusEnum.APPROVED.equals(f.getSubStatus())).forEach(v->{
+        list.stream().filter(f->SubStatusEnum.SUCCESS.equals(f.getSubStatus())).forEach(v->{
             List<HisIndices> hisList= indicesService.getList(v.getId());
             v.setId(null);
             v.setReportId(newReport.getId());
@@ -178,7 +151,7 @@ public class SubReportService {
             });
         });
         //没有审核通过的根据最新数据生成
-        list.stream().filter(f->!SubStatusEnum.APPROVED.equals(f.getSubStatus())).forEach(v->{
+        list.stream().filter(f->!SubStatusEnum.SUCCESS.equals(f.getSubStatus())).forEach(v->{
             createSubReport(newReport.getId());
         });
     }
@@ -276,13 +249,11 @@ public class SubReportService {
             SubReport oldSubReport=mapper.selectOne(wrapper);
             if (oldSubReport != null) {
                 //已审核的数据不能修改
-                if (SubStatusEnum.APPROVED.equals(oldSubReport.getSubStatus())) {
+                if (SubStatusEnum.isApproved(oldSubReport.getSubStatus())) {
                     return null;
                 }
                 entity.setId(oldSubReport.getId());
             }
-        }else {
-            entity.setSubStatus(SubStatusEnum.UN_SUBMIT);
         }
         subReportRepository.saveOrUpdate(entity);
         return entity.getId();

@@ -1,12 +1,15 @@
 package com.dtzhejiang.irs.res.bill.adapter.controller;
 
+import com.dtzhejiang.irs.res.bill.app.dto.ReportDTO;
 import com.dtzhejiang.irs.res.bill.common.dto.MultiResponse;
 import com.dtzhejiang.irs.res.bill.common.dto.SingleResponse;
+import com.dtzhejiang.irs.res.bill.common.enums.SubTypeEnum;
 import com.dtzhejiang.irs.res.bill.domain.model.Report;
 import com.dtzhejiang.irs.res.bill.common.dto.PageResponse;
 import com.dtzhejiang.irs.res.bill.common.dto.Response;
 import com.dtzhejiang.irs.res.bill.app.query.qry.ReportPageQry;
 import com.dtzhejiang.irs.res.bill.app.service.ReportService;
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -51,6 +54,14 @@ public class ReportController {
     public SingleResponse saveSubReport(Long reportId) {
         service.generateReport(reportId);
         return SingleResponse.buildSuccess();
+    }
+
+    /**
+     * 报告详情（子报告权限）
+     */
+    @GetMapping("/detail")
+    public SingleResponse<ReportDTO> getReportDto(@NonNull Long reportId) {
+        return SingleResponse.of(service.getDetail(reportId));
     }
 
 }
