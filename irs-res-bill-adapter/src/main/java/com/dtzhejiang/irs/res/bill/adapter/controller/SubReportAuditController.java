@@ -2,10 +2,9 @@ package com.dtzhejiang.irs.res.bill.adapter.controller;
 
 import com.dtzhejiang.irs.res.bill.app.command.cmd.CompleteReportCmd;
 import com.dtzhejiang.irs.res.bill.app.command.cmd.CompleteSubReportCmd;
+import com.dtzhejiang.irs.res.bill.app.command.cmd.FinalCompleteReportCmd;
 import com.dtzhejiang.irs.res.bill.app.service.SubReportAuditService;
 import com.dtzhejiang.irs.res.bill.common.dto.Response;
-import com.dtzhejiang.irs.res.bill.common.dto.SingleResponse;
-import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,19 +38,11 @@ public class SubReportAuditController {
     }
 
     /**
-     * 业务终审全部通过
+     * 业务终审全部通过/部分驳回
      */
-    @PostMapping("/allAgree")
-    public SingleResponse allAgree() {
-        return SingleResponse.buildSuccess();
-    }
-
-    /**
-     * 业务终审部分退回
-     */
-    @PostMapping("/someBackoff")
-    public SingleResponse someBackoff() {
-        return SingleResponse.buildSuccess();
+    @PostMapping("/final/complete")
+    public Response finalComplete(@RequestBody FinalCompleteReportCmd cmd) {
+        return subReportAuditService.finalComplete(cmd);
     }
 
 }

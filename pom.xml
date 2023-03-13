@@ -24,6 +24,9 @@
         <smart-decrypt.version>1.0.1</smart-decrypt.version>
         <forest.version>1.5.25</forest.version>
         <shirocas.version>1.2.12</shirocas.version>
+        <user-client.version>1.0.7-SNAPSHOT</user-client.version>
+        <openfeign.version>3.0.3</openfeign.version>
+        <commons-collections4.version>4.4</commons-collections4.version>
     </properties>
 
     <modules>
@@ -92,13 +95,19 @@
             <dependency>
                 <groupId>com.dtzhejiang</groupId>
                 <artifactId>user-center-client</artifactId>
-                <version>1.0.7-SNAPSHOT</version>
+                <version>${user-client.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-starter-openfeign</artifactId>
-                <version>3.0.3</version>
+                <version>${openfeign.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-collections4</artifactId>
+                <version>${commons-collections4.version}</version>
             </dependency>
 
             <!-- third dependencies  End-->
