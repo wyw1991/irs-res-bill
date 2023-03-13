@@ -60,7 +60,7 @@ public class Report {
     private String appAdminId;
 
     /**
-     * 报告状态：INIT-初始化，PROCESS-处理中，SUCCESS-已出具，FAIL-不通过
+     * 报告状态：UN_INIT-待生成,INIT-待提交,PROCESS-处理中，SUCCESS-已出具，FAIL-不通过
      */
     private StatusEnum status;
 
