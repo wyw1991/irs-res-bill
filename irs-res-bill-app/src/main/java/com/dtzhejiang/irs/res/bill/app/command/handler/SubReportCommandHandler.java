@@ -1,6 +1,8 @@
 package com.dtzhejiang.irs.res.bill.app.command.handler;
 
 import com.dtzhejiang.irs.res.bill.app.command.cmd.SubReportUpdateProcessInfoCmd;
+import com.dtzhejiang.irs.res.bill.common.enums.SubStatusEnum;
+import com.dtzhejiang.irs.res.bill.domain.exception.BusinessException;
 import com.dtzhejiang.irs.res.bill.domain.model.SubReport;
 import com.dtzhejiang.irs.res.bill.infra.repository.SubReportRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -24,9 +26,10 @@ public class SubReportCommandHandler {
         SubReport subReport = subReportRepository.getByApprovalId(processInfoCmd.getProcessInstanceId());
         if(subReport == null){
             log.warn("子报告不存在,approvalId:{}", processInfoCmd.getProcessInstanceId());
-            return;
+            throw new BusinessException("404", "子报告不存在");
         }
         subReport.setTaskId(processInfoCmd.getTaskId());
+        subReport.setSubStatus(SubStatusEnum.fromCode(processInfoCmd.getStatus()));
         subReport.setTaskName(processInfoCmd.getTaskName());
         subReport.setCurrentHandler(processInfoCmd.getAssignee());
         subReport.setCurrentRole(processInfoCmd.getRole());
@@ -42,7 +45,7 @@ public class SubReportCommandHandler {
         SubReport subReport = subReportRepository.getByApprovalId(processInfoCmd.getProcessInstanceId());
         if(subReport == null){
             log.warn("子报告不存在,approvalId:{}", processInfoCmd.getProcessInstanceId());
-            return;
+            throw new BusinessException("404", "子报告不存在");
         }
         subReport.setTaskId(processInfoCmd.getTaskId());
         subReport.setProcessEnd(1);

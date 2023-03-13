@@ -5,6 +5,7 @@ import com.dtzhejiang.irs.res.bill.app.command.handler.SubReportCommandHandler;
 import com.dtzhejiang.irs.res.bill.common.dto.Response;
 import com.dtzhejiang.irs.res.bill.common.enums.FlowableEventType;
 import com.dtzhejiang.irs.res.bill.common.util.JsonUtil;
+import com.dtzhejiang.irs.res.bill.infra.mapper.SubReportMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
@@ -43,6 +44,7 @@ public class ExternalEventsController {
             List<String> taskGroup = Optional.ofNullable((List<String>) eventBody.get("taskGroup")).orElse(new ArrayList<>());
             subReportCommandHandler.updateAssignInfo(SubReportUpdateProcessInfoCmd.builder()
                     .processInstanceId(processInstanceId)
+                    .status(eventBody.get("status").toString())
                     .taskId(eventBody.get("taskId").toString())
                     .taskName(eventBody.get("taskName").toString())
                     .assignee(eventBody.get("taskAssignee").toString())

@@ -37,6 +37,7 @@ public class ProcessCommandHandler {
         opInfo.put("configOpName", "提交");
         opInfo.put("logOpName", "提交");
         variables.put("opInfo", opInfo);
+        variables.put("status", "UN_VALID_CONFIRM");
         return variables;
     }
 }

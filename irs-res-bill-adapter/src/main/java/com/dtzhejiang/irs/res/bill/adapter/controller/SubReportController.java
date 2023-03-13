@@ -2,17 +2,14 @@ package com.dtzhejiang.irs.res.bill.adapter.controller;
 
 import com.dtzhejiang.irs.res.bill.app.command.cmd.SubReportSingleSubmitCmd;
 import com.dtzhejiang.irs.res.bill.app.dto.SubReportDTO;
+import com.dtzhejiang.irs.res.bill.app.dto.SubReportFailDTO;
+import com.dtzhejiang.irs.res.bill.app.query.qry.SubReportQry;
 import com.dtzhejiang.irs.res.bill.app.service.SubReportService;
 import com.dtzhejiang.irs.res.bill.common.dto.MultiResponse;
 import com.dtzhejiang.irs.res.bill.common.dto.SingleResponse;
-import com.dtzhejiang.irs.res.bill.app.dto.SubReportFailDTO;
-import com.dtzhejiang.irs.res.bill.app.query.qry.SubReportQry;
-import com.dtzhejiang.irs.res.bill.common.enums.SubTypeEnum;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  *子报告
@@ -51,7 +48,7 @@ public class SubReportController {
 
 
     /**
-     * 提交
+     * 列表页-全部提交
      */
     @GetMapping("/submit")
     public SingleResponse createSubReport(@NonNull Long reportId) {
@@ -60,11 +57,11 @@ public class SubReportController {
     }
 
     /**
-     * 详情页-提交
+     * 详情页-单个提交
      */
-    @PostMapping("/single/submit")
-    public SingleResponse submitSubReport(@RequestBody SubReportSingleSubmitCmd cmd) {
-        subReportService.submitSingleSubReport(cmd);
+    @PostMapping("/reSubmit")
+    public SingleResponse reSubmit(@RequestBody SubReportSingleSubmitCmd cmd) {
+        subReportService.reSubmit(cmd);
         return SingleResponse.buildSuccess();
     }
 

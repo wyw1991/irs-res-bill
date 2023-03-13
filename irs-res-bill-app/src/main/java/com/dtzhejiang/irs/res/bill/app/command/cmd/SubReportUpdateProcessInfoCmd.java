@@ -7,6 +7,10 @@ import lombok.Data;
 @Builder
 public class SubReportUpdateProcessInfoCmd {
     /**
+     * 流程状态
+     */
+    private String status;
+    /**
      * 流程编号
      */
     private String processInstanceId;

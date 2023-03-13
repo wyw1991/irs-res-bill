@@ -14,9 +14,11 @@ import com.dtzhejiang.irs.res.bill.domain.model.AppInfo;
 import com.dtzhejiang.irs.res.bill.domain.model.HisIndices;
 import com.dtzhejiang.irs.res.bill.domain.model.Report;
 import com.dtzhejiang.irs.res.bill.domain.model.SubReport;
+import com.dtzhejiang.irs.res.bill.domain.process.valueobject.ProcessInstance;
 import com.dtzhejiang.irs.res.bill.domain.subreport.SubReportNoGateway;
 import com.dtzhejiang.irs.res.bill.domain.user.gateway.UserGateway;
 import com.dtzhejiang.irs.res.bill.domain.user.valueobject.UserInfo;
+import com.dtzhejiang.irs.res.bill.domain.user.valueobject.UserRole;
 import com.dtzhejiang.irs.res.bill.infra.mapper.SubReportMapper;
 import com.dtzhejiang.irs.res.bill.infra.repository.SubReportRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -158,22 +160,25 @@ public class SubReportService {
      * @param reportId
      */
     public void submitSubReport(Long reportId){
-        SubReportQry qry=new SubReportQry();
+        SubReportQry qry = new SubReportQry();
         qry.setReportId(reportId);
-        List<SubReport> list=getList(qry);
+        List<SubReport> list = getList(qry);
         list.forEach(subReport -> {
             StartProcessCmd cmd = StartProcessCmd.builder()
                     .processKey(subReport.getSubType().getCode().toLowerCase(Locale.ROOT) + "-process")
                     .businessKey(subReport.getSubNo())
                     .build();
-            processCommandHandler.start(cmd);
+            ProcessInstance start = processCommandHandler.start(cmd);
+            subReport.setApprovalId(start.getProcessId());
+            subReport.setUpdateTime(new Date());
+            subReportRepository.updateById(subReport);
         });
     }
 
     /**
-     * 详情页提交
+     * 详情页单个提交
      */
-    public void submitSingleSubReport(SubReportSingleSubmitCmd cmd){
+    public void reSubmit(SubReportSingleSubmitCmd cmd){
         SubReport subReport = subReportRepository.getById(cmd.getSubReportId());
         if(subReport == null){
             throw new BusinessException("404", "子报告不存在");

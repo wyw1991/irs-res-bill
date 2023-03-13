@@ -38,4 +38,32 @@ public class UserInfo {
         return roleCodes.stream().map(s -> "<"+currentPermission+">_"+s.replace("irs-res-bill_","")).collect(Collectors.toList());
     }
 
+    /**
+     * 是否是应用管理员
+     */
+    public boolean isAppManager(){
+        return roleCodes.contains(UserRole.APP_MANAGER.getCode());
+    }
+
+    /**
+     * 是否是合规性确认员
+     */
+    public boolean isComplianceConfirmer(){
+        return roleCodes.contains(UserRole.COMPLIANCE_CONFIRM.getCode());
+    }
+
+    /**
+     * 是否是合规终审员
+     */
+    public boolean isComplianceLeader(){
+        return roleCodes.contains(UserRole.COMPLIANCE_LEADER.getCode());
+    }
+
+    /**
+     * 是否是应用审核终审员
+     */
+    public boolean isBusinessLeader(){
+        return roleCodes.contains(UserRole.BUSINESS_LEADER.getCode());
+    }
+
 }
