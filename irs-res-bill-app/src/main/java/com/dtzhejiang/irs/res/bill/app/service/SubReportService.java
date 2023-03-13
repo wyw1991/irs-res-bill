@@ -51,7 +51,6 @@ public class SubReportService {
 
     public SubReportDTO getSubReportDTO(SubReportQry qry){
         SubReportDTO dto=new SubReportDTO();
-        UserInfo userInfo=userGateway.getCurrentUser();
         LambdaQueryWrapper<SubReport> wrapper = new LambdaQueryWrapper<>();
         if (qry.getReportId()== null) {
             throw new BusinessException("reportId不能为空！");
@@ -82,9 +81,9 @@ public class SubReportService {
         wrapper.eq(!ObjectUtils.isEmpty(qry.getSubType()), SubReport::getSubType,qry.getSubType());
         wrapper.eq(!ObjectUtils.isEmpty(qry.getReportId()), SubReport::getReportId,qry.getReportId());
         //默认需要进行权限控制
-        if (!ObjectUtils.isEmpty(qry.getPermission()) && qry.getPermission()) {
+        if (Boolean.TRUE.equals(qry.getPermission())) {
             UserInfo userInfo=userGateway.getCurrentUser();
-           if (qry.getMyAudit()) {
+           if (Boolean.TRUE.equals(qry.getMyAudit())) {
                 //已审核列表
                 wrapper.like(SubReport::getHistoryHandler,  userInfo.getUserName());
             } else {
@@ -124,7 +123,7 @@ public class SubReportService {
         if (Boolean.TRUE.equals(!CollectionUtils.isEmpty(list) && !myAudit) && BillPermissionEnum.audit.equals(qry.getBillPermission())) {
             //统计同一个主报告下的子报告数量,过滤出子报告个数为6个的
             Map<Long,Long> map = list.stream().filter(f->SubStatusEnum.unifyList.contains(f.getSubStatus())).collect(Collectors.groupingBy(SubReport::getReportId,Collectors.counting()));
-            idList=map.entrySet().stream().filter(v->v.getValue()==6).map(m->m.getKey()).collect(Collectors.toList());
+            idList=map.entrySet().stream().filter(v->v.getValue()==6).map(Map.Entry::getKey).collect(Collectors.toList());
         }
         return  CollectionUtils.isEmpty(idList)?Arrays.asList(0L):idList;
     }
@@ -151,9 +150,7 @@ public class SubReportService {
             });
         });
         //没有审核通过的根据最新数据生成
-        list.stream().filter(f->!SubStatusEnum.SUCCESS.equals(f.getSubStatus())).forEach(v->{
-            createSubReport(newReport.getId());
-        });
+        list.stream().filter(f->!SubStatusEnum.SUCCESS.equals(f.getSubStatus())).forEach(v-> createSubReport(newReport.getId()));
     }
 
     /**

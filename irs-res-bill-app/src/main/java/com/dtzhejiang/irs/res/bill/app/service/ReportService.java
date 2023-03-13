@@ -47,7 +47,7 @@ public class ReportService {
         //应用管理员列表特殊处理
         if(!ObjectUtils.isEmpty(pageQry.getBillPermission())&& pageQry.getBillPermission() == BillPermissionEnum.generate ){
             wrapper.eq(Report::getAppAdminId, user.getUserName());
-            if (!pageQry.getMyAudit()) {
+            if (Boolean.FALSE.equals(pageQry.getMyAudit())) {
                 //待审核列表
                 wrapper.in(Report::getStatus,Arrays.asList(StatusEnum.UN_INIT,StatusEnum.INIT));
             }else {
@@ -120,13 +120,12 @@ public class ReportService {
             saveOrUpdate(report);
             //拒绝后重新生成报告
             report.setId(null);
-            Report newReport=report;
-            newReport.setStatus(StatusEnum.INIT);
-            int newVersion=Integer.parseInt(newReport.getVersion().replace(".0",""))+1;
-            newReport.setVersion(newVersion+".0");
-            newReport.setNewReport(true);
-            saveOrUpdate(newReport);
-            subReportService.reSubmit(newReport,reportId);
+            report.setStatus(StatusEnum.INIT);
+            int newVersion=Integer.parseInt(report.getVersion().replace(".0",""))+1;
+            report.setVersion(newVersion+".0");
+            report.setNewReport(true);
+            saveOrUpdate(report);
+            subReportService.reSubmit(report,reportId);
         }else {
             throw new BusinessException("报告状态是"+report.getStatus().getName()+",不能生成！");
         }
