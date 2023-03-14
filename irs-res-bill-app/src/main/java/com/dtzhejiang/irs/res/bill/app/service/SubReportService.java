@@ -69,11 +69,17 @@ public class SubReportService {
         return dto;
     }
 
+    /**
+     * 不过滤权限
+     * @param reportId
+     * @return
+     */
     public List<SubReport> getList (Long reportId){
         if (reportId == null) {
             throw new BusinessException("reportId 不能为空！");
         }
         SubReportQry qry=new SubReportQry();
+        qry.setPermission(false);
         qry.setReportId(reportId);
        return getList(qry);
     }
@@ -83,13 +89,13 @@ public class SubReportService {
         wrapper.eq(!ObjectUtils.isEmpty(qry.getSubType()), SubReport::getSubType,qry.getSubType());
         wrapper.eq(!ObjectUtils.isEmpty(qry.getReportId()), SubReport::getReportId,qry.getReportId());
         //默认需要进行权限控制
-        if (Boolean.TRUE.equals(qry.getPermission())) {
-            UserInfo userInfo=userGateway.getCurrentUser();
-           if (Boolean.TRUE.equals(qry.getMyAudit())) {
+        if(Boolean.TRUE.equals(qry.getPermission())) {
+            UserInfo userInfo = userGateway.getCurrentUser();
+            if (Boolean.TRUE.equals(qry.getMyAudit())) {
                 //已审核列表
-                wrapper.like(SubReport::getHistoryHandler,  userInfo.getUserName());
+                wrapper.like(SubReport::getHistoryHandler, userInfo.getUserName());
             } else {
-               wrapper.in(SubReport::getCurrentRole, userInfo.getRoleCodes());
+                wrapper.in(SubReport::getCurrentRole, userInfo.getRoleCodes()).or().eq(SubReport::getCurrentHandler, userInfo.getUserName());
             }
         }
         wrapper.orderBy(true,false, SubReport::getUpdateTime);//按照更新时间倒序
@@ -98,7 +104,6 @@ public class SubReportService {
 
     public SubReportFailDTO failList(SubReportQry qry){
         SubReportFailDTO dto = new SubReportFailDTO();
-        qry.setPermission(false);//应用管理员不限制子报告权限
         List<SubReport> list=getList(qry);
         dto.setApplication_support(convert(list,SubTypeEnum.APPLICATION_SUPPORT));
         dto.setOperation(convert(list,SubTypeEnum.OPERATION));
@@ -132,10 +137,10 @@ public class SubReportService {
 
     /**
      * 重新提交
-     * @param newReport
+     * @param newReportId
      * @param oldReportId
      */
-    public void reSubmit(Report newReport,Long oldReportId){
+    public void reSubmit(Long newReportId,Long oldReportId){
         LambdaQueryWrapper<SubReport> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(!ObjectUtils.isEmpty(oldReportId), SubReport::getReportId,oldReportId);
         List<SubReport> list=mapper.selectList(wrapper);
@@ -143,7 +148,7 @@ public class SubReportService {
         list.stream().filter(f->SubStatusEnum.SUCCESS.equals(f.getSubStatus())).forEach(v->{
             List<HisIndices> hisList= indicesService.getList(v.getId());
             v.setId(null);
-            v.setReportId(newReport.getId());
+            v.setReportId(newReportId);
             Long subId=saveOrUpdate(v);//新增一条数据
             hisList.forEach(m->{
                 m.setId(null);
@@ -152,7 +157,7 @@ public class SubReportService {
             });
         });
         //没有审核通过的根据最新数据生成
-        list.stream().filter(f->!SubStatusEnum.SUCCESS.equals(f.getSubStatus())).forEach(v-> createSubReport(newReport.getId()));
+        list.stream().filter(f->!SubStatusEnum.SUCCESS.equals(f.getSubStatus())).forEach(v-> createSubReport(newReportId));
     }
 
     /**
@@ -170,8 +175,8 @@ public class SubReportService {
                     .build();
             ProcessInstance start = processCommandHandler.start(cmd);
             subReport.setApprovalId(start.getProcessId());
-            subReport.setUpdateTime(new Date());
-            subReportRepository.updateById(subReport);
+            subReport.setCurrentHandler("");//清空当前处理人
+            saveOrUpdate(subReport);
         });
     }
 
@@ -202,10 +207,26 @@ public class SubReportService {
             subReport.setSubType(f);
             subReport.setName(f.getName());
             subReport.setSubStatus(SubStatusEnum.UN_SUBMIT);
+            subReport.setCurrentHandler(report.getAppAdminId());//放入待处理人
             save(subReport);
             indicesService.saveHisIndices(subReport.getId(),f,info);
         });
-        reportService.saveOrUpdate(report);
+    }
+
+    /**
+     * 更新子报告
+     * @param reportId
+     */
+    public void updateSubReport(Long reportId){
+        Report report=reportService.getReport(reportId);
+        AppInfo info=appInfoService.getAppInfo(report.getApplicationId());
+        List<SubReport> list=getList(reportId);
+        list.forEach(f->{
+            f.setName(info.getName());
+            f.setCurrentHandler(report.getAppAdminId());//更新待处理人
+            save(f);
+            indicesService.saveHisIndices(f.getId(),f.getSubType(),info);
+        });
     }
 
     /**
@@ -257,11 +278,12 @@ public class SubReportService {
                 entity.setId(oldSubReport.getId());
             }
         }
-        subReportRepository.saveOrUpdate(entity);
+        saveOrUpdate(entity);
         return entity.getId();
     }
 
     public Long saveOrUpdate(SubReport entity){
+        entity.setUpdateTime(new Date());
         subReportRepository.saveOrUpdate(entity);
         return entity.getId();
     }
