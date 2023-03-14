@@ -68,7 +68,7 @@ public class SubReportService {
         SubReport subReport=mapper.selectOne(wrapper);
         dto.setSubReport(subReport);
         try{
-            dto.setOperationDTO(processService.getCurrentProcessNode(subReport.getProcessId()).getData().getOperation());
+            dto.setOperationDTO(processService.getCurrentOperation(subReport.getProcessId()).getData());
         }catch (Exception e) {
         }
         dto.setHisIndicesList(indicesService.getList(subReport.getId()));

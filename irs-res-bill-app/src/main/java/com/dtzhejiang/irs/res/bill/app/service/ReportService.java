@@ -99,7 +99,7 @@ public class ReportService {
             detail.setCanOperate(true);
             //放入审批按钮信息
             try {
-                detail.setOperationDTO(processService.getCurrentProcessNode(list.iterator().next().getProcessId()).getData().getOperation());
+                detail.setOperationDTO(processService.getCurrentOperation(list.iterator().next().getProcessId()).getData());
             }catch (Exception e) {
             }
         }

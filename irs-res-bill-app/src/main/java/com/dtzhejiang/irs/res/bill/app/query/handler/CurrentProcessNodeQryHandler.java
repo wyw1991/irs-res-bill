@@ -1,6 +1,5 @@
 package com.dtzhejiang.irs.res.bill.app.query.handler;
 
-import com.dtzhejiang.irs.res.bill.app.dto.OperationDTO;
 import com.dtzhejiang.irs.res.bill.app.dto.ProcessNodeDTO;
 import com.dtzhejiang.irs.res.bill.app.dto.ProcessTaskDTO;
 import com.dtzhejiang.irs.res.bill.common.dto.SingleResponse;
@@ -9,14 +8,11 @@ import com.dtzhejiang.irs.res.bill.domain.process.valueobject.Operation;
 import com.dtzhejiang.irs.res.bill.domain.process.valueobject.ProcessTask;
 import com.dtzhejiang.irs.res.bill.domain.user.gateway.UserGateway;
 import com.dtzhejiang.irs.res.bill.domain.user.valueobject.UserInfo;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.function.Function;
-
 @Component
-public class CurrentProcessNodeQryHandler implements Function<String, SingleResponse<ProcessNodeDTO>> {
+public class CurrentProcessNodeQryHandler {
 
     @Autowired
     private UserGateway userGateway;
@@ -24,7 +20,6 @@ public class CurrentProcessNodeQryHandler implements Function<String, SingleResp
     @Autowired
     private ProcessGateway processGateway;
 
-    @Override
     public SingleResponse<ProcessNodeDTO> apply(String processId) {
         UserInfo currentUser = userGateway.getCurrentUser();
         ProcessTask currentProcessTask = processGateway.getCurrentProcessTask(processId, currentUser.getUserName());
@@ -37,13 +32,16 @@ public class CurrentProcessNodeQryHandler implements Function<String, SingleResp
                 .processTaskCategory(currentProcessTask.getCategory())
                 .build();
         Operation operation = processGateway.getCurrentOperation(processId, currentUser.getUserName());
-        OperationDTO operationDTO = new OperationDTO();
-        BeanUtils.copyProperties(operation, operationDTO);
         ProcessNodeDTO processNodeDTO = new ProcessNodeDTO();
         processNodeDTO.setProcessTask(taskDTO);
-        processNodeDTO.setOperation(operationDTO);
+        processNodeDTO.setOperation(operation);
         processNodeDTO.setAssigneeDisplayName(taskDTO.getProcessTaskAssignee());
         return SingleResponse.of(processNodeDTO);
     }
 
+    public SingleResponse<Operation> getCurrentOption(String processId) {
+        UserInfo currentUser = userGateway.getCurrentUser();
+        Operation operation = processGateway.getCurrentOperation(processId, currentUser.getUserName());
+        return SingleResponse.of(operation);
+    }
 }

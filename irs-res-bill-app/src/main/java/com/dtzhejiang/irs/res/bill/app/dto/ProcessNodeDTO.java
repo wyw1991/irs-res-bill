@@ -1,5 +1,6 @@
 package com.dtzhejiang.irs.res.bill.app.dto;
 
+import com.dtzhejiang.irs.res.bill.domain.process.valueobject.Operation;
 import lombok.Data;
 
 @Data
@@ -15,5 +16,5 @@ public class ProcessNodeDTO {
     /**
      * 操作配置
      */
-    private OperationDTO operation;
+    private Operation operation;
 }

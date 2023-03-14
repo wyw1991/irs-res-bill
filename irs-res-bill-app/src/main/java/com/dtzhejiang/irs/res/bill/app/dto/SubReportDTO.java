@@ -3,6 +3,7 @@ package com.dtzhejiang.irs.res.bill.app.dto;
 import com.dtzhejiang.irs.res.bill.common.enums.OperationResultsStatusEnum;
 import com.dtzhejiang.irs.res.bill.domain.model.HisIndices;
 import com.dtzhejiang.irs.res.bill.domain.model.SubReport;
+import com.dtzhejiang.irs.res.bill.domain.process.valueobject.Operation;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.util.CollectionUtils;
@@ -29,7 +30,7 @@ public class SubReportDTO {
 
     private List<HisIndices> hisIndicesList;
 
-    private OperationDTO operationDTO;
+    private Operation operationDTO;
     public Integer getTotalNum() {
         if(!CollectionUtils.isEmpty(hisIndicesList)){
             return hisIndicesList.size();
