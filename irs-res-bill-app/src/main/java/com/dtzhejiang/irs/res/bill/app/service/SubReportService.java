@@ -171,9 +171,7 @@ public class SubReportService {
      * @param reportId
      */
     public void submitSubReport(Long reportId){
-        SubReportQry qry = new SubReportQry();
-        qry.setReportId(reportId);
-        List<SubReport> list = getList(qry);
+        List<SubReport> list = getList(reportId);
         list.forEach(subReport -> {
             StartProcessCmd cmd = StartProcessCmd.builder()
                     .processKey(subReport.getSubType().getCode().toLowerCase(Locale.ROOT) + "-process")
@@ -182,8 +180,11 @@ public class SubReportService {
             ProcessInstance start = processCommandHandler.start(cmd);
             subReport.setProcessId(start.getProcessId());
             subReport.setCurrentHandler("");//清空当前处理人
+            subReport.setSubStatus(SubStatusEnum.fromCode(start.getStatus()));
             saveOrUpdate(subReport);
         });
+        //更新主报告状态
+        reportService.updateStatus(reportId,StatusEnum.PROCESS);
     }
 
     /**

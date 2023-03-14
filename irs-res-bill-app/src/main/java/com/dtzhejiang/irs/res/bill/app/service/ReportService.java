@@ -45,8 +45,6 @@ public class ReportService {
     public PageResponse<Report> page(ReportPageQry pageQry){
         LambdaQueryWrapper<Report> wrapper = new LambdaQueryWrapper<>();
         UserInfo user = userGateway.getCurrentUser();
-        //获取子报告对应的主报告ID
-        List<Long> reportIdList=subReportService.getReportIdList(pageQry.getBillPermission(),pageQry.getMyAudit());
         //应用管理员列表特殊处理
         if(!ObjectUtils.isEmpty(pageQry.getBillPermission())&& pageQry.getBillPermission() == BillPermissionEnum.generate ){
             wrapper.eq(Report::getAppAdminId, user.getUserName());
@@ -58,6 +56,8 @@ public class ReportService {
                 wrapper.notIn(Report::getStatus,Arrays.asList(StatusEnum.UN_INIT,StatusEnum.INIT));
             }
         }else {
+            //获取子报告对应的主报告ID
+            List<Long> reportIdList=subReportService.getReportIdList(pageQry.getBillPermission(),pageQry.getMyAudit());
             wrapper.in(Report::getId, reportIdList);
         }
         wrapper.like(!ObjectUtils.isEmpty(pageQry.getKeyword()), Report::getName,pageQry.getKeyword());
@@ -186,4 +186,10 @@ public class ReportService {
         return reportRepository.getById(reportId);
     }
 
+    public void updateStatus(Long id,StatusEnum status){
+        Report report=new Report();
+        report.setId(id);
+        report.setStatus(status);
+        reportRepository.updateById(report);
+    }
 }
