@@ -15,9 +15,9 @@ public class SubReportRepository extends ServiceImpl<SubReportMapper, SubReport>
      * @param processId
      * @return
      */
-    public SubReport getByApprovalId(String processId){
+    public SubReport getByProcessId(String processId){
         LambdaQueryWrapper<SubReport> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(SubReport::getApprovalId, processId);
+        queryWrapper.eq(SubReport::getProcessId, processId);
         return getOne(queryWrapper);
     }
 }

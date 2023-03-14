@@ -23,9 +23,9 @@ public class SubReportCommandHandler {
      * @param processInfoCmd
      */
     public void updateAssignInfo(SubReportUpdateProcessInfoCmd processInfoCmd){
-        SubReport subReport = subReportRepository.getByApprovalId(processInfoCmd.getProcessInstanceId());
+        SubReport subReport = subReportRepository.getByProcessId(processInfoCmd.getProcessInstanceId());
         if(subReport == null){
-            log.warn("子报告不存在,approvalId:{}", processInfoCmd.getProcessInstanceId());
+            log.warn("子报告不存在,processId:{}", processInfoCmd.getProcessInstanceId());
             throw new BusinessException("404", "子报告不存在");
         }
         subReport.setTaskId(processInfoCmd.getTaskId());
@@ -42,9 +42,9 @@ public class SubReportCommandHandler {
      * @param processInfoCmd
      */
     public void updateProcessEnd(SubReportUpdateProcessInfoCmd processInfoCmd){
-        SubReport subReport = subReportRepository.getByApprovalId(processInfoCmd.getProcessInstanceId());
+        SubReport subReport = subReportRepository.getByProcessId(processInfoCmd.getProcessInstanceId());
         if(subReport == null){
-            log.warn("子报告不存在,approvalId:{}", processInfoCmd.getProcessInstanceId());
+            log.warn("子报告不存在,processId:{}", processInfoCmd.getProcessInstanceId());
             throw new BusinessException("404", "子报告不存在");
         }
         subReport.setTaskId(processInfoCmd.getTaskId());

@@ -174,7 +174,7 @@ public class SubReportService {
                     .businessKey(subReport.getSubNo())
                     .build();
             ProcessInstance start = processCommandHandler.start(cmd);
-            subReport.setApprovalId(start.getProcessId());
+            subReport.setProcessId(start.getProcessId());
             subReport.setCurrentHandler("");//清空当前处理人
             saveOrUpdate(subReport);
         });
