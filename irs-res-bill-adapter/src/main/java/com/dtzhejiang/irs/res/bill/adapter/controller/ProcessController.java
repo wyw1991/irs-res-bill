@@ -1,7 +1,7 @@
 package com.dtzhejiang.irs.res.bill.adapter.controller;
 
-import com.dtzhejiang.irs.res.bill.app.dto.OperateLogDTO;
 import com.dtzhejiang.irs.res.bill.app.dto.ProcessNodeDTO;
+import com.dtzhejiang.irs.res.bill.app.dto.ProcessTaskDTO;
 import com.dtzhejiang.irs.res.bill.app.service.ProcessService;
 import com.dtzhejiang.irs.res.bill.common.dto.MultiResponse;
 import com.dtzhejiang.irs.res.bill.common.dto.SingleResponse;
@@ -29,6 +29,14 @@ public class ProcessController {
     @GetMapping("/Logs")
     public MultiResponse<ProcessLog> listProcessLogsByProcessId(String processId) {
         return processService.listProcessLogs(processId);
+    }
+
+    /**
+     * 查询当前流程任务
+     */
+    @GetMapping("/currentTask")
+    public SingleResponse<ProcessTaskDTO> getCurrentTask(String processId) {
+        return processService.getCurrentTask(processId);
     }
 
     /**
