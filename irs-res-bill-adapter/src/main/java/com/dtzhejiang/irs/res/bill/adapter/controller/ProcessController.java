@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * 流程管理
+ */
 @Slf4j
 @RestController
 @RequestMapping("/process")
@@ -31,7 +34,7 @@ public class ProcessController {
      * 查询当前流程信息(节点、操作项)
      */
     @GetMapping("/currentNode")
-    public SingleResponse<ProcessNodeDTO> getCurrentOperation(String processInstanceId) {
-        return processService.getCurrentProcessNode(processInstanceId);
+    public SingleResponse<ProcessNodeDTO> getCurrentOperation(String processId) {
+        return processService.getCurrentProcessNode(processId);
     }
 }
