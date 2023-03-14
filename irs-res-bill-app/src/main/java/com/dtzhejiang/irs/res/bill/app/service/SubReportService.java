@@ -94,14 +94,17 @@ public class SubReportService {
         LambdaQueryWrapper<SubReport> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(!ObjectUtils.isEmpty(qry.getSubType()), SubReport::getSubType,qry.getSubType());
         wrapper.eq(!ObjectUtils.isEmpty(qry.getReportId()), SubReport::getReportId,qry.getReportId());
-        //默认需要进行权限控制
-        if(Boolean.TRUE.equals(qry.getPermission())) {
-            UserInfo userInfo = userGateway.getCurrentUser();
-            if (Boolean.TRUE.equals(qry.getMyAudit())) {
-                //已审核列表
-                wrapper.like(SubReport::getHistoryHandler, userInfo.getUserName());
-            } else {
-                wrapper.in(SubReport::getCurrentRole, userInfo.getRoleCodes()).or().eq(SubReport::getCurrentHandler, userInfo.getUserName());
+        //应用管理员列表特殊处理
+        if(!ObjectUtils.isEmpty(qry.getBillPermission())&& qry.getBillPermission() != BillPermissionEnum.generate ){
+            //默认需要进行权限控制
+            if(Boolean.TRUE.equals(qry.getPermission())) {
+                UserInfo userInfo = userGateway.getCurrentUser();
+                if (Boolean.TRUE.equals(qry.getMyAudit())) {
+                    //已审核列表
+                    wrapper.like(SubReport::getHistoryHandler, userInfo.getUserName());
+                } else {
+                    wrapper.in(SubReport::getCurrentRole, userInfo.getRoleCodes()).or().eq(SubReport::getCurrentHandler, userInfo.getUserName());
+                }
             }
         }
         wrapper.orderBy(true,false, SubReport::getUpdateTime);//按照更新时间倒序
