@@ -167,7 +167,7 @@ public class SubReportService {
     }
 
     /**
-     * 提交流程
+     * 提交流程O
      * @param reportId
      */
     public void submitSubReport(Long reportId){
@@ -179,7 +179,6 @@ public class SubReportService {
                     .build();
             ProcessInstance start = processCommandHandler.start(cmd);
             subReport.setProcessId(start.getProcessId());
-            subReport.setCurrentHandler("");//清空当前处理人
             subReport.setSubStatus(SubStatusEnum.fromCode(start.getStatus()));
             saveOrUpdate(subReport);
         });
@@ -214,7 +213,6 @@ public class SubReportService {
             subReport.setSubType(f);
             subReport.setName(f.getName());
             subReport.setSubStatus(SubStatusEnum.UN_SUBMIT);
-            subReport.setCurrentHandler(report.getAppAdminId());//放入待处理人
             save(subReport);
             indicesService.saveHisIndices(subReport.getId(),f,info);
         });
