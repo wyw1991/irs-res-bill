@@ -46,6 +46,9 @@ public class ReportService {
     private HisIndicesService hisIndicesService;
 
     @Autowired
+    private  AppInfoService appInfoService;
+
+    @Autowired
     private ProcessService processService;
     public PageResponse<Report> page(ReportPageQry pageQry){
         LambdaQueryWrapper<Report> wrapper = new LambdaQueryWrapper<>();
@@ -199,8 +202,12 @@ public class ReportService {
     }
 
     public AppInfo getPdf(Long reportId){
-        AppInfo info = new AppInfo();
+
         Report report=getReport(reportId);
+        if (report == null || !report.getStatus().equals(StatusEnum.SUCCESS)) {
+            throw new BusinessException("只有审批完成才可以出具");
+        }
+        AppInfo info = appInfoService.getAppInfo(report.getApplicationId());
         BeanUtils.copyProperties(report, info);
         List<HisIndices> list=new ArrayList<>();
         subReportService.getList(reportId).forEach(f->{
