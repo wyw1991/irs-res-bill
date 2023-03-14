@@ -3,7 +3,6 @@ package com.dtzhejiang.irs.res.bill.adapter.controller;
 import com.dtzhejiang.irs.res.bill.app.dto.ReportDTO;
 import com.dtzhejiang.irs.res.bill.common.dto.MultiResponse;
 import com.dtzhejiang.irs.res.bill.common.dto.SingleResponse;
-import com.dtzhejiang.irs.res.bill.common.enums.SubTypeEnum;
 import com.dtzhejiang.irs.res.bill.domain.model.Report;
 import com.dtzhejiang.irs.res.bill.common.dto.PageResponse;
 import com.dtzhejiang.irs.res.bill.common.dto.Response;

@@ -49,6 +49,8 @@ public class SubReportService {
     private UserGateway userGateway;
 
     @Autowired
+    private ProcessService processService;
+    @Autowired
     private SubReportRepository subReportRepository;
 
     public SubReportDTO getSubReportDTO(SubReportQry qry){
@@ -65,6 +67,10 @@ public class SubReportService {
         wrapper.orderBy(true,true, SubReport::getId);//按照id正序
         SubReport subReport=mapper.selectOne(wrapper);
         dto.setSubReport(subReport);
+        try{
+            dto.setOperationDTO(processService.getCurrentProcessNode(subReport.getProcessId()).getData().getOperation());
+        }catch (Exception e) {
+        }
         dto.setHisIndicesList(indicesService.getList(subReport.getId()));
         return dto;
     }

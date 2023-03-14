@@ -98,7 +98,10 @@ public class ReportService {
         if (!CollectionUtils.isEmpty(set) &&set.size() == 1 && SubStatusEnum.unifyList.contains(set.iterator().next())) {
             detail.setCanOperate(true);
             //放入审批按钮信息
-            detail.setOperationDTO(processService.getCurrentProcessNode(list.iterator().next().getProcessId()).getData());;
+            try {
+                detail.setOperationDTO(processService.getCurrentProcessNode(list.iterator().next().getProcessId()).getData().getOperation());
+            }catch (Exception e) {
+            }
         }
         return detail;
     }

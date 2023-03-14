@@ -29,6 +29,7 @@ public class SubReportDTO {
 
     private List<HisIndices> hisIndicesList;
 
+    private OperationDTO operationDTO;
     public Integer getTotalNum() {
         if(!CollectionUtils.isEmpty(hisIndicesList)){
             return hisIndicesList.size();

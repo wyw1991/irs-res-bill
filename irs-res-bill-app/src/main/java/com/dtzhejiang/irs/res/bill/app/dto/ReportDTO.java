@@ -81,5 +81,5 @@ public class ReportDTO {
      */
     private Boolean canOperate=false;
 
-    private ProcessNodeDTO operationDTO;
+    private OperationDTO operationDTO;
 }
