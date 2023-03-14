@@ -3,6 +3,7 @@ package com.dtzhejiang.irs.res.bill.adapter.controller;
 import com.dtzhejiang.irs.res.bill.app.dto.ReportDTO;
 import com.dtzhejiang.irs.res.bill.common.dto.MultiResponse;
 import com.dtzhejiang.irs.res.bill.common.dto.SingleResponse;
+import com.dtzhejiang.irs.res.bill.domain.model.AppInfo;
 import com.dtzhejiang.irs.res.bill.domain.model.Report;
 import com.dtzhejiang.irs.res.bill.common.dto.PageResponse;
 import com.dtzhejiang.irs.res.bill.common.dto.Response;
@@ -55,6 +56,14 @@ public class ReportController {
     @GetMapping("/detail")
     public SingleResponse<ReportDTO> getReportDto(@NonNull Long reportId) {
         return SingleResponse.of(service.getDetail(reportId));
+    }  
+    
+    /**
+     * pdf详情
+     */
+    @GetMapping("/pdf")
+    public SingleResponse<AppInfo> getPdf(@NonNull Long reportId) {
+        return SingleResponse.of(service.getPdf(reportId));
     }
 
 }

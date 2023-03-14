@@ -7,6 +7,7 @@ import com.dtzhejiang.irs.res.bill.common.enums.ApplicationStatusEnum;
 import com.dtzhejiang.irs.res.bill.common.enums.FieldEnum;
 import com.dtzhejiang.irs.res.bill.common.enums.StatusEnum;
 import com.dtzhejiang.irs.res.bill.common.util.JsonUtil;
+import com.dtzhejiang.irs.res.bill.domain.model.AppInfo;
 import com.dtzhejiang.irs.res.bill.domain.model.Report;
 import com.dtzhejiang.irs.res.bill.domain.model.SubReport;
 import com.dtzhejiang.irs.res.bill.domain.user.valueobject.UserInfo;
@@ -61,11 +62,9 @@ public class ReportTest {
     }
 
     @Test
-    public void testApply(){
-        String name="common_user";
-        LambdaQueryWrapper<SubReport> wrapper = new LambdaQueryWrapper<>();
-        wrapper.apply("", name);
-        System.out.println( );
+    public void testPdf(){
+        AppInfo info=reportService.getPdf(4L);
+        System.out.println( info.toString());
     }
     @Test
     public void testList(){

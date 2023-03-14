@@ -47,6 +47,18 @@ public class ObjUtil {
         }
         return null;
     }
+    public static void setValue(Object object, String fieldName,String value) {
+        try {
+            Field field = object.getClass().getDeclaredField(toCamelCase(fieldName));
+            field.setAccessible(true);
+            field.set(object,value);
+            System.out.println(fieldName+"-------------------------------------"+value);
+        } catch (NoSuchFieldException e) {
+
+        } catch (IllegalAccessException e) {
+
+        }
+    }
 
     public ObjUtil() {
         super();
@@ -82,7 +94,7 @@ public class ObjUtil {
     }
 
     public static void main(String[] args) {
-        String a="test_aaa";
+        String a="unify_component_invoke_quantity";
         System.out.println(toCamelCase(a));
     }
 

@@ -7,7 +7,10 @@ import com.dtzhejiang.irs.res.bill.app.dto.ReportDTO;
 import com.dtzhejiang.irs.res.bill.app.query.qry.SubReportQry;
 import com.dtzhejiang.irs.res.bill.common.dto.PageResponse;
 import com.dtzhejiang.irs.res.bill.common.enums.*;
+import com.dtzhejiang.irs.res.bill.common.util.ObjUtil;
 import com.dtzhejiang.irs.res.bill.domain.exception.BusinessException;
+import com.dtzhejiang.irs.res.bill.domain.model.AppInfo;
+import com.dtzhejiang.irs.res.bill.domain.model.HisIndices;
 import com.dtzhejiang.irs.res.bill.domain.model.Report;
 import com.dtzhejiang.irs.res.bill.domain.model.SubReport;
 import com.dtzhejiang.irs.res.bill.domain.user.gateway.UserGateway;
@@ -39,6 +42,8 @@ public class ReportService {
     private UserGateway userGateway;
     @Autowired
     private  ReportRepository reportRepository;
+    @Autowired
+    private HisIndicesService hisIndicesService;
 
     @Autowired
     private ProcessService processService;
@@ -191,5 +196,19 @@ public class ReportService {
         report.setId(id);
         report.setStatus(status);
         reportRepository.updateById(report);
+    }
+
+    public AppInfo getPdf(Long reportId){
+        AppInfo info = new AppInfo();
+        Report report=getReport(reportId);
+        BeanUtils.copyProperties(report, info);
+        List<HisIndices> list=new ArrayList<>();
+        subReportService.getList(reportId).forEach(f->{
+            list.addAll(hisIndicesService.getList(f.getId()));
+        });
+        list.forEach(f->{
+            ObjUtil.setValue(info,f.getOperationIndicesCode(),f.getOperationData());
+        });
+        return info;
     }
 }

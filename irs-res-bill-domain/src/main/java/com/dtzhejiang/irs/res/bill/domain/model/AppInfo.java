@@ -1,5 +1,6 @@
 package com.dtzhejiang.irs.res.bill.domain.model;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.dtzhejiang.irs.res.bill.common.enums.ApplicationStatusEnum;
 import com.dtzhejiang.irs.res.bill.common.enums.FieldEnum;
@@ -292,5 +293,9 @@ public class AppInfo {
      */
     private String appUrl;
 
-
+    /**
+     * 出具时间
+     */
+    @TableField(exist = false)
+    private Date finishTime;
 }

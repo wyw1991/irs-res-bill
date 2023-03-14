@@ -27,6 +27,10 @@ public class HisIndices {
      * 运行指标
      */
     private String operationIndices;
+    /**
+     * 运行指标code
+     */
+    private String operationIndicesCode;
 
     /**
      * 运行数据

@@ -51,6 +51,7 @@ public class HisIndicesService {
             String fileName=f.getIndexCode();
             Object obj= ObjUtil.getValue(appInfo,fileName);
             hisIndices.setOperationIndices(f.getIndexName());
+            hisIndices.setOperationIndicesCode(f.getIndexCode());
             hisIndices.setNormalValue(f.getNormalValue());
             hisIndices.setOperationData(obj+(!"是/否".equals(f.getIndexUnit()) && !ObjectUtils.isEmpty(obj)?f.getIndexUnit():""));
             hisIndices.setSubReportId(subId);
