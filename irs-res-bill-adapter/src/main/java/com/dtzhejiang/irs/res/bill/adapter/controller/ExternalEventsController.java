@@ -44,10 +44,10 @@ public class ExternalEventsController {
             List<String> taskGroup = Optional.ofNullable((List<String>) eventBody.get("taskGroup")).orElse(new ArrayList<>());
             subReportCommandHandler.updateAssignInfo(SubReportUpdateProcessInfoCmd.builder()
                     .processInstanceId(processInstanceId)
-                    .status(eventBody.get("status").toString())
-                    .taskId(eventBody.get("taskId").toString())
-                    .taskName(eventBody.get("taskName").toString())
-                    .assignee(eventBody.get("taskAssignee").toString())
+                    .status((String)eventBody.get("status"))
+                    .taskId((String)eventBody.get("taskId"))
+                    .taskName((String)eventBody.get("taskName"))
+                    .assignee((String)eventBody.get("taskAssignee"))
                     .role(String.join(",", taskGroup))
                     .build());
         }
