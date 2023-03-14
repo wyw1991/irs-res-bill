@@ -28,13 +28,7 @@ public class ReportController {
     public PageResponse<Report> page(@RequestBody ReportPageQry pageQry) {
         return service.page(pageQry);
     }
-    /**
-     * 创建报告
-     */
-    @PostMapping("/create")
-    public Response create(@RequestBody ReportPageQry cmd) {
-        return Response.buildSuccess();
-    }
+
 
     /**
      * 应用ID查询主报告列表

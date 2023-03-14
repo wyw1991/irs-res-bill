@@ -167,7 +167,7 @@ public class ReportService {
                 subReportService.updateSubReport(entity.getId());
             }else if (entity.isLinkProject() && entity.getApplicationStatus().equals(ApplicationStatusEnum.TEST_RUN)) {
                 //关联项目且 试运行的数据自动新增
-                entity.setStatus(StatusEnum.PROCESS);
+                entity.setStatus(StatusEnum.INIT);
                 entity.setVersion("1.0");//新数据默认为1.0
                 saveOrUpdate(entity);
                 subReportService.createSubReport(entity.getId());
