@@ -39,6 +39,9 @@ public class ReportService {
     private UserGateway userGateway;
     @Autowired
     private  ReportRepository reportRepository;
+
+    @Autowired
+    private ProcessService processService;
     public PageResponse<Report> page(ReportPageQry pageQry){
         LambdaQueryWrapper<Report> wrapper = new LambdaQueryWrapper<>();
         UserInfo user = userGateway.getCurrentUser();
@@ -94,6 +97,8 @@ public class ReportService {
         //所有报告权限一致且在
         if (!CollectionUtils.isEmpty(set) &&set.size() == 1 && SubStatusEnum.unifyList.contains(set.iterator().next())) {
             detail.setCanOperate(true);
+            //放入审批按钮信息
+            detail.setOperationDTO(processService.getCurrentProcessNode(list.iterator().next().getProcessId()).getData());;
         }
         return detail;
     }
@@ -107,11 +112,14 @@ public class ReportService {
         if (report == null) {
             throw new BusinessException("reportId 有误");
         }
-
+        if (!report.isLinkProject()) {
+            throw new BusinessException("没有关联项目不可生成报告！");
+        }
         //首次手动生成报告
         if(ObjectUtils.isEmpty(report.getVersion())){
             report.setVersion("1.0");
             report.setCreateTime(new Date());
+            report.setStatus(StatusEnum.INIT);
             saveOrUpdate(report);
             subReportService.createSubReport(reportId);
         }else if(StatusEnum.FAIL.equals(report.getStatus())) {
@@ -125,11 +133,10 @@ public class ReportService {
             report.setVersion(newVersion+".0");
             report.setNewReport(true);
             saveOrUpdate(report);
-            subReportService.reSubmit(report,reportId);
+            subReportService.reSubmit(report.getId(),reportId);
         }else {
             throw new BusinessException("报告状态是"+report.getStatus().getName()+",不能生成！");
         }
-        saveOrUpdate(report);
     }
 
 
@@ -154,7 +161,7 @@ public class ReportService {
                 entity.setVersion(oldReport.getVersion());
                 entity.setStatus(oldReport.getStatus());
                 saveOrUpdate(entity);
-                subReportService.createSubReport(entity.getId());
+                subReportService.updateSubReport(entity.getId());
             }else if (entity.isLinkProject() && entity.getApplicationStatus().equals(ApplicationStatusEnum.TEST_RUN)) {
                 //关联项目且 试运行的数据自动新增
                 entity.setStatus(StatusEnum.PROCESS);
@@ -167,6 +174,7 @@ public class ReportService {
     }
 
     public Report  saveOrUpdate(Report report){
+        report.setUpdateTime(new Date());
         reportRepository.saveOrUpdate(report);
         return report;
     }

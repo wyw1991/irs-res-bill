@@ -80,4 +80,6 @@ public class ReportDTO {
      * 是否可操作 true 是 false 否
      */
     private Boolean canOperate=false;
+
+    private ProcessNodeDTO operationDTO;
 }

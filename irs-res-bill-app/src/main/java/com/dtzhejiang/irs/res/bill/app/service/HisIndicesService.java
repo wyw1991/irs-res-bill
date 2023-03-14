@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -85,11 +86,12 @@ public class HisIndicesService {
                 entity.setId(oldSubReport.getId());
             }
         }
-        hisIndicesRepository.saveOrUpdate(entity);
+        saveOrUpdate(entity);
         return entity.getId();
     }
 
     public Long saveOrUpdate(HisIndices entity){
+        entity.setUpdateTime(new Date());
         hisIndicesRepository.saveOrUpdate(entity);
         return entity.getId();
     }

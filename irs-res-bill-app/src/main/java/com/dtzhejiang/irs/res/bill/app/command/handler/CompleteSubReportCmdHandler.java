@@ -52,7 +52,7 @@ public class CompleteSubReportCmdHandler{
 
     private void complete(SubReport subReport, Map<String, Object> variables){
         String username = userGateway.getCurrentUser().getUserName();
-        ProcessTask currentProcessTask = processGateway.getCurrentProcessTask(subReport.getApprovalId(), username);
+        ProcessTask currentProcessTask = processGateway.getCurrentProcessTask(subReport.getProcessId(), username);
         if (currentProcessTask == null || !Objects.equals(currentProcessTask.getId(), subReport.getTaskId())) {
             throw new BusinessException("当前页面信息已失效,请刷新页面！");
         }
@@ -60,6 +60,8 @@ public class CompleteSubReportCmdHandler{
         String historyHandler = subReport.getHistoryHandler();
         if(StringUtils.isNotBlank(historyHandler)){
             historyHandler  = historyHandler + "," + username;
+        }else {
+            historyHandler=username;
         }
         subReport.setHistoryHandler(historyHandler);
     }

@@ -52,7 +52,7 @@ public class SubReport {
     /**
      * 审批ID
      */
-    private String approvalId;
+    private String processId;
 
     /**
      * 流程是否结束 0-未结束，1-已结束

@@ -50,16 +50,9 @@ public class AppInfoSyncTask {
     private Report convertToReport(AppInfo appInfo){
         Report report=new Report();
         BeanUtils.copyProperties(appInfo, report);
+        report.setId(null);
         report.setNewReport(true);
-        report.setField(appInfo.getField());
-        report.setName(appInfo.getName());
-        report.setLevel(appInfo.getLevel());
-        report.setApplicationId(appInfo.getApplicationId());
-        report.setLinkProject(appInfo.isLinkProject());
-        report.setType(appInfo.getType());
-        report.setAppAdmin(appInfo.getAppAdmin());
-        report.setAppAdminId(appInfo.getAppAdminId());
-        report.setApplicationStatus(appInfo.getApplicationStatus());
+        report.setCreateTime(null);
         report.setStatus(StatusEnum.UN_INIT);
         return report;
     }
