@@ -1,25 +1,13 @@
 package com.dtzhejiang.irs.res.bill.domain.user.valueobject;
 
-import com.dtzhejiang.irs.res.bill.common.enums.BillPermissionEnum;
-import lombok.Builder;
 import lombok.Data;
+import lombok.experimental.SuperBuilder;
 
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Data
-@Builder
+@SuperBuilder
 public class UserInfo extends User{
-
-    /**
-     * 用户名
-     */
-    private String userName;
-    /**
-     * 用户姓名
-     */
-    private String displayName;
     /**
      * 角色
      */

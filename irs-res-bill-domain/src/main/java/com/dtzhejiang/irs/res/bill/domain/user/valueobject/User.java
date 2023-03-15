@@ -1,10 +1,10 @@
 package com.dtzhejiang.irs.res.bill.domain.user.valueobject;
 
-import lombok.Builder;
 import lombok.Data;
+import lombok.experimental.SuperBuilder;
 
 @Data
-@Builder
+@SuperBuilder
 public class User {
     /**
      * 用户名
