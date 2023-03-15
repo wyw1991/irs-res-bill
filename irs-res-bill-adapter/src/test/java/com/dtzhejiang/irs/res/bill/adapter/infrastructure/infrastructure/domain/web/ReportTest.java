@@ -1,6 +1,7 @@
 package com.dtzhejiang.irs.res.bill.adapter.infrastructure.infrastructure.domain.web;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.dtzhejiang.irs.res.bill.app.dto.AppInfoDTO;
 import com.dtzhejiang.irs.res.bill.app.job.AppInfoSyncTask;
 import com.dtzhejiang.irs.res.bill.app.service.ReportService;
 import com.dtzhejiang.irs.res.bill.common.enums.ApplicationStatusEnum;
@@ -43,7 +44,7 @@ public class ReportTest {
         report.setName("测试组件");
         report.setApplicationId("111");
         report.setApplicationStatus(ApplicationStatusEnum.TEST_RUN);
-        report.setField(FieldEnum.CULTURE);
+        report.setField("CULTURE");
         reportService.saveOrUpdate(report);
         System.out.println(JsonUtil.toJsonString(report));
     }
@@ -63,7 +64,7 @@ public class ReportTest {
 
     @Test
     public void testPdf(){
-        AppInfo info=reportService.getPdf(4L);
+        AppInfoDTO info=reportService.getPdf(4L);
         System.out.println( info.toString());
     }
     @Test

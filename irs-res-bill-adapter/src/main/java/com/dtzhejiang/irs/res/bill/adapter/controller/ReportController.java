@@ -1,14 +1,13 @@
 package com.dtzhejiang.irs.res.bill.adapter.controller;
 
+import com.dtzhejiang.irs.res.bill.app.dto.AppInfoDTO;
 import com.dtzhejiang.irs.res.bill.app.dto.ReportDTO;
-import com.dtzhejiang.irs.res.bill.common.dto.MultiResponse;
-import com.dtzhejiang.irs.res.bill.common.dto.SingleResponse;
-import com.dtzhejiang.irs.res.bill.domain.model.AppInfo;
-import com.dtzhejiang.irs.res.bill.domain.model.Report;
-import com.dtzhejiang.irs.res.bill.common.dto.PageResponse;
-import com.dtzhejiang.irs.res.bill.common.dto.Response;
 import com.dtzhejiang.irs.res.bill.app.query.qry.ReportPageQry;
 import com.dtzhejiang.irs.res.bill.app.service.ReportService;
+import com.dtzhejiang.irs.res.bill.common.dto.MultiResponse;
+import com.dtzhejiang.irs.res.bill.common.dto.PageResponse;
+import com.dtzhejiang.irs.res.bill.common.dto.SingleResponse;
+import com.dtzhejiang.irs.res.bill.domain.model.Report;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -62,7 +61,7 @@ public class ReportController {
      * pdf详情
      */
     @GetMapping("/pdf")
-    public SingleResponse<AppInfo> getPdf(@NonNull Long reportId) {
+    public SingleResponse<AppInfoDTO> getPdf(@NonNull Long reportId) {
         return SingleResponse.of(service.getPdf(reportId));
     }
 

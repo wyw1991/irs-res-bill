@@ -59,9 +59,9 @@ public class SubReportController {
     /**
      * 详情页-单个提交
      */
-    @PostMapping("/reSubmit")
-    public SingleResponse reSubmit(@RequestBody SubReportSingleSubmitCmd cmd) {
-        subReportService.reSubmit(cmd);
+    @PostMapping("/apartSubmit")
+    public SingleResponse apartSubmit(@RequestBody SubReportSingleSubmitCmd cmd) {
+        subReportService.apartSubmit(cmd);
         return SingleResponse.buildSuccess();
     }
 

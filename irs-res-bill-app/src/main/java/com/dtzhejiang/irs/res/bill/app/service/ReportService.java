@@ -3,6 +3,8 @@ package com.dtzhejiang.irs.res.bill.app.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.dtzhejiang.irs.res.bill.app.dto.AppInfoDTO;
+import com.dtzhejiang.irs.res.bill.app.dto.HisIndicesDTO;
 import com.dtzhejiang.irs.res.bill.app.dto.ReportDTO;
 import com.dtzhejiang.irs.res.bill.app.query.qry.SubReportQry;
 import com.dtzhejiang.irs.res.bill.common.dto.PageResponse;
@@ -53,10 +55,10 @@ public class ReportService {
     private ProcessService processService;
     public PageResponse<Report> page(ReportPageQry pageQry){
         LambdaQueryWrapper<Report> wrapper = new LambdaQueryWrapper<>();
-        User user = userGateway.getCurrentUser();
+        UserInfo userInfo = userGateway.getUserInfo();
         //应用管理员列表特殊处理
         if(!ObjectUtils.isEmpty(pageQry.getBillPermission())&& pageQry.getBillPermission() == BillPermissionEnum.generate ){
-            wrapper.eq(Report::getAppAdminId, user.getUserName());
+            wrapper.eq(Report::getAppAdminId, userInfo.getUserName());
             if (Boolean.FALSE.equals(pageQry.getMyAudit())) {
                 //待审核列表
                 wrapper.in(Report::getStatus,Arrays.asList(StatusEnum.UN_INIT,StatusEnum.INIT));
@@ -70,12 +72,12 @@ public class ReportService {
             wrapper.in(Report::getId, reportIdList);
         }
         wrapper.like(!ObjectUtils.isEmpty(pageQry.getKeyword()), Report::getName,pageQry.getKeyword());
+        wrapper.like(!ObjectUtils.isEmpty(pageQry.getField()), Report::getField,pageQry.getField());
         wrapper.eq(!ObjectUtils.isEmpty(pageQry.getType()), Report::getType,pageQry.getType());
         wrapper.eq(!ObjectUtils.isEmpty(pageQry.getStatus()), Report::getStatus,pageQry.getStatus());
         wrapper.eq(!ObjectUtils.isEmpty(pageQry.getLevel()), Report::getLevel,pageQry.getLevel());
         wrapper.eq(!ObjectUtils.isEmpty(pageQry.getApplicationStatus()), Report::getApplicationStatus,pageQry.getApplicationStatus());
         wrapper.eq(!ObjectUtils.isEmpty(pageQry.getLinkProject()), Report::isLinkProject,pageQry.getLinkProject());
-        wrapper.eq(!ObjectUtils.isEmpty(pageQry.getField()), Report::getField,pageQry.getField());
         wrapper.eq(Report::isNewReport,true);//以最新一条为准
         //wrapper.orderBy(true,false, Report::getId);//按照ID倒序
         wrapper.groupBy(Report::getApplicationId);
@@ -202,21 +204,24 @@ public class ReportService {
         reportRepository.updateById(report);
     }
 
-    public AppInfo getPdf(Long reportId){
-
+    public AppInfoDTO getPdf(Long reportId){
+        AppInfoDTO dto = new AppInfoDTO();
         Report report=getReport(reportId);
         if (report == null || !report.getStatus().equals(StatusEnum.SUCCESS)) {
             throw new BusinessException("只有审批完成才可以出具");
         }
+        List<SubReport> subList = subReportService.getList(reportId);
         AppInfo info = appInfoService.getAppInfo(report.getApplicationId());
         BeanUtils.copyProperties(report, info);
         List<HisIndices> list=new ArrayList<>();
-        subReportService.getList(reportId).forEach(f->{
+        subList.forEach(f->{
             list.addAll(hisIndicesService.getList(f.getId()));
         });
         list.forEach(f->{
             ObjUtil.setValue(info,f.getOperationIndicesCode(),f.getOperationData());
         });
-        return info;
+        dto.setAppInfo(info);
+        dto.setMap(subList.stream().collect(Collectors.toMap(SubReport::getSubType,v->Optional.ofNullable(v.getRemark()).orElse(""))));
+        return dto;
     }
 }

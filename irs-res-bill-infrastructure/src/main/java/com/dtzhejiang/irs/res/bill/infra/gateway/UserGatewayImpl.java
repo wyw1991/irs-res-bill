@@ -41,9 +41,10 @@ public class UserGatewayImpl implements UserGateway {
     }
 
     @Override
-    public UserInfo getUserInfo(String userName) {
+    public UserInfo getUserInfo() {
+        UserPrincipal userPrincipal = (UserPrincipal) SecurityUtils.getSubject().getPrincipal();
         UserQueryReq userReq = new UserQueryReq();
-        userReq.setUserName(userName);
+        userReq.setUserName(userPrincipal.getUserName());
         userReq.setSystemCode("irs-res-bill");
         JsonResult<UserDetailRep> jsonResult = userClient.queryUser(userReq);
         UserDetailRep userDetailRep = jsonResult.getData();

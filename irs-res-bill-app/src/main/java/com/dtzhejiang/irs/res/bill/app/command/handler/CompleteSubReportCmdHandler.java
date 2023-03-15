@@ -41,6 +41,7 @@ public class CompleteSubReportCmdHandler{
     public Response applyReport(CompleteReportCmd cmd) {
         LambdaQueryWrapper<SubReport> query = new LambdaQueryWrapper<>();
         query.eq(SubReport::getReportId, cmd.getReportId());
+        query.select(SubReport::getId, SubReport::getProcessId, SubReport::getTaskId, SubReport::getHistoryHandler);
         List<SubReport> list = subReportRepository.list(query);
         Map<String, Object> variables = cmd.getVariables();
         for (SubReport subReport : list){
@@ -64,6 +65,7 @@ public class CompleteSubReportCmdHandler{
             historyHandler=username;
         }
         subReport.setHistoryHandler(historyHandler);
+        subReportRepository.updateById(subReport);
     }
 
 }

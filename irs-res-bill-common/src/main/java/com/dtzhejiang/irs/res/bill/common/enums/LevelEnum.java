@@ -17,6 +17,8 @@ public enum LevelEnum {
      * 县域
      */
     VILLAGE("COUNTY_SCOPE", "村（社区）"),
+
+    OTHER("OTHER", "其他"),
     ;
 
 

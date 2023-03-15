@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface UserGateway {
     User getCurrentUser();
-    UserInfo getUserInfo(String userName);
+    UserInfo getUserInfo();
     List<RoleInfo> getRolesByPermission(String permissionCode);
 }

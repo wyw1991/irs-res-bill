@@ -21,6 +21,7 @@ public class UserInfo extends User{
      */
     private String currentPermission;
 
+
     /**
      * 是否是应用管理员
      */

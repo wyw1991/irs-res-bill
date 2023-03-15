@@ -24,6 +24,7 @@ import com.dtzhejiang.irs.res.bill.infra.mapper.SubReportMapper;
 import com.dtzhejiang.irs.res.bill.infra.repository.SubReportRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
@@ -92,7 +93,6 @@ public class SubReportService {
     }
 
     public List<SubReport> getList (SubReportQry qry){
-        User currentUser = userGateway.getCurrentUser();
         LambdaQueryWrapper<SubReport> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(!ObjectUtils.isEmpty(qry.getSubType()), SubReport::getSubType,qry.getSubType());
         wrapper.eq(!ObjectUtils.isEmpty(qry.getReportId()), SubReport::getReportId,qry.getReportId());
@@ -100,7 +100,7 @@ public class SubReportService {
         if(!ObjectUtils.isEmpty(qry.getBillPermission())&& qry.getBillPermission() != BillPermissionEnum.generate ){
             //默认需要进行权限控制
             if(Boolean.TRUE.equals(qry.getPermission())) {
-                UserInfo userInfo = userGateway.getUserInfo(currentUser.getUserName());
+                UserInfo userInfo = userGateway.getUserInfo();
                 if (Boolean.TRUE.equals(qry.getMyAudit())) {
                     //已审核列表
                     wrapper.like(SubReport::getHistoryHandler, userInfo.getUserName());
@@ -175,7 +175,12 @@ public class SubReportService {
      * 提交流程O
      * @param reportId
      */
+    @Transactional
     public void submitSubReport(Long reportId){
+        Report report=reportService.getReport(reportId);
+        if (report == null || report.getStatus()!=StatusEnum.INIT ) {
+            throw new BusinessException("当前状态不可提交报告！");
+        }
         List<SubReport> list = getList(reportId);
         list.forEach(subReport -> {
             StartProcessCmd cmd = StartProcessCmd.builder()
@@ -194,7 +199,7 @@ public class SubReportService {
     /**
      * 详情页单个提交
      */
-    public void reSubmit(SubReportSingleSubmitCmd cmd){
+    public void apartSubmit(SubReportSingleSubmitCmd cmd){
         SubReport subReport = subReportRepository.getById(cmd.getSubReportId());
         if(subReport == null){
             throw new BusinessException("404", "子报告不存在");

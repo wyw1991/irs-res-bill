@@ -28,7 +28,7 @@ public class ReportPageQry extends PageQuery {
     /**
      * 应用领域：TOTAL_GOVERNMENT-政机关整体智治、GOVERNMENT-数字政府、ECONOMY-数字经济、SOCIETY-数字社会、LAW-数字法治、CULTURE-数字文化；
      */
-    private FieldEnum field;
+    private String field;
 
     /**
      * 建设层级：PROVINCE-省级、CITY-县（市、区）、VILLAGE-村（社区）；
