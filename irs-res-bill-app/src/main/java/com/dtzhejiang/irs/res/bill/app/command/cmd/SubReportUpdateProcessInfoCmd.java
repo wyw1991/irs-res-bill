@@ -23,6 +23,14 @@ public class SubReportUpdateProcessInfoCmd {
      */
     private String taskName;
     /**
+     * 任务分类
+     */
+    private String taskCategory;
+    /**
+     * 备注
+     */
+    private String remark;
+    /**
      * 任务当前处理人id
      */
     private String assignee;

@@ -18,6 +18,8 @@ public class SubReportCommandHandler {
     @Autowired
     private SubReportRepository subReportRepository;
 
+    public static final String FINAL_AUDIT = "FINAL_AUDIT";
+
     /**
      * 更新子报告流程分配信息
      * @param processInfoCmd
@@ -30,6 +32,10 @@ public class SubReportCommandHandler {
         }
         subReport.setTaskId(processInfoCmd.getTaskId());
         subReport.setSubStatus(SubStatusEnum.fromCode(processInfoCmd.getStatus()));
+        // 指定分类，更新remark
+        if(FINAL_AUDIT.equals(processInfoCmd.getTaskCategory())){
+            subReport.setRemark(processInfoCmd.getRemark());
+        }
         subReport.setTaskName(processInfoCmd.getTaskName());
         subReport.setCurrentHandler(processInfoCmd.getAssignee());
         subReport.setCurrentRole(processInfoCmd.getRole());

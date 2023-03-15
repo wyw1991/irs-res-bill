@@ -47,6 +47,8 @@ public class ExternalEventsController {
                     .status((String)eventBody.get("status"))
                     .taskId((String)eventBody.get("taskId"))
                     .taskName((String)eventBody.get("taskName"))
+                    .taskCategory((String)eventBody.get("taskCategory"))
+                    .remark((String)eventBody.get("remark"))
                     .assignee((String)eventBody.get("taskAssignee"))
                     .role(String.join(",", taskGroup))
                     .build());
