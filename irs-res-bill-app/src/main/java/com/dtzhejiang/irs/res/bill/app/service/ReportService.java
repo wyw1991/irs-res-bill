@@ -14,6 +14,7 @@ import com.dtzhejiang.irs.res.bill.domain.model.HisIndices;
 import com.dtzhejiang.irs.res.bill.domain.model.Report;
 import com.dtzhejiang.irs.res.bill.domain.model.SubReport;
 import com.dtzhejiang.irs.res.bill.domain.user.gateway.UserGateway;
+import com.dtzhejiang.irs.res.bill.domain.user.valueobject.User;
 import com.dtzhejiang.irs.res.bill.domain.user.valueobject.UserInfo;
 import com.dtzhejiang.irs.res.bill.infra.mapper.ReportMapper;
 import com.dtzhejiang.irs.res.bill.infra.repository.ReportRepository;
@@ -52,7 +53,7 @@ public class ReportService {
     private ProcessService processService;
     public PageResponse<Report> page(ReportPageQry pageQry){
         LambdaQueryWrapper<Report> wrapper = new LambdaQueryWrapper<>();
-        UserInfo user = userGateway.getCurrentUser();
+        User user = userGateway.getCurrentUser();
         //应用管理员列表特殊处理
         if(!ObjectUtils.isEmpty(pageQry.getBillPermission())&& pageQry.getBillPermission() == BillPermissionEnum.generate ){
             wrapper.eq(Report::getAppAdminId, user.getUserName());

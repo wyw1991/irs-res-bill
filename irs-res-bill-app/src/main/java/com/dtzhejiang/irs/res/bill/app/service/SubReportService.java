@@ -17,6 +17,7 @@ import com.dtzhejiang.irs.res.bill.domain.model.SubReport;
 import com.dtzhejiang.irs.res.bill.domain.process.valueobject.ProcessInstance;
 import com.dtzhejiang.irs.res.bill.domain.subreport.SubReportNoGateway;
 import com.dtzhejiang.irs.res.bill.domain.user.gateway.UserGateway;
+import com.dtzhejiang.irs.res.bill.domain.user.valueobject.User;
 import com.dtzhejiang.irs.res.bill.domain.user.valueobject.UserInfo;
 import com.dtzhejiang.irs.res.bill.domain.user.valueobject.UserRole;
 import com.dtzhejiang.irs.res.bill.infra.mapper.SubReportMapper;
@@ -91,6 +92,7 @@ public class SubReportService {
     }
 
     public List<SubReport> getList (SubReportQry qry){
+        User currentUser = userGateway.getCurrentUser();
         LambdaQueryWrapper<SubReport> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(!ObjectUtils.isEmpty(qry.getSubType()), SubReport::getSubType,qry.getSubType());
         wrapper.eq(!ObjectUtils.isEmpty(qry.getReportId()), SubReport::getReportId,qry.getReportId());
@@ -98,7 +100,7 @@ public class SubReportService {
         if(!ObjectUtils.isEmpty(qry.getBillPermission())&& qry.getBillPermission() != BillPermissionEnum.generate ){
             //默认需要进行权限控制
             if(Boolean.TRUE.equals(qry.getPermission())) {
-                UserInfo userInfo = userGateway.getCurrentUser();
+                UserInfo userInfo = userGateway.getUserInfo(currentUser.getUserName());
                 if (Boolean.TRUE.equals(qry.getMyAudit())) {
                     //已审核列表
                     wrapper.like(SubReport::getHistoryHandler, userInfo.getUserName());

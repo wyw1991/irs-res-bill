@@ -5,6 +5,7 @@ import com.dtzhejiang.irs.res.bill.common.dto.MultiResponse;
 import com.dtzhejiang.irs.res.bill.domain.process.gateway.ProcessGateway;
 import com.dtzhejiang.irs.res.bill.domain.process.valueobject.ProcessLog;
 import com.dtzhejiang.irs.res.bill.domain.user.gateway.UserGateway;
+import com.dtzhejiang.irs.res.bill.domain.user.valueobject.User;
 import com.dtzhejiang.irs.res.bill.domain.user.valueobject.UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -29,7 +30,7 @@ public class ProcessLogsQueryHandler implements Function<String, MultiResponse<P
 
     @Override
     public MultiResponse<ProcessLog> apply(String processId) {
-        UserInfo currentUser = userGateway.getCurrentUser();
+        User currentUser = userGateway.getCurrentUser();
         List<ProcessLog> processLogs = processGateway.listProcessLogs(processId, currentUser.getUserName());
         return MultiResponse.of(processLogs);
     }

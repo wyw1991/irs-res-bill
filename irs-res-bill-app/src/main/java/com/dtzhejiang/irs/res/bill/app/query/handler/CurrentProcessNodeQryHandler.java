@@ -7,6 +7,7 @@ import com.dtzhejiang.irs.res.bill.domain.process.gateway.ProcessGateway;
 import com.dtzhejiang.irs.res.bill.domain.process.valueobject.Operation;
 import com.dtzhejiang.irs.res.bill.domain.process.valueobject.ProcessTask;
 import com.dtzhejiang.irs.res.bill.domain.user.gateway.UserGateway;
+import com.dtzhejiang.irs.res.bill.domain.user.valueobject.User;
 import com.dtzhejiang.irs.res.bill.domain.user.valueobject.UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -21,7 +22,7 @@ public class CurrentProcessNodeQryHandler {
     private ProcessGateway processGateway;
 
     public SingleResponse<ProcessNodeDTO> apply(String processId) {
-        UserInfo currentUser = userGateway.getCurrentUser();
+        User currentUser = userGateway.getCurrentUser();
         ProcessTask currentProcessTask = processGateway.getCurrentProcessTask(processId, currentUser.getUserName());
         ProcessTaskDTO taskDTO = ProcessTaskDTO.builder()
                 .processId(currentProcessTask.getProcessId())
@@ -40,7 +41,7 @@ public class CurrentProcessNodeQryHandler {
     }
 
     public SingleResponse<Operation> getCurrentOption(String processId) {
-        UserInfo currentUser = userGateway.getCurrentUser();
+        User currentUser = userGateway.getCurrentUser();
         Operation operation = processGateway.getCurrentOperation(processId, currentUser.getUserName());
         return SingleResponse.of(operation);
     }

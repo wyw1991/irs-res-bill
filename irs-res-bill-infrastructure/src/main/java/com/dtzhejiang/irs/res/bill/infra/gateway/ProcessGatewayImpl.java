@@ -11,7 +11,7 @@ import com.dtzhejiang.irs.res.bill.domain.process.valueobject.ProcessInstance;
 import com.dtzhejiang.irs.res.bill.domain.process.valueobject.ProcessLog;
 import com.dtzhejiang.irs.res.bill.domain.process.valueobject.ProcessTask;
 import com.dtzhejiang.irs.res.bill.domain.user.gateway.UserGateway;
-import com.dtzhejiang.irs.res.bill.domain.user.valueobject.UserInfo;
+import com.dtzhejiang.irs.res.bill.domain.user.valueobject.User;
 import com.dtzhejiang.irs.res.bill.infra.config.WorkflowConfig;
 import com.dtzhejiang.irs.res.bill.infra.gateway.req.FlowInstanceRequest;
 import com.dtzhejiang.irs.res.bill.infra.gateway.resp.ProcessInstanceResp;
@@ -49,7 +49,7 @@ public class ProcessGatewayImpl implements ProcessGateway {
                 .variables(variables)
                 .build();
         log.info("starProcess,request:{}", JsonUtil.toJsonString(instanceRequest));
-        UserInfo currentUser = userGateway.getCurrentUser();
+        User currentUser = userGateway.getCurrentUser();
         WorkflowResp<ProcessInstanceResp> flowInstanceResponse = Forest.post(workflowConfig.getApiUrl() + START_PROCESS_API_URI)
                 .addHeader("Authorization", buildBasicCredentials(currentUser.getUserName()))
                 .addBody(instanceRequest).contentTypeJson()

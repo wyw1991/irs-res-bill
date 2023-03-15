@@ -5,6 +5,7 @@ import com.dtzhejiang.irs.res.bill.common.dto.SingleResponse;
 import com.dtzhejiang.irs.res.bill.domain.process.gateway.ProcessGateway;
 import com.dtzhejiang.irs.res.bill.domain.process.valueobject.ProcessTask;
 import com.dtzhejiang.irs.res.bill.domain.user.gateway.UserGateway;
+import com.dtzhejiang.irs.res.bill.domain.user.valueobject.User;
 import com.dtzhejiang.irs.res.bill.domain.user.valueobject.UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -22,7 +23,7 @@ public class CurrentTaskQryHandler implements Function<String, SingleResponse<Pr
 
     @Override
     public SingleResponse<ProcessTaskDTO> apply(String processId) {
-        UserInfo currentUser = userGateway.getCurrentUser();
+        User currentUser = userGateway.getCurrentUser();
         ProcessTask currentProcessTask = processGateway.getCurrentProcessTask(processId, currentUser.getUserName());
         ProcessTaskDTO taskDTO = ProcessTaskDTO.builder()
                 .processId(currentProcessTask.getProcessId())

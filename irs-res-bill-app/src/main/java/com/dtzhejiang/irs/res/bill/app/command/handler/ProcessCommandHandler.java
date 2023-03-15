@@ -4,6 +4,7 @@ import com.dtzhejiang.irs.res.bill.app.command.cmd.StartProcessCmd;
 import com.dtzhejiang.irs.res.bill.domain.process.gateway.ProcessGateway;
 import com.dtzhejiang.irs.res.bill.domain.process.valueobject.ProcessInstance;
 import com.dtzhejiang.irs.res.bill.domain.user.gateway.UserGateway;
+import com.dtzhejiang.irs.res.bill.domain.user.valueobject.User;
 import com.dtzhejiang.irs.res.bill.domain.user.valueobject.UserInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,7 @@ public class ProcessCommandHandler {
     }
 
     public void complete(String taskId, Map<String, Object> variable){
-        UserInfo user = userGateway.getCurrentUser();
+        User user = userGateway.getCurrentUser();
         processGateway.completeProcessTask(taskId, variable, user.getUserName());
     }
 
