@@ -30,6 +30,6 @@ shiro:
   enabled: true
 
 feign:
-  userClientHost: http://59.202.44.203/cas
+  userClientHost: http://59.202.44.203/flowablecas
   appKey: irs-res-bill
   appSecret: YeBymaPcN4ctMmdNNevzr1U3dCmru296
