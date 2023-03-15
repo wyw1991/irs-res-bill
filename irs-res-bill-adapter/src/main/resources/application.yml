@@ -19,6 +19,7 @@ logging:
   config: classpath:logback.xml
   level:
     root: info
+    feign: debug
 
 mybatis-plus:
   mapper-locations: classpath*:mapper/*.xml

@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 @Data
 @Builder
-public class UserInfo {
+public class UserInfo extends User{
 
     /**
      * 用户名
@@ -32,11 +32,6 @@ public class UserInfo {
      * 当前权限列表
      */
     private String currentPermission;
-
-
-    public List<String> getPermissionList(BillPermissionEnum currentPermission){
-        return roleCodes.stream().map(s -> "<"+currentPermission+">_"+s.replace("irs-res-bill_","")).collect(Collectors.toList());
-    }
 
     /**
      * 是否是应用管理员

@@ -4,10 +4,14 @@ import com.bees.shirocas.principal.UserPrincipal;
 import com.dtzhejiang.common.entity.resp.JsonResult;
 import com.dtzhejiang.irs.res.bill.domain.user.gateway.UserGateway;
 import com.dtzhejiang.irs.res.bill.domain.user.valueobject.RoleInfo;
+import com.dtzhejiang.irs.res.bill.domain.user.valueobject.User;
 import com.dtzhejiang.irs.res.bill.domain.user.valueobject.UserInfo;
 import com.dtzhejiang.usercenter.client.RoleClient;
+import com.dtzhejiang.usercenter.client.UserClient;
 import com.dtzhejiang.usercenter.client.dto.rep.RoleRep;
+import com.dtzhejiang.usercenter.client.dto.rep.UserDetailRep;
 import com.dtzhejiang.usercenter.client.dto.req.GetRoleByPermissionReq;
+import com.dtzhejiang.usercenter.client.dto.req.UserQueryReq;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,16 +28,32 @@ public class UserGatewayImpl implements UserGateway {
     @Autowired
     private RoleClient roleClient;
 
+    @Autowired
+    private UserClient userClient;
+
     @Override
-    public UserInfo getCurrentUser() {
+    public User getCurrentUser() {
         UserPrincipal userPrincipal = (UserPrincipal) SecurityUtils.getSubject().getPrincipal();
-        return UserInfo.builder()
+        return User.builder()
                 .userName(userPrincipal.getUserName())
                 .displayName(userPrincipal.getDisplayName())
-                .roleCodes(userPrincipal.getRoleList())
-                .permissionList(userPrincipal.getPermissionList())
                 .build();
     }
+
+    @Override
+    public UserInfo getUserInfo(String userName) {
+        UserQueryReq userReq = new UserQueryReq();
+        userReq.setUserName(userName);
+        userReq.setSystemCode("irs-res-bill");
+        JsonResult<UserDetailRep> jsonResult = userClient.queryUser(userReq);
+        UserDetailRep userDetailRep = jsonResult.getData();
+        return UserInfo.builder()
+                .userName(userDetailRep.getUserName())
+                .displayName(userDetailRep.getDisplayName())
+                .roleCodes(userDetailRep.getRoles())
+                .build();
+    }
+
 
     @Override
     public List<RoleInfo> getRolesByPermission(String permissionCode) {
