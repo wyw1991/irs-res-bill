@@ -81,9 +81,9 @@ public class Report {
     private Date finishTime;
 
     /**
-     * 是否关联项目：true:是、false:否；
+     * 是否关联项目：true:是、false:否 默认是；
      */
-    private boolean linkProject;
+    private Boolean linkProject;
 
     /**
      * 问题数

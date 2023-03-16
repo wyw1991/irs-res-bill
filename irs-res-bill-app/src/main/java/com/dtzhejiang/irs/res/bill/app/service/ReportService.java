@@ -78,7 +78,7 @@ public class ReportService {
         wrapper.eq(!ObjectUtils.isEmpty(pageQry.getType()), Report::getType,pageQry.getType());
         wrapper.eq(!ObjectUtils.isEmpty(pageQry.getStatus()), Report::getStatus,pageQry.getStatus());
         wrapper.eq(!ObjectUtils.isEmpty(pageQry.getApplicationStatus()), Report::getApplicationStatus,pageQry.getApplicationStatus());
-        wrapper.eq(!ObjectUtils.isEmpty(pageQry.getLinkProject()), Report::isLinkProject,pageQry.getLinkProject());
+        wrapper.eq(!ObjectUtils.isEmpty(pageQry.getLinkProject()), Report::getLinkProject,pageQry.getLinkProject());
         wrapper.eq(Report::isNewReport,true);//以最新一条为准
         //wrapper.orderBy(true,false, Report::getId);//按照ID倒序
         wrapper.groupBy(Report::getApplicationId);
@@ -127,7 +127,7 @@ public class ReportService {
         if (report == null) {
             throw new BusinessException("reportId 有误");
         }
-        if (!report.isLinkProject()) {
+        if (!report.getLinkProject()) {
             throw new BusinessException("没有关联项目不可生成报告！");
         }
         //首次手动生成报告
@@ -177,7 +177,7 @@ public class ReportService {
                 entity.setStatus(oldReport.getStatus());
                 saveOrUpdate(entity);
                 subReportService.updateSubReport(entity.getId());
-            }else if (entity.isLinkProject() && entity.getApplicationStatus().equals(ApplicationStatusEnum.TEST_RUN)) {
+            }else if (entity.getLinkProject() && entity.getApplicationStatus().equals(ApplicationStatusEnum.TEST_RUN)) {
                 //关联项目且 试运行的数据自动新增
                 entity.setStatus(StatusEnum.INIT);
                 entity.setVersion("1.0");//新数据默认为1.0
