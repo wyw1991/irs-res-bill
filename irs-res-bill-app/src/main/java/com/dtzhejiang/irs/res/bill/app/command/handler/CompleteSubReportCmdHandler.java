@@ -1,6 +1,7 @@
 package com.dtzhejiang.irs.res.bill.app.command.handler;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.dtzhejiang.irs.res.bill.app.command.cmd.CompleteReportCmd;
 import com.dtzhejiang.irs.res.bill.app.command.cmd.CompleteSubReportCmd;
 import com.dtzhejiang.irs.res.bill.common.dto.Response;
@@ -14,10 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Component
 public class CompleteSubReportCmdHandler{
@@ -64,8 +62,9 @@ public class CompleteSubReportCmdHandler{
         }else {
             historyHandler= username;
         }
-        subReport.setHistoryHandler(historyHandler);
-        subReportRepository.updateById(subReport);
+        subReportRepository.update(null, Wrappers.<SubReport>lambdaUpdate()
+                        .eq(SubReport::getId, subReport.getId())
+                        .set(SubReport::getHistoryHandler, historyHandler));
     }
 
 }
