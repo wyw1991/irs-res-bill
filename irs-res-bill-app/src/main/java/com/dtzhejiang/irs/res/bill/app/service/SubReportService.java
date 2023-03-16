@@ -218,6 +218,7 @@ public class SubReportService {
      * 创建子报告
      * @param reportId
      */
+    @Transactional
     public void createSubReport(Long reportId){
         Report report=reportRepository.getById(reportId);
         AppInfo info=appInfoService.getAppInfo(report.getApplicationId());

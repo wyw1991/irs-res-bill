@@ -83,7 +83,7 @@ public class ObjUtil {
 
         //通过evaluationContext.setVariable可以在上下文中设定变量。
         EvaluationContext context = new StandardEvaluationContext();
-        object=!"是/否".equals(unit)?Integer.parseInt(object+""):object;
+        object=!"是/否".equals(unit)?Double.parseDouble(object+""):object;
         context.setVariable("obj", object);
 
         //解析表达式，如果表达式是一个模板表达式，需要为解析传入模板解析器上下文。
