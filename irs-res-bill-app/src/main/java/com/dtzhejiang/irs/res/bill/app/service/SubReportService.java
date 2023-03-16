@@ -106,7 +106,7 @@ public class SubReportService {
                 UserInfo userInfo = userGateway.getUserInfo();
                 if (Boolean.TRUE.equals(qry.getMyAudit())) {
                     //已审核列表
-                    wrapper.like(SubReport::getHistoryHandler, userInfo.getUserName());
+                    wrapper.apply("FIND_IN_SET ("+userInfo.getUserName()+",history_handler)");
                 } else {
                     wrapper.in(SubReport::getCurrentRole, userInfo.getRoleCodes()).or().eq(SubReport::getCurrentHandler, userInfo.getUserName());
                 }

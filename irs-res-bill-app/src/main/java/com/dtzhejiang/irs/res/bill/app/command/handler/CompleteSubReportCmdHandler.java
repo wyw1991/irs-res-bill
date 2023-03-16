@@ -60,9 +60,9 @@ public class CompleteSubReportCmdHandler{
         processGateway.completeProcessTask(subReport.getTaskId(), variables, username);
         String historyHandler = subReport.getHistoryHandler();
         if(StringUtils.isNotBlank(historyHandler)){
-            historyHandler  = historyHandler + ",<" + username+">";
+            historyHandler  = historyHandler + "," + username;
         }else {
-            historyHandler="<" + username+">";
+            historyHandler= username;
         }
         subReport.setHistoryHandler(historyHandler);
         subReportRepository.updateById(subReport);
