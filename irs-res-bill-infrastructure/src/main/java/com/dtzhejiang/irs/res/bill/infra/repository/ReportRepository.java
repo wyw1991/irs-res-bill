@@ -17,7 +17,10 @@ public class ReportRepository extends ServiceImpl<ReportMapper, Report> {
      * @param status
      */
     public void updateStatus(Long id, StatusEnum status){
-        updateById(Report.builder().id(id).status(StatusEnum.PROCESS).build());
+        Report report=new Report();
+        report.setId(id);
+        report.setStatus(status);
+        updateById(report);
     }
 
 }
