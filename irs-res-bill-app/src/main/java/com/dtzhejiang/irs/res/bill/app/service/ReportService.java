@@ -74,7 +74,7 @@ public class ReportService {
             wrapper.in(Report::getId, reportIdList);
         }
         wrapper.like(!ObjectUtils.isEmpty(pageQry.getKeyword()), Report::getName,pageQry.getKeyword());
-        wrapper.like(!ObjectUtils.isEmpty(pageQry.getField()), Report::getField,pageQry.getField());
+        wrapper.apply(!ObjectUtils.isEmpty(pageQry.getField()),"FIND_IN_SET ('"+pageQry.getField()+"',field)");
         wrapper.eq(!ObjectUtils.isEmpty(pageQry.getType()), Report::getType,pageQry.getType());
         wrapper.eq(!ObjectUtils.isEmpty(pageQry.getStatus()), Report::getStatus,pageQry.getStatus());
         wrapper.eq(!ObjectUtils.isEmpty(pageQry.getApplicationStatus()), Report::getApplicationStatus,pageQry.getApplicationStatus());
