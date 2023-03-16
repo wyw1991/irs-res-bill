@@ -47,9 +47,9 @@ public class Report {
     private String field;
 
     /**
-     * 建设层级：PROVINCE-省级、CITY-县（市、区）、VILLAGE-村（社区）；
+     * 建设层级
      */
-    private LevelEnum level;
+    private String level;
     /**
      * 应用管理员
      */

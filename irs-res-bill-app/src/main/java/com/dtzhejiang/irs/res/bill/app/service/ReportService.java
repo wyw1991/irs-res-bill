@@ -77,7 +77,6 @@ public class ReportService {
         wrapper.like(!ObjectUtils.isEmpty(pageQry.getField()), Report::getField,pageQry.getField());
         wrapper.eq(!ObjectUtils.isEmpty(pageQry.getType()), Report::getType,pageQry.getType());
         wrapper.eq(!ObjectUtils.isEmpty(pageQry.getStatus()), Report::getStatus,pageQry.getStatus());
-        wrapper.eq(!ObjectUtils.isEmpty(pageQry.getLevel()), Report::getLevel,pageQry.getLevel());
         wrapper.eq(!ObjectUtils.isEmpty(pageQry.getApplicationStatus()), Report::getApplicationStatus,pageQry.getApplicationStatus());
         wrapper.eq(!ObjectUtils.isEmpty(pageQry.getLinkProject()), Report::isLinkProject,pageQry.getLinkProject());
         wrapper.eq(Report::isNewReport,true);//以最新一条为准
