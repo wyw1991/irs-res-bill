@@ -144,10 +144,11 @@ public class SubReportService {
         List<SubReport> list=getList(qry);
         List<Long> idList=list.stream().map(SubReport::getReportId).distinct().collect(Collectors.toList());//防止查到所有
         //待审核列表特殊处理 在 合规确认,合规审核，报告出具 3个状态 需要6个子报告一起操作
-        if (Boolean.TRUE.equals(!CollectionUtils.isEmpty(list) && !myAudit) && BillPermissionEnum.audit.equals(qry.getBillPermission())) {
+        if (Boolean.TRUE.equals(!CollectionUtils.isEmpty(list) && !myAudit) && BillPermissionEnum.audit.equals(qry.getBillPermission()) ) {
             //统计同一个主报告下的子报告数量,过滤出子报告个数为6个的
             Map<Long,Long> map = list.stream().filter(f->SubStatusEnum.unifyList.contains(f.getSubStatus())).collect(Collectors.groupingBy(SubReport::getReportId,Collectors.counting()));
-            idList=map.entrySet().stream().filter(v->v.getValue()==6).map(Map.Entry::getKey).collect(Collectors.toList());
+            List<Long>  removeIdList=map.entrySet().stream().filter(v->v.getValue()!=6).map(Map.Entry::getKey).collect(Collectors.toList());
+            idList.remove(removeIdList);
         }
         return  CollectionUtils.isEmpty(idList)?Arrays.asList(0L):idList;
     }
@@ -245,7 +246,6 @@ public class SubReportService {
         List<SubReport> list=getList(reportId);
         list.forEach(f->{
             f.setName(info.getName());
-            f.setCurrentHandler(report.getAppAdminId());//更新待处理人
             save(f);
             indicesService.saveHisIndices(f.getId(),f.getSubType(),info);
         });
