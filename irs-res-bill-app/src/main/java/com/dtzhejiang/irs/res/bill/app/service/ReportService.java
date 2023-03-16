@@ -198,12 +198,6 @@ public class ReportService {
         return reportRepository.getById(reportId);
     }
 
-    public void updateStatus(Long id,StatusEnum status){
-        Report report=new Report();
-        report.setId(id);
-        report.setStatus(status);
-        reportRepository.updateById(report);
-    }
 
     public AppInfoDTO getPdf(Long reportId){
         AppInfoDTO dto = new AppInfoDTO();

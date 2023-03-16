@@ -48,7 +48,7 @@ public class AppInfoSyncTask {
 
 
     private Report convertToReport(AppInfo appInfo){
-        Report report=new Report();
+        Report report= Report.builder().build();
         BeanUtils.copyProperties(appInfo, report);
         report.setId(null);
         report.setNewReport(true);

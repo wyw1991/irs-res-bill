@@ -21,6 +21,7 @@ import com.dtzhejiang.irs.res.bill.domain.user.valueobject.User;
 import com.dtzhejiang.irs.res.bill.domain.user.valueobject.UserInfo;
 import com.dtzhejiang.irs.res.bill.domain.user.valueobject.UserRole;
 import com.dtzhejiang.irs.res.bill.infra.mapper.SubReportMapper;
+import com.dtzhejiang.irs.res.bill.infra.repository.ReportRepository;
 import com.dtzhejiang.irs.res.bill.infra.repository.SubReportRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -44,7 +45,7 @@ public class SubReportService {
     @Autowired
     private AppInfoService appInfoService;
     @Autowired
-    private ReportService reportService;
+    private ReportRepository reportRepository;
     @Autowired
     private SubReportNoGateway subReportNoGateway;
     @Autowired
@@ -179,7 +180,7 @@ public class SubReportService {
      */
     @Transactional
     public void submitSubReport(Long reportId){
-        Report report=reportService.getReport(reportId);
+        Report report=reportRepository.getById(reportId);
         if (report == null || report.getStatus()!=StatusEnum.INIT ) {
             throw new BusinessException("当前状态不可提交报告！");
         }
@@ -195,7 +196,7 @@ public class SubReportService {
             saveOrUpdate(subReport);
         });
         //更新主报告状态
-        reportService.updateStatus(reportId,StatusEnum.PROCESS);
+        reportRepository.updateStatus(reportId,StatusEnum.PROCESS);
     }
 
     /**
@@ -215,7 +216,7 @@ public class SubReportService {
      * @param reportId
      */
     public void createSubReport(Long reportId){
-        Report report=reportService.getReport(reportId);
+        Report report=reportRepository.getById(reportId);
         AppInfo info=appInfoService.getAppInfo(report.getApplicationId());
         Arrays.stream(SubTypeEnum.values()).forEach(f->{
             SubReport subReport=new SubReport();
@@ -235,7 +236,7 @@ public class SubReportService {
      * @param reportId
      */
     public void updateSubReport(Long reportId){
-        Report report=reportService.getReport(reportId);
+        Report report=reportRepository.getById(reportId);
         AppInfo info=appInfoService.getAppInfo(report.getApplicationId());
         List<SubReport> list=getList(reportId);
         list.forEach(f->{
