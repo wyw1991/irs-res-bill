@@ -48,7 +48,7 @@ public class SubReportController {
 
 
     /**
-     * 列表页-全部提交
+     * 第一步提交
      */
     @GetMapping("/submit")
     public SingleResponse createSubReport(@NonNull Long reportId) {

@@ -23,6 +23,7 @@ import com.dtzhejiang.irs.res.bill.domain.user.valueobject.UserRole;
 import com.dtzhejiang.irs.res.bill.infra.mapper.SubReportMapper;
 import com.dtzhejiang.irs.res.bill.infra.repository.SubReportRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -33,6 +34,7 @@ import java.util.stream.Collectors;
 
 
 @Component
+@Lazy
 public class SubReportService {
 
     @Autowired

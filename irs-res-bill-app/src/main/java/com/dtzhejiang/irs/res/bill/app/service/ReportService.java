@@ -24,6 +24,7 @@ import com.dtzhejiang.irs.res.bill.infra.util.PageUtilPlus;
 import com.dtzhejiang.irs.res.bill.app.query.qry.ReportPageQry;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
@@ -33,6 +34,7 @@ import java.util.stream.Collectors;
 
 
 @Component
+@Lazy
 public class ReportService {
 
     @Autowired
@@ -55,9 +57,9 @@ public class ReportService {
     private ProcessService processService;
     public PageResponse<Report> page(ReportPageQry pageQry){
         LambdaQueryWrapper<Report> wrapper = new LambdaQueryWrapper<>();
-        UserInfo userInfo = userGateway.getUserInfo();
         //应用管理员列表特殊处理
         if(!ObjectUtils.isEmpty(pageQry.getBillPermission())&& pageQry.getBillPermission() == BillPermissionEnum.generate ){
+            UserInfo userInfo = userGateway.getUserInfo();
             wrapper.eq(Report::getAppAdminId, userInfo.getUserName());
             if (Boolean.FALSE.equals(pageQry.getMyAudit())) {
                 //待审核列表
