@@ -43,6 +43,8 @@ public class SubReportService {
     @Autowired
     private HisIndicesService indicesService;
     @Autowired
+    private IndexConfigService configService;
+    @Autowired
     private AppInfoService appInfoService;
     @Autowired
     private ReportRepository reportRepository;
@@ -119,6 +121,7 @@ public class SubReportService {
     public SubReportFailDTO failList(SubReportQry qry){
         SubReportFailDTO dto = new SubReportFailDTO();
         List<SubReport> list=getList(qry);
+        dto.setTotalNum(configService.getCount());
         dto.setApplication_support(convert(list,SubTypeEnum.APPLICATION_SUPPORT));
         dto.setOperation(convert(list,SubTypeEnum.OPERATION));
         dto.setBasic_facilities(convert(list,SubTypeEnum.BASIC_FACILITIES));

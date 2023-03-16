@@ -11,7 +11,7 @@ public class SubReportFailDTO {
     /**
      * 总数
      */
-    private Integer totalNum=38;
+    private Long totalNum;
     /**
      * 问题数
      */

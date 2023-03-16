@@ -20,12 +20,19 @@ public class IndexConfigService {
 
     public List<IndexConfig> getList(){
         LambdaQueryWrapper<IndexConfig> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(IndexConfig::getDeleteFlag,0);
         return mapper.selectList(wrapper);
-
     }
+    public Long getCount(){
+        LambdaQueryWrapper<IndexConfig> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(IndexConfig::getDeleteFlag,0);
+        return mapper.selectCount(wrapper);
+    }
+
 
     public List<IndexConfig> getTypeList(SubTypeEnum type){
         LambdaQueryWrapper<IndexConfig> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(IndexConfig::getDeleteFlag,0);
         wrapper.eq(!ObjectUtils.isEmpty(type),IndexConfig::getType,type);
         return mapper.selectList(wrapper);
 
