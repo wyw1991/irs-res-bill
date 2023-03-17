@@ -107,6 +107,9 @@ public class ReportService {
         BeanUtils.copyProperties(report,detail);
         SubReportQry query = new SubReportQry();
         BeanUtils.copyProperties(pageQry,query);
+        if(!report.isNewReport()){
+            query.setMyAudit(true);
+        }
         List<SubReport> list=subReportService.getSpecialSubList(query);
         detail.setTypeMap(list.stream().collect(Collectors.toMap(SubReport ::getId,SubReport ::getSubType)));
         Set<SubStatusEnum> set=list.stream().map(SubReport::getSubStatus).collect(Collectors.toSet());
