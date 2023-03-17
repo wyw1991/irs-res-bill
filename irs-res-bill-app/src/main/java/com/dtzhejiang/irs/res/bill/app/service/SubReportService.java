@@ -172,7 +172,7 @@ public class SubReportService {
         List<Long> idList=list.stream().map(SubReport::getReportId).distinct().collect(Collectors.toList());//防止查到所有
         //待审核列表特殊处理 在 合规确认,合规审核，报告出具 3个状态 需要6个子报告一起操作
         if (Boolean.TRUE.equals(!CollectionUtils.isEmpty(list) && !pageQuery.getMyAudit()) && BillPermissionEnum.audit.equals(pageQuery.getBillPermission()) ) {
-            //统计同一个主报告下的子报告数量,过滤出子报告个数为6个的
+            //统计同一个主报告下的子报告数量,过滤出子报告个数不为6个的
             Map<Long,Long> map = list.stream().filter(f->SubStatusEnum.unifyList.contains(f.getSubStatus())).collect(Collectors.groupingBy(SubReport::getReportId,Collectors.counting()));
             List<Long>  removeIdList=map.entrySet().stream().filter(v->v.getValue()!=6).map(Map.Entry::getKey).collect(Collectors.toList());
             idList.remove(removeIdList);
@@ -196,11 +196,11 @@ public class SubReportService {
             List<HisIndices> hisList= indicesService.getList(v.getId());
             v.setId(null);
             v.setReportId(newReportId);
-            Long subId=saveOrUpdate(v);//新增一条数据
+            Long subId=saveOrUpdate(v);//新增一条复制数据
             hisList.forEach(m->{
                 m.setId(null);
                 m.setSubReportId(subId);
-                indicesService.saveOrUpdate(m);//新增一条数据
+                indicesService.saveOrUpdate(m);//新增一条复制数据
             });
         });
         //没有审核通过的根据最新数据生成

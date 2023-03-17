@@ -14,10 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -59,6 +56,7 @@ public class FinalCompleteCmdHandler extends BaseCompleteCmdHandler{
                 e.setSubStatus(SubStatusEnum.SUCCESS);
             });
             //更新主报告状态
+            report.setFinishTime(new Date());
             report.setStatus(StatusEnum.SUCCESS);
         }
         subReportRepository.updateBatchById(list);
