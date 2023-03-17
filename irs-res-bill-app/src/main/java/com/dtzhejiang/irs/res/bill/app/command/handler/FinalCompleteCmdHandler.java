@@ -2,10 +2,17 @@ package com.dtzhejiang.irs.res.bill.app.command.handler;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.dtzhejiang.irs.res.bill.app.command.cmd.FinalCompleteReportCmd;
+import com.dtzhejiang.irs.res.bill.app.service.ReportService;
 import com.dtzhejiang.irs.res.bill.common.dto.Response;
+import com.dtzhejiang.irs.res.bill.common.enums.StatusEnum;
+import com.dtzhejiang.irs.res.bill.common.enums.SubStatusEnum;
+import com.dtzhejiang.irs.res.bill.domain.model.Report;
 import com.dtzhejiang.irs.res.bill.domain.model.SubReport;
+import com.dtzhejiang.irs.res.bill.infra.repository.SubReportRepository;
 import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -17,7 +24,13 @@ import java.util.stream.Collectors;
 @Component
 public class FinalCompleteCmdHandler extends BaseCompleteCmdHandler{
 
+    @Autowired
+    private ReportService reportService;
+    @Autowired
+    private SubReportRepository subReportRepository;
+    @Transactional
     public Response apply(FinalCompleteReportCmd cmd) {
+        Report report = reportService.getReport(cmd.getReportId());
         LambdaQueryWrapper<SubReport> query = new LambdaQueryWrapper<>();
         query.eq(SubReport::getReportId, cmd.getReportId());
         List<SubReport> list = subReportRepository.list(query);
@@ -26,16 +39,30 @@ public class FinalCompleteCmdHandler extends BaseCompleteCmdHandler{
         Map<String, Object> variables = cmd.getVariables();
         // 退回处理
         if(CollectionUtils.isNotEmpty(backOffIds)){
-            Collection<Long> allIds = list.stream().map(SubReport::getId).collect(Collectors.toList());
-            Collection<Long> agreeIds = CollectionUtils.subtract(allIds, backOffIds);
-            backOffIds.forEach(backOffId -> complete(subReportMap.get(backOffId), variables));
-            agreeIds.forEach(agreeId -> complete(subReportMap.get(agreeId), buildSuccessVariables()));
-            // TODO: wyw 业务处理
+            List<SubReport> failList=subReportMap.entrySet().stream().filter(f->backOffIds.contains(f.getKey())).map(Map.Entry::getValue).collect(Collectors.toList());
+            failList.forEach(backOff -> {
+                complete(backOff, variables);
+                backOff.setSubStatus(SubStatusEnum.FAIL);
+            });
+            list.removeAll(failList);
+            list.forEach(agree -> {
+                complete(agree, buildSuccessVariables());
+                agree.setSubStatus(SubStatusEnum.SUCCESS);
+            });
+            list.addAll(failList);
+            //更新主报告状态
+            report.setStatus(StatusEnum.FAIL);
         }else {
             // 全部通过处理
-            list.forEach(e -> complete(e, variables));
-            // TODO: wyw 业务处理
+            list.forEach(e -> {
+                complete(e, variables);
+                e.setSubStatus(SubStatusEnum.SUCCESS);
+            });
+            //更新主报告状态
+            report.setStatus(StatusEnum.SUCCESS);
         }
+        subReportRepository.updateBatchById(list);
+        reportService.saveOrUpdate(report);
         return Response.buildSuccess();
     }
 
