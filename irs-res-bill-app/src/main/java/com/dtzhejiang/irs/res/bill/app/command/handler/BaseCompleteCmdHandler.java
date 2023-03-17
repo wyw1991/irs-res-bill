@@ -9,6 +9,7 @@ import com.dtzhejiang.irs.res.bill.domain.user.gateway.UserGateway;
 import com.dtzhejiang.irs.res.bill.infra.repository.SubReportRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Map;
 import java.util.Objects;
@@ -21,13 +22,13 @@ public abstract class BaseCompleteCmdHandler {
     @Autowired
     protected SubReportRepository subReportRepository;
 
+    @Transactional
     protected void complete(SubReport subReport, Map<String, Object> variables){
         String username = userGateway.getCurrentUser().getUserName();
         ProcessTask currentProcessTask = processGateway.getCurrentProcessTask(subReport.getProcessId(), username);
         if (currentProcessTask == null || !Objects.equals(currentProcessTask.getId(), subReport.getTaskId())) {
             throw new BusinessException("当前页面信息已失效,请刷新页面！");
         }
-        processGateway.completeProcessTask(subReport.getTaskId(), variables, username);
         String historyHandler = subReport.getHistoryHandler();
         if(StringUtils.isNotBlank(historyHandler)){
             historyHandler  = historyHandler + "," + username;
@@ -37,5 +38,7 @@ public abstract class BaseCompleteCmdHandler {
         subReportRepository.update(null, Wrappers.<SubReport>lambdaUpdate()
                 .eq(SubReport::getId, subReport.getId())
                 .set(SubReport::getHistoryHandler, historyHandler));
+
+        processGateway.completeProcessTask(subReport.getTaskId(), variables, username);
     }
 }
