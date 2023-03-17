@@ -30,11 +30,12 @@ public class FinalCompleteCmdHandler extends BaseCompleteCmdHandler{
             Collection<Long> agreeIds = CollectionUtils.subtract(allIds, backOffIds);
             backOffIds.forEach(backOffId -> complete(subReportMap.get(backOffId), variables));
             agreeIds.forEach(agreeId -> complete(subReportMap.get(agreeId), buildSuccessVariables()));
+            // TODO: wyw 业务处理
         }else {
             // 全部通过处理
             list.forEach(e -> complete(e, variables));
+            // TODO: wyw 业务处理
         }
-        // TODO: wyw 业务处理
         return Response.buildSuccess();
     }
 
