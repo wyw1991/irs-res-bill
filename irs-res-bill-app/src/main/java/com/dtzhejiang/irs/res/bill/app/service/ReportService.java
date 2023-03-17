@@ -27,6 +27,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
@@ -125,6 +126,7 @@ public class ReportService {
     /**
      * 生成报告、重新生成
      */
+    @Transactional
     public void generateReport(Long reportId){
         Report report=getReport(reportId);
         if (report == null) {
@@ -139,7 +141,7 @@ public class ReportService {
             report.setCreateTime(new Date());
             report.setStatus(StatusEnum.INIT);
             saveOrUpdate(report);
-            subReportService.createSubReport(reportId);
+            subReportService.createSubReportAndHis(reportId);
         }else if(StatusEnum.FAIL.equals(report.getStatus())) {
             //将此份报告更改为旧报告
             report.setNewReport(false);
@@ -185,7 +187,7 @@ public class ReportService {
                 entity.setStatus(StatusEnum.INIT);
                 entity.setVersion("1.0");//新数据默认为1.0
                 saveOrUpdate(entity);
-                subReportService.createSubReport(entity.getId());
+                subReportService.createSubReportAndHis(entity.getId());
             }
         }
         return saveOrUpdate(entity);

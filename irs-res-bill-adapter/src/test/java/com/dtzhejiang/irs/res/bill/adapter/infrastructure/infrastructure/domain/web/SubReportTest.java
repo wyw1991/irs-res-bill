@@ -16,7 +16,7 @@ import java.util.Arrays;
 @Transactional
 public class SubReportTest {
     @Autowired
-    private SubReportService reportService;
+    private SubReportService subReportService;
 
     @Autowired
     private SubReportMapper subReportMapper;
@@ -29,8 +29,14 @@ public class SubReportTest {
     @Test
     @Rollback(value = false)
     public void testProcess(){
-        reportService.submitSubReport(2L);
+        subReportService.submitSubReport(2L);
     }
 
+
+    @Test
+    @Rollback(value = false)
+    public void testSave(){
+        subReportService.reSubmit(2000L,9L);
+    }
 
 }

@@ -183,6 +183,7 @@ public class SubReportService {
 
 
 
+
     /**
      * 重新提交
      * @param newReportId
@@ -197,7 +198,7 @@ public class SubReportService {
             List<HisIndices> hisList= indicesService.getList(v.getId());
             v.setId(null);
             v.setReportId(newReportId);
-            Long subId=saveOrUpdate(v);//新增一条复制数据
+            Long subId=createSubReport(newReportId,v.getSubType());//新增一条复制数据
             hisList.forEach(m->{
                 m.setId(null);
                 m.setSubReportId(subId);
@@ -205,7 +206,7 @@ public class SubReportService {
             });
         });
         //没有审核通过的根据最新数据生成
-        list.stream().filter(f->!SubStatusEnum.SUCCESS.equals(f.getSubStatus())).forEach(v-> createSubReport(newReportId));
+        list.stream().filter(f->!SubStatusEnum.SUCCESS.equals(f.getSubStatus())).forEach(v-> createSubReportAndHis(newReportId));
     }
 
     /**
@@ -246,11 +247,11 @@ public class SubReportService {
 
 
     /**
-     * 创建子报告
+     * 创建子报告和指标
      * @param reportId
      */
     @Transactional
-    public void createSubReport(Long reportId){
+    public void createSubReportAndHis(Long reportId){
         Report report=reportRepository.getById(reportId);
         AppInfo info=appInfoService.getAppInfo(report.getApplicationId());
         Arrays.stream(SubTypeEnum.values()).forEach(f->{
@@ -264,6 +265,19 @@ public class SubReportService {
             save(subReport);
             indicesService.saveHisIndices(subReport.getId(),f,info);
         });
+    }
+
+    @Transactional
+    public Long createSubReport(Long reportId,SubTypeEnum subType){
+            SubReport subReport=new SubReport();
+            subReport.setReportId(reportId);
+            // 新增编号
+            subReport.setSubNo(subReportNoGateway.getSubReportNo());
+            subReport.setSubType(subType);
+            subReport.setName(subType.getName());
+            subReport.setSubStatus(SubStatusEnum.UN_SUBMIT);
+            saveOrUpdate(subReport);
+           return subReport.getId();
     }
 
     /**
