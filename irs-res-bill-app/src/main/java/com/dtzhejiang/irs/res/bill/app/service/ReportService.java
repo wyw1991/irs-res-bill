@@ -7,6 +7,7 @@ import com.dtzhejiang.irs.res.bill.app.dto.AppInfoDTO;
 import com.dtzhejiang.irs.res.bill.app.dto.HisIndicesDTO;
 import com.dtzhejiang.irs.res.bill.app.dto.ReportDTO;
 import com.dtzhejiang.irs.res.bill.app.query.qry.SubReportQry;
+import com.dtzhejiang.irs.res.bill.common.dto.PageQuery;
 import com.dtzhejiang.irs.res.bill.common.dto.PageResponse;
 import com.dtzhejiang.irs.res.bill.common.enums.*;
 import com.dtzhejiang.irs.res.bill.common.util.ObjUtil;
@@ -70,7 +71,7 @@ public class ReportService {
             }
         }else {
             //获取子报告对应的主报告ID
-            List<Long> reportIdList=subReportService.getReportIdList(pageQry.getBillPermission(),pageQry.getMyAudit());
+            List<Long> reportIdList=subReportService.getReportIdList(pageQry);
             wrapper.in(Report::getId, reportIdList);
         }
         wrapper.like(!ObjectUtils.isEmpty(pageQry.getKeyword()), Report::getName,pageQry.getKeyword());
@@ -99,12 +100,14 @@ public class ReportService {
      * 查询报告详情
      * @return
      */
-    public ReportDTO getDetail(Long reportId){
+    public ReportDTO getDetail(ReportPageQry pageQry){
         ReportDTO detail=new ReportDTO();
-        Report report=getReport(reportId);
+        Report report=getReport(pageQry.getReportId());
         BeanUtils.copyProperties(report,detail);
-        List<SubReport> list=subReportService.getList(reportId);
-        detail.setTypeList(list.stream().map(SubReport::getSubType).collect(Collectors.toList()));
+        SubReportQry query = new SubReportQry();
+        BeanUtils.copyProperties(pageQry,query);
+        List<SubReport> list=subReportService.getSpecialSubList(query);
+        detail.setTypeMap(list.stream().collect(Collectors.toMap(SubReport ::getId,SubReport ::getSubType)));
         Set<SubStatusEnum> set=list.stream().map(SubReport::getSubStatus).collect(Collectors.toSet());
         //所有报告权限一致且在
         if (!CollectionUtils.isEmpty(set) &&set.size() == 1 && SubStatusEnum.unifyList.contains(set.iterator().next())) {
@@ -195,6 +198,9 @@ public class ReportService {
     }
 
     public Report getReport(Long reportId){
+        if (reportId == null) {
+            throw new BusinessException("reportId不能为空");
+        }
         return reportRepository.getById(reportId);
     }
 

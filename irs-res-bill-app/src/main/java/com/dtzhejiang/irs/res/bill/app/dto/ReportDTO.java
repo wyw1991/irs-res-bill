@@ -12,6 +12,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -73,9 +74,9 @@ public class ReportDTO {
     private Date finishTime;
 
     /**
-     * 显示的权限列表
+     * 显示的权限map
      */
-    private List<SubTypeEnum> typeList;
+    private Map<Long,SubTypeEnum> typeMap;
 
     /**
      * 是否可操作 true 是 false 否

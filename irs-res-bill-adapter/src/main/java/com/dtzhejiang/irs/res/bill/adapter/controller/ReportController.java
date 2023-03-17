@@ -52,9 +52,9 @@ public class ReportController {
     /**
      * 报告详情（子报告权限）
      */
-    @GetMapping("/detail")
-    public SingleResponse<ReportDTO> getReportDto(@NonNull Long reportId) {
-        return SingleResponse.of(service.getDetail(reportId));
+    @PostMapping("/detail")
+    public SingleResponse<ReportDTO> getReportDto(@RequestBody ReportPageQry pageQry) {
+        return SingleResponse.of(service.getDetail(pageQry));
     }  
     
     /**

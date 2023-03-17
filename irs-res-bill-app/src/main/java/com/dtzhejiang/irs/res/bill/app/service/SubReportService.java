@@ -8,6 +8,7 @@ import com.dtzhejiang.irs.res.bill.app.command.handler.ProcessCommandHandler;
 import com.dtzhejiang.irs.res.bill.app.dto.SubReportDTO;
 import com.dtzhejiang.irs.res.bill.app.dto.SubReportFailDTO;
 import com.dtzhejiang.irs.res.bill.app.query.qry.SubReportQry;
+import com.dtzhejiang.irs.res.bill.common.dto.PageQuery;
 import com.dtzhejiang.irs.res.bill.common.enums.*;
 import com.dtzhejiang.irs.res.bill.domain.exception.BusinessException;
 import com.dtzhejiang.irs.res.bill.domain.model.AppInfo;
@@ -83,7 +84,32 @@ public class SubReportService {
     }
 
     /**
-     * 不过滤权限
+     * 子报告列表(特殊节点需要6个子报告状态一致才可统一审批)
+     * @param qry
+     * @return
+     */
+    public List<SubReport> getSpecialSubList (SubReportQry qry){
+        UserInfo userInfo = userGateway.getUserInfo();
+        if (qry.getReportId() == null) {
+            throw new BusinessException("reportId 不能为空！");
+        }
+        qry.setReportId(qry.getReportId());
+        List<SubReport> list=getList(qry);
+        if (Boolean.FALSE.equals(qry.getMyAudit())) {
+            list=filterSubId(list);
+        }
+        return list;
+    }
+    private  List<SubReport> filterSubId (List<SubReport> list){
+        //统计同一个主报告下的子报告数量,过滤出子报告个数为6个的
+        Map<Long,Long> map = list.stream().filter(f->SubStatusEnum.unifyList.contains(f.getSubStatus())).collect(Collectors.groupingBy(SubReport::getReportId,Collectors.counting()));
+        List<Long>  removeIdList=map.entrySet().stream().filter(v->v.getValue()!=6).map(Map.Entry::getKey).collect(Collectors.toList());
+        List<SubReport>  removeList=list.stream().filter(f->removeIdList.contains(f.getReportId()) && SubStatusEnum.unifyList.contains(f.getSubStatus())).collect(Collectors.toList());
+        list.removeAll(removeList);
+        return list;
+    }
+    /**
+     * 根据reportID查询6个子报告，不过滤权限
      * @param reportId
      * @return
      */
@@ -91,16 +117,13 @@ public class SubReportService {
         if (reportId == null) {
             throw new BusinessException("reportId 不能为空！");
         }
-        SubReportQry qry=new SubReportQry();
-        qry.setPermission(false);
-        qry.setReportId(reportId);
-       return getList(qry);
+        LambdaQueryWrapper<SubReport> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq( SubReport::getReportId,reportId);
+       return mapper.selectList(wrapper);
     }
 
     public List<SubReport> getList (SubReportQry qry){
         LambdaQueryWrapper<SubReport> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(!ObjectUtils.isEmpty(qry.getSubType()), SubReport::getSubType,qry.getSubType());
-        wrapper.eq(!ObjectUtils.isEmpty(qry.getReportId()), SubReport::getReportId,qry.getReportId());
         //应用管理员列表特殊处理
         if(!ObjectUtils.isEmpty(qry.getBillPermission())&& qry.getBillPermission() != BillPermissionEnum.generate ){
             //默认需要进行权限控制
@@ -110,13 +133,18 @@ public class SubReportService {
                     //已审核列表
                     wrapper.apply("FIND_IN_SET ("+userInfo.getUserName()+",history_handler)");
                 } else {
-                    wrapper.in(SubReport::getCurrentRole, userInfo.getRoleCodes()).or().eq(SubReport::getCurrentHandler, userInfo.getUserName());
+                    //待审核
+                    wrapper.and(w->w.in(SubReport::getCurrentRole, userInfo.getRoleCodes()).or().eq(SubReport::getCurrentHandler, userInfo.getUserName()));
                 }
             }
         }
+        wrapper.eq(!ObjectUtils.isEmpty(qry.getSubType()), SubReport::getSubType,qry.getSubType());
+        wrapper.eq(!ObjectUtils.isEmpty(qry.getReportId()), SubReport::getReportId,qry.getReportId());
         wrapper.orderBy(true,false, SubReport::getUpdateTime);//按照更新时间倒序
         return mapper.selectList(wrapper);
     }
+
+
 
     public SubReportFailDTO failList(SubReportQry qry){
         SubReportFailDTO dto = new SubReportFailDTO();
@@ -133,18 +161,17 @@ public class SubReportService {
 
     /**
      * 查询符合当前角色权限列表的主报告IDlist
-     * @param billPermission
-     * @param myAudit
+     * @param pageQuery
      * @return
      */
-    public List<Long> getReportIdList(BillPermissionEnum billPermission, Boolean myAudit){
+    public List<Long> getReportIdList(PageQuery pageQuery){
         SubReportQry qry = new SubReportQry();
-        qry.setBillPermission(billPermission);
-        qry.setMyAudit(myAudit);
+        qry.setBillPermission(pageQuery.getBillPermission());
+        qry.setMyAudit(pageQuery.getMyAudit());
         List<SubReport> list=getList(qry);
         List<Long> idList=list.stream().map(SubReport::getReportId).distinct().collect(Collectors.toList());//防止查到所有
         //待审核列表特殊处理 在 合规确认,合规审核，报告出具 3个状态 需要6个子报告一起操作
-        if (Boolean.TRUE.equals(!CollectionUtils.isEmpty(list) && !myAudit) && BillPermissionEnum.audit.equals(qry.getBillPermission()) ) {
+        if (Boolean.TRUE.equals(!CollectionUtils.isEmpty(list) && !pageQuery.getMyAudit()) && BillPermissionEnum.audit.equals(pageQuery.getBillPermission()) ) {
             //统计同一个主报告下的子报告数量,过滤出子报告个数为6个的
             Map<Long,Long> map = list.stream().filter(f->SubStatusEnum.unifyList.contains(f.getSubStatus())).collect(Collectors.groupingBy(SubReport::getReportId,Collectors.counting()));
             List<Long>  removeIdList=map.entrySet().stream().filter(v->v.getValue()!=6).map(Map.Entry::getKey).collect(Collectors.toList());
@@ -152,6 +179,8 @@ public class SubReportService {
         }
         return  CollectionUtils.isEmpty(idList)?Arrays.asList(0L):idList;
     }
+
+
 
     /**
      * 重新提交
@@ -237,7 +266,7 @@ public class SubReportService {
     }
 
     /**
-     * 更新子报告
+     * 更新子报告下的指标(同步接口使用)
      * @param reportId
      */
     public void updateSubReport(Long reportId){
@@ -245,8 +274,6 @@ public class SubReportService {
         AppInfo info=appInfoService.getAppInfo(report.getApplicationId());
         List<SubReport> list=getList(reportId);
         list.forEach(f->{
-            f.setName(info.getName());
-            save(f);
             indicesService.saveHisIndices(f.getId(),f.getSubType(),info);
         });
     }
