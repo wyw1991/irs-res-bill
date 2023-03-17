@@ -148,6 +148,10 @@ public class SubReportService {
 
 
     public SubReportFailDTO failList(SubReportQry qry){
+        Report report= reportRepository.getById(qry.getReportId());
+        if(!report.isNewReport()){
+            qry.setMyAudit(true);
+        }
         SubReportFailDTO dto = new SubReportFailDTO();
         List<SubReport> list=getList(qry);
         dto.setTotalNum(configService.getCount());
