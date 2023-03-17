@@ -134,6 +134,7 @@ public class SubReportService {
                     wrapper.apply("FIND_IN_SET ("+userInfo.getUserName()+",history_handler)");
                 } else {
                     //待审核
+                    wrapper.notIn(SubReport::getSubStatus,Arrays.asList(SubStatusEnum.SUCCESS,SubStatusEnum.FAIL,SubStatusEnum.UN_SUBMIT));
                     wrapper.and(w->w.in(SubReport::getCurrentRole, userInfo.getRoleCodes()).or().eq(SubReport::getCurrentHandler, userInfo.getUserName()));
                 }
             }
