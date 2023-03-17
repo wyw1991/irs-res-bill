@@ -74,6 +74,10 @@ public class ReportService {
             //获取子报告对应的主报告ID
             List<Long> reportIdList=subReportService.getReportIdList(pageQry);
             wrapper.in(Report::getId, reportIdList);
+            if (Boolean.FALSE.equals(pageQry.getMyAudit())) {
+                //待审核列表
+                wrapper.eq(Report::getStatus,StatusEnum.PROCESS);
+            }
         }
         wrapper.like(!ObjectUtils.isEmpty(pageQry.getKeyword()), Report::getName,pageQry.getKeyword());
         wrapper.apply(!ObjectUtils.isEmpty(pageQry.getField()),"FIND_IN_SET ('"+pageQry.getField()+"',field)");
