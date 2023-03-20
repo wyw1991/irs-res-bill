@@ -38,7 +38,7 @@ public enum SubStatusEnum {
     /**
      * 需要统一审批状态List
      */
-    public static List<SubStatusEnum> unifyList=Arrays.asList(UN_SUBMIT,UN_RE_SUBMIT,UN_VALID_CONFIRM,UN_AUDIT_ISSUE,UN_REPORT_ISSUE);
+    public static List<SubStatusEnum> unifyList=Arrays.asList(UN_SUBMIT,UN_VALID_CONFIRM,UN_AUDIT_ISSUE,UN_REPORT_ISSUE);
 
     /**
      * 是否审核完成：true 是 false 否
