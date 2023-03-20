@@ -50,6 +50,7 @@ public class HisIndicesService {
             HisIndices hisIndices=new HisIndices();
             String fileName=f.getIndexCode();
             Object obj= ObjUtil.getValue(appInfo,fileName);
+            setResult(obj,f,hisIndices);
             hisIndices.setOperationIndices(f.getIndexName());
             hisIndices.setOperationIndicesCode(f.getIndexCode());
             hisIndices.setNormalValue(f.getNormalValue());
@@ -60,7 +61,6 @@ public class HisIndicesService {
             }
             hisIndices.setOperationData(obj+"");
             hisIndices.setSubReportId(subId);
-            setResult(obj,f,hisIndices);
             save(hisIndices);
         });
     }
