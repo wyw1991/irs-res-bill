@@ -124,7 +124,7 @@ public class ReportService {
         detail.setTypeMap(list.stream().collect(Collectors.toMap(SubReport ::getId,SubReport ::getSubType)));
         Set<SubStatusEnum> set=list.stream().map(SubReport::getSubStatus).collect(Collectors.toSet());
         //所有报告权限一致且在
-        if (!CollectionUtils.isEmpty(set) &&set.size() == 1 && SubStatusEnum.unifyList.contains(set.iterator().next())) {
+        if (!CollectionUtils.isEmpty(set) &&set.size() == 1 && SubStatusEnum.unifyList.contains(set.iterator().next()) || SubStatusEnum.UN_RE_SUBMIT.equals(set.iterator().next()) ) {
             //放入审批按钮信息
             try {
                 Operation operation= processService.getCurrentOperation(list.iterator().next().getProcessId()).getData();

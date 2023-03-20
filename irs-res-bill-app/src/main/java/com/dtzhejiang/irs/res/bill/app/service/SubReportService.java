@@ -89,7 +89,6 @@ public class SubReportService {
      * @return
      */
     public List<SubReport> getSpecialSubList (SubReportQry qry){
-        UserInfo userInfo = userGateway.getUserInfo();
         if (qry.getReportId() == null) {
             throw new BusinessException("reportId 不能为空！");
         }
