@@ -245,7 +245,7 @@ public class SubReportService {
         if(subReport == null){
             throw new BusinessException("404", "子报告不存在");
         }
-        processCommandHandler.complete(subReport.getTaskId(), cmd.getVariable());
+        processCommandHandler.complete(subReport.getTaskId(), cmd.getVariables());
     }
 
 
