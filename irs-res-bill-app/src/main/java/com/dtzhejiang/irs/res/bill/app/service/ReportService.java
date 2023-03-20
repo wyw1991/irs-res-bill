@@ -99,7 +99,10 @@ public class ReportService {
         List<Report> list=mapper.selectList(wrapper);
         SubReportQry subReportQry = new SubReportQry();
         BeanUtils.copyProperties(pageQry, subReportQry);
-        list.forEach(f->f.setFailNum(subReportService.failList(subReportQry).getFailNum()));
+        list.forEach(f-> {
+                    subReportQry.setReportId(f.getId());
+                    f.setFailNum(subReportService.failList(subReportQry).getFailNum());
+                });
         return list;
     }
 
