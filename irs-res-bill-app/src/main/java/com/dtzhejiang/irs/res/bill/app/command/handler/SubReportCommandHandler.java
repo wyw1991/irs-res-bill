@@ -54,6 +54,7 @@ public class SubReportCommandHandler {
             throw new BusinessException("404", "子报告不存在");
         }
         subReport.setTaskId(processInfoCmd.getTaskId());
+        subReport.setSubStatus(SubStatusEnum.fromCode(processInfoCmd.getStatus()));
         subReport.setProcessEnd(1);
         subReport.setUpdateTime(new Date());
         subReportRepository.updateById(subReport);

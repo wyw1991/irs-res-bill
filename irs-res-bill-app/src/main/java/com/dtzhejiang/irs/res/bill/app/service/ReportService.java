@@ -93,11 +93,13 @@ public class ReportService {
         return PageResponse.of(page.getRecords(),page.getTotal(), page.getSize(), page.getCurrent());
     }
 
-    public List<Report> getList(String applicationId){
+    public List<Report> getList(ReportPageQry pageQry){
         LambdaQueryWrapper<Report> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(Report::getApplicationId,applicationId);
+        wrapper.eq(Report::getApplicationId,pageQry.getApplicationId());
         List<Report> list=mapper.selectList(wrapper);
-        list.forEach(f->f.setFailNum(subReportService.failList(new SubReportQry(f.getId())).getFailNum()));
+        SubReportQry subReportQry = new SubReportQry();
+        BeanUtils.copyProperties(pageQry, subReportQry);
+        list.forEach(f->f.setFailNum(subReportService.failList(subReportQry).getFailNum()));
         return list;
     }
 

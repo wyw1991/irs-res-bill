@@ -56,6 +56,7 @@ public class ExternalEventsController {
         if (FlowableEventType.PROCESS_COMPLETED.name().equals(eventType)) {
             subReportCommandHandler.updateProcessEnd(SubReportUpdateProcessInfoCmd.builder()
                     .processInstanceId(processInstanceId)
+                    .status((String)eventBody.get("status"))
                     .build());
         }
         return Response.buildSuccess();

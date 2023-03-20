@@ -48,8 +48,10 @@ public class ReportPageQry extends PageQuery {
      */
     private Boolean linkProject;
 
-
-
+    /**
+     * 应用ID
+     */
+    private String applicationId;
 
 
 }

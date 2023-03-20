@@ -36,30 +36,19 @@ public class FinalCompleteCmdHandler extends BaseCompleteCmdHandler{
         Map<String, Object> variables = cmd.getVariables();
         // 退回处理
         if(CollectionUtils.isNotEmpty(backOffIds)){
-            List<SubReport> failList=subReportMap.entrySet().stream().filter(f->backOffIds.contains(f.getKey())).map(Map.Entry::getValue).collect(Collectors.toList());
-            failList.forEach(backOff -> {
-                complete(backOff, variables);
-                backOff.setSubStatus(SubStatusEnum.FAIL);
-            });
-            list.removeAll(failList);
-            list.forEach(agree -> {
-                complete(agree, buildSuccessVariables());
-                agree.setSubStatus(SubStatusEnum.SUCCESS);
-            });
-            list.addAll(failList);
+            Collection<Long> allIds = list.stream().map(SubReport::getId).collect(Collectors.toList());
+            Collection<Long> agreeIds = CollectionUtils.subtract(allIds, backOffIds);
+            backOffIds.forEach(backOffId -> complete(subReportMap.get(backOffId), variables));
+            agreeIds.forEach(agreeId -> complete(subReportMap.get(agreeId), buildSuccessVariables()));
             //更新主报告状态
             report.setStatus(StatusEnum.FAIL);
         }else {
             // 全部通过处理
-            list.forEach(e -> {
-                complete(e, variables);
-                e.setSubStatus(SubStatusEnum.SUCCESS);
-            });
+            list.forEach(e -> complete(e, variables));
             //更新主报告状态
             report.setFinishTime(new Date());
             report.setStatus(StatusEnum.SUCCESS);
         }
-        subReportRepository.updateBatchById(list);
         reportService.saveOrUpdate(report);
         return Response.buildSuccess();
     }

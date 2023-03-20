@@ -32,11 +32,11 @@ public class ReportController {
 
     /**
      * 应用ID查询主报告列表
-     * @param applicationId 应用ID
+     * @param pageQry
      */
-    @GetMapping("/list")
-    public MultiResponse<Report> appRegister(String applicationId) {
-        return MultiResponse.of(service.getList(applicationId));
+    @PostMapping("/list")
+    public MultiResponse<Report> appRegister(@RequestBody ReportPageQry pageQry) {
+        return MultiResponse.of(service.getList(pageQry));
     }
 
     /**
