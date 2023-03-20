@@ -180,7 +180,7 @@ public class SubReportService {
             //统计同一个主报告下的子报告数量,过滤出子报告个数不为6个的
             Map<Long,Long> map = list.stream().filter(f->SubStatusEnum.unifyList.contains(f.getSubStatus())).collect(Collectors.groupingBy(SubReport::getReportId,Collectors.counting()));
             List<Long>  removeIdList=map.entrySet().stream().filter(v->v.getValue()!=6).map(Map.Entry::getKey).collect(Collectors.toList());
-            idList.remove(removeIdList);
+            idList.removeAll(removeIdList);
         }
         return  CollectionUtils.isEmpty(idList)?Arrays.asList(0L):idList;
     }
