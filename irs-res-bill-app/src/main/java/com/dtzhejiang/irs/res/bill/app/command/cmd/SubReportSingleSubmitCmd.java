@@ -16,5 +16,5 @@ public class SubReportSingleSubmitCmd {
     /**
      * 变量
      */
-    private Map<String, Object> variable;
+    private Map<String, Object> variables;
 }
