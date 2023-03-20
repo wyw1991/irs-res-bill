@@ -53,7 +53,12 @@ public class HisIndicesService {
             hisIndices.setOperationIndices(f.getIndexName());
             hisIndices.setOperationIndicesCode(f.getIndexCode());
             hisIndices.setNormalValue(f.getNormalValue());
-            hisIndices.setOperationData(obj+(!"是/否".equals(f.getIndexUnit()) && !ObjectUtils.isEmpty(obj)?f.getIndexUnit():""));
+            if(obj!=null){
+               obj=obj+(!"是/否".equals(f.getIndexUnit()) ?f.getIndexUnit():"");
+            }else {
+                obj="";
+            }
+            hisIndices.setOperationData(obj+"");
             hisIndices.setSubReportId(subId);
             setResult(obj,f,hisIndices);
             save(hisIndices);
