@@ -16,6 +16,7 @@ import com.dtzhejiang.irs.res.bill.domain.model.AppInfo;
 import com.dtzhejiang.irs.res.bill.domain.model.HisIndices;
 import com.dtzhejiang.irs.res.bill.domain.model.Report;
 import com.dtzhejiang.irs.res.bill.domain.model.SubReport;
+import com.dtzhejiang.irs.res.bill.domain.process.valueobject.Operation;
 import com.dtzhejiang.irs.res.bill.domain.user.gateway.UserGateway;
 import com.dtzhejiang.irs.res.bill.domain.user.valueobject.User;
 import com.dtzhejiang.irs.res.bill.domain.user.valueobject.UserInfo;
@@ -124,10 +125,13 @@ public class ReportService {
         Set<SubStatusEnum> set=list.stream().map(SubReport::getSubStatus).collect(Collectors.toSet());
         //所有报告权限一致且在
         if (!CollectionUtils.isEmpty(set) &&set.size() == 1 && SubStatusEnum.unifyList.contains(set.iterator().next())) {
-            detail.setCanOperate(true);
             //放入审批按钮信息
             try {
-                detail.setOperationDTO(processService.getCurrentOperation(list.iterator().next().getProcessId()).getData());
+                Operation operation= processService.getCurrentOperation(list.iterator().next().getProcessId()).getData();
+                if (operation != null && !operation.getOptions().iterator().next().getRefFormKey().equals("submit_btn")) {
+                    detail.setCanOperate(true);
+                    detail.setOperationDTO(operation);
+                }
             }catch (Exception e) {
             }
         }
