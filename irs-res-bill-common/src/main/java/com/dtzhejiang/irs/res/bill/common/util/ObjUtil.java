@@ -2,6 +2,7 @@ package com.dtzhejiang.irs.res.bill.common.util;
 
 import java.lang.reflect.Field;
 
+import cn.hutool.core.util.StrUtil;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
 import org.springframework.expression.ExpressionParser;
@@ -10,34 +11,9 @@ import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 public class ObjUtil {
 
-    /**
-     * 驼峰式命名法
-     */
-    public static String toCamelCase(String s) {
-        if (s == null) {
-            return null;
-        }
-        s = s.toLowerCase();
-        StringBuilder sb = new StringBuilder(s.length());
-        boolean upperCase = false;
-        for (int i = 0; i < s.length(); i++) {
-            char c = s.charAt(i);
-
-            if ("_".charAt(0)==c) {
-                upperCase = true;
-            } else if (upperCase) {
-                sb.append(Character.toUpperCase(c));
-                upperCase = false;
-            } else {
-                sb.append(c);
-            }
-        }
-        return sb.toString();
-    }
-
     public static Object getValue(Object object, String fieldName) {
         try {
-            Field field = object.getClass().getDeclaredField(toCamelCase(fieldName));
+            Field field = object.getClass().getDeclaredField(StrUtil.toCamelCase(fieldName));
             field.setAccessible(true);
             return field.get(object);
         } catch (NoSuchFieldException e) {
@@ -49,7 +25,7 @@ public class ObjUtil {
     }
     public static void setValue(Object object, String fieldName,String value) {
         try {
-            Field field = object.getClass().getDeclaredField(toCamelCase(fieldName));
+            Field field = object.getClass().getDeclaredField(StrUtil.toCamelCase(fieldName));
             field.setAccessible(true);
             field.set(object,value);
             System.out.println(fieldName+"-------------------------------------"+value);
@@ -95,7 +71,7 @@ public class ObjUtil {
 
     public static void main(String[] args) {
         String a="unify_component_invoke_quantity";
-        System.out.println(toCamelCase(a));
+        System.out.println(StrUtil.toCamelCase(a));
     }
 
 }
