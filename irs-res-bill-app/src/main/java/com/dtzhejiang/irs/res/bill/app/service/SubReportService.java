@@ -75,9 +75,11 @@ public class SubReportService {
         wrapper.orderBy(true,true, SubReport::getId);//按照id正序
         SubReport subReport=mapper.selectOne(wrapper);
         dto.setSubReport(subReport);
-        try{
-            dto.setOperationDTO(processService.getCurrentOperation(subReport.getProcessId()).getData());
-        }catch (Exception e) {
+        if(!qry.getMyAudit()){
+            try{
+                dto.setOperationDTO(processService.getCurrentOperation(subReport.getProcessId()).getData());
+            }catch (Exception e) {
+            }
         }
         dto.setHisIndicesList(indicesService.getList(subReport.getId()));
         return dto;
@@ -125,21 +127,22 @@ public class SubReportService {
     public List<SubReport> getList (SubReportQry qry){
         LambdaQueryWrapper<SubReport> wrapper = new LambdaQueryWrapper<>();
         UserInfo userInfo = userGateway.getUserInfo();
-        //默认需要进行权限控制
-        if(Boolean.TRUE.equals(qry.getPermission())) {
-            if (Boolean.TRUE.equals(qry.getMyAudit())) {
-                //已审核列表
+        if (Boolean.TRUE.equals(qry.getMyAudit())) {
+            //已审核列表
+            if(BillPermissionEnum.audit.equals(qry.getBillPermission())){
                 wrapper.apply("FIND_IN_SET ("+userInfo.getUserName()+",history_handler)");
-            } else {
+            }
+        } else {
+            //应用管理员列表特殊处理
+            // 待提交
+            if(BillPermissionEnum.generate.equals(qry.getBillPermission())  ){
+                wrapper.eq(SubReport::getCurrentHandler, userInfo.getUserName());
+            }else{
                 //待审核
-                //应用管理员列表特殊处理
-                if(!ObjectUtils.isEmpty(qry.getBillPermission())&& qry.getBillPermission() == BillPermissionEnum.generate ){
-                    wrapper.eq(SubReport::getCurrentHandler, userInfo.getUserName());
-                }else{
-                    wrapper.in(SubReport::getCurrentRole, userInfo.getRoleCodes());
-                }
+                wrapper.in(SubReport::getCurrentRole, userInfo.getRoleCodes());
             }
         }
+
         wrapper.eq(!ObjectUtils.isEmpty(qry.getSubType()), SubReport::getSubType,qry.getSubType());
         wrapper.eq(!ObjectUtils.isEmpty(qry.getReportId()), SubReport::getReportId,qry.getReportId());
         wrapper.orderBy(true,false, SubReport::getUpdateTime);//按照更新时间倒序
@@ -150,7 +153,7 @@ public class SubReportService {
 
     public SubReportFailDTO failList(SubReportQry qry){
         Report report= reportRepository.getById(qry.getReportId());
-        if(!report.isNewReport() || BillPermissionEnum.generate.equals(qry.getBillPermission())){
+        if(!report.isNewReport() ){
             qry.setMyAudit(true);
         }
         SubReportFailDTO dto = new SubReportFailDTO();
