@@ -134,9 +134,9 @@ public class SubReportService {
             }
         } else {
             //应用管理员列表特殊处理
-            // 待提交
+            // 待提交(重新提交特殊处理)
             if(BillPermissionEnum.generate.equals(qry.getBillPermission())  ){
-                wrapper.eq(SubReport::getCurrentHandler, userInfo.getUserName());
+                wrapper.eq(SubReport::getCurrentHandler, userInfo.getUserName()).eq(SubReport::getSubStatus,SubStatusEnum.UN_RE_SUBMIT);
             }else{
                 //待审核
                 wrapper.in(SubReport::getCurrentRole, userInfo.getRoleCodes());
