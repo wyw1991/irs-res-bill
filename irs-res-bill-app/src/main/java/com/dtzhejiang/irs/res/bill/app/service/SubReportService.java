@@ -99,6 +99,7 @@ public class SubReportService {
         }
         return list;
     }
+
     private  List<SubReport> filterSubId (List<SubReport> list){
         //统计同一个主报告下的子报告数量,过滤出子报告个数为6个的
         Map<Long,Long> map = list.stream().filter(f->SubStatusEnum.unifyList.contains(f.getSubStatus())).collect(Collectors.groupingBy(SubReport::getReportId,Collectors.counting()));
@@ -123,19 +124,19 @@ public class SubReportService {
 
     public List<SubReport> getList (SubReportQry qry){
         LambdaQueryWrapper<SubReport> wrapper = new LambdaQueryWrapper<>();
-        //应用管理员列表特殊处理
-        if(!ObjectUtils.isEmpty(qry.getBillPermission())&& qry.getBillPermission() != BillPermissionEnum.generate ){
-            //默认需要进行权限控制
-            if(Boolean.TRUE.equals(qry.getPermission())) {
-                UserInfo userInfo = userGateway.getUserInfo();
-                if (Boolean.TRUE.equals(qry.getMyAudit())) {
-                    //已审核列表
-                    wrapper.apply("FIND_IN_SET ("+userInfo.getUserName()+",history_handler)");
-                } else {
-                    //待审核
-                    wrapper.notIn(SubReport::getSubStatus,Arrays.asList(SubStatusEnum.SUCCESS,SubStatusEnum.FAIL,SubStatusEnum.UN_SUBMIT));
+        UserInfo userInfo = userGateway.getUserInfo();
+        //默认需要进行权限控制
+        if(Boolean.TRUE.equals(qry.getPermission())) {
+            if (Boolean.TRUE.equals(qry.getMyAudit())) {
+                //已审核列表
+                wrapper.apply("FIND_IN_SET ("+userInfo.getUserName()+",history_handler)");
+            } else {
+                //待审核
+                //应用管理员列表特殊处理
+                if(!ObjectUtils.isEmpty(qry.getBillPermission())&& qry.getBillPermission() == BillPermissionEnum.generate ){
+                    wrapper.eq(SubReport::getCurrentHandler, userInfo.getUserName());
+                }else{
                     wrapper.in(SubReport::getCurrentRole, userInfo.getRoleCodes());
-                    //wrapper.and(w->w.in(SubReport::getCurrentRole, userInfo.getRoleCodes()).or().eq(SubReport::getCurrentHandler, userInfo.getUserName()));
                 }
             }
         }
@@ -149,7 +150,7 @@ public class SubReportService {
 
     public SubReportFailDTO failList(SubReportQry qry){
         Report report= reportRepository.getById(qry.getReportId());
-        if(!report.isNewReport()){
+        if(!report.isNewReport() || BillPermissionEnum.generate.equals(qry.getBillPermission())){
             qry.setMyAudit(true);
         }
         SubReportFailDTO dto = new SubReportFailDTO();

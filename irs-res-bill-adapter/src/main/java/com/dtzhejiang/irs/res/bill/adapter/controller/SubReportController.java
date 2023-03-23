@@ -37,13 +37,6 @@ public class SubReportController {
         return SingleResponse.of(subReportService.getSubReportDTO(qry));
     }
 
-    /**
-     * 全部子报告列表
-     */
-    @PostMapping("/allList")
-    public MultiResponse<SubReportDTO> getDTOList(@RequestBody SubReportQry qry) {
-        return MultiResponse.of(subReportService.convertToList(subReportService.getList(qry)));
-    }
 
 
 

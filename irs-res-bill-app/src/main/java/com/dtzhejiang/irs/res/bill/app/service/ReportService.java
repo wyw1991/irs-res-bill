@@ -60,20 +60,21 @@ public class ReportService {
     private ProcessService processService;
     public PageResponse<Report> page(ReportPageQry pageQry){
         LambdaQueryWrapper<Report> wrapper = new LambdaQueryWrapper<>();
+        //获取子报告对应的主报告ID
+        List<Long> reportIdList=subReportService.getReportIdList(pageQry);
         //应用管理员列表特殊处理
         if(!ObjectUtils.isEmpty(pageQry.getBillPermission())&& pageQry.getBillPermission() == BillPermissionEnum.generate ){
             UserInfo userInfo = userGateway.getUserInfo();
             wrapper.eq(Report::getAppAdminId, userInfo.getUserName());
             if (Boolean.FALSE.equals(pageQry.getMyAudit())) {
                 //待审核列表
-                wrapper.in(Report::getStatus,Arrays.asList(StatusEnum.UN_INIT,StatusEnum.INIT));
+                //wrapper.in(Report::getStatus,Arrays.asList(StatusEnum.UN_INIT,StatusEnum.INIT));
+                wrapper.and(e->e.in(Report::getId,reportIdList).or().in(Report::getStatus,Arrays.asList(StatusEnum.UN_INIT,StatusEnum.INIT)));
             }else {
                 //已审核列表
                 wrapper.notIn(Report::getStatus,Arrays.asList(StatusEnum.UN_INIT,StatusEnum.INIT));
             }
         }else {
-            //获取子报告对应的主报告ID
-            List<Long> reportIdList=subReportService.getReportIdList(pageQry);
             wrapper.in(Report::getId, reportIdList);
             if (Boolean.FALSE.equals(pageQry.getMyAudit())) {
                 //待审核列表
@@ -123,8 +124,8 @@ public class ReportService {
         List<SubReport> list=subReportService.getSpecialSubList(query);
         detail.setTypeMap(list.stream().collect(Collectors.toMap(SubReport ::getId,SubReport ::getSubType)));
         Set<SubStatusEnum> set=list.stream().map(SubReport::getSubStatus).collect(Collectors.toSet());
-        //所有报告权限一致且在
-        if (!CollectionUtils.isEmpty(set) &&set.size() == 1 && SubStatusEnum.unifyList.contains(set.iterator().next()) || SubStatusEnum.UN_RE_SUBMIT.equals(set.iterator().next()) ) {
+        //所有报告权限一致
+        if (!pageQry.getMyAudit() && !CollectionUtils.isEmpty(set) && set.size() == 1 && (SubStatusEnum.unifyList.contains(set.iterator().next()) || SubStatusEnum.UN_RE_SUBMIT.equals(set.iterator().next())) ) {
             //放入审批按钮信息
             try {
                 Operation operation= processService.getCurrentOperation(list.iterator().next().getProcessId()).getData();
