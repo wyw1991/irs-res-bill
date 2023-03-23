@@ -6,6 +6,7 @@ import com.dtzhejiang.irs.res.bill.domain.exception.BusinessException;
 import com.dtzhejiang.irs.res.bill.domain.model.SubReport;
 import com.dtzhejiang.irs.res.bill.infra.repository.SubReportRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -37,8 +38,8 @@ public class SubReportCommandHandler {
             subReport.setRemark(processInfoCmd.getRemark());
         }
         subReport.setTaskName(processInfoCmd.getTaskName());
-        subReport.setCurrentHandler(processInfoCmd.getAssignee());
-        subReport.setCurrentRole(processInfoCmd.getRole());
+        subReport.setCurrentHandler(StringUtils.isNotBlank(processInfoCmd.getAssignee()) ? processInfoCmd.getAssignee() : "");
+        subReport.setCurrentRole(StringUtils.isNotBlank(processInfoCmd.getRole()) ? processInfoCmd.getRole() : "");
         subReport.setUpdateTime(new Date());
         subReportRepository.updateById(subReport);
     }
@@ -55,6 +56,8 @@ public class SubReportCommandHandler {
         }
         subReport.setTaskId(processInfoCmd.getTaskId());
         subReport.setSubStatus(SubStatusEnum.fromCode(processInfoCmd.getStatus()));
+        subReport.setCurrentHandler("");
+        subReport.setCurrentRole("");
         subReport.setProcessEnd(1);
         subReport.setUpdateTime(new Date());
         subReportRepository.updateById(subReport);
