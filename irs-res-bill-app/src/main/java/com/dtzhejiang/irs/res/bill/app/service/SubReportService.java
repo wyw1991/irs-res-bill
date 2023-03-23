@@ -157,7 +157,13 @@ public class SubReportService {
             qry.setMyAudit(true);
         }
         SubReportFailDTO dto = new SubReportFailDTO();
-        List<SubReport> list=getList(qry);
+        //应用管理员不过滤子报告权限
+        List<SubReport> list=new ArrayList<>();
+        if(BillPermissionEnum.generate.equals(qry.getBillPermission())){
+            list=getList(report.getId());
+        }else {
+            list=getList(qry);
+        }
         dto.setTotalNum(configService.getCount());
         dto.setApplication_support(convert(list,SubTypeEnum.APPLICATION_SUPPORT));
         dto.setOperation(convert(list,SubTypeEnum.OPERATION));
