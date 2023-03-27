@@ -190,17 +190,16 @@ public class SubReportService {
         qry.setBillPermission(pageQuery.getBillPermission());
         qry.setMyAudit(pageQuery.getMyAudit());
         List<SubReport> list=getList(qry);
-        List<Long> idList=list.stream().map(SubReport::getReportId).distinct().collect(Collectors.toList());//防止查到所有
+        List<Long> idList;//防止查到所有
         //待审核列表特殊处理 在 合规确认,合规审核，报告出具 3个状态 需要6个子报告一起操作
         if (Boolean.TRUE.equals(!CollectionUtils.isEmpty(list) && !pageQuery.getMyAudit()) && BillPermissionEnum.audit.equals(pageQuery.getBillPermission()) ) {
             //统计同一个主报告下的子报告数量,过滤出子报告个数不为6个的
-            List<Long> idKeepList=list.stream().filter(f->!SubStatusEnum.unifyList.contains(f.getSubStatus())).map(SubReport::getReportId).distinct().collect(Collectors.toList());
             Map<Long,Long> map = list.stream().filter(f->SubStatusEnum.unifyList.contains(f.getSubStatus())).collect(Collectors.groupingBy(SubReport::getReportId,Collectors.counting()));
             List<Long>  removeReportIdList=map.entrySet().stream().filter(v->v.getValue()!=6).map(Map.Entry::getKey).collect(Collectors.toList());
-
-            idList.removeAll(removeReportIdList);
-            idList.addAll(idKeepList);
+            List<SubReport>  removeList=list.stream().filter(f->removeReportIdList.contains(f.getReportId()) && SubStatusEnum.unifyList.contains(f.getSubStatus())).collect(Collectors.toList());
+            list.removeAll(removeList);
         }
+        idList=list.stream().map(SubReport::getReportId).distinct().collect(Collectors.toList());
         return  CollectionUtils.isEmpty(idList)?Arrays.asList(0L):idList;
     }
 
