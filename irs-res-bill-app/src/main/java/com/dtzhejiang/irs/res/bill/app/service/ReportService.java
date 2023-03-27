@@ -81,6 +81,7 @@ public class ReportService {
                 wrapper.eq(Report::getStatus,StatusEnum.PROCESS);
             }
         }
+        wrapper.eq(Report::getLevel,"省级");//暂时限制只返回省级数据
         wrapper.like(!ObjectUtils.isEmpty(pageQry.getKeyword()), Report::getName,pageQry.getKeyword());
         wrapper.apply(!ObjectUtils.isEmpty(pageQry.getField()),"FIND_IN_SET ('"+pageQry.getField()+"',field)");
         wrapper.eq(!ObjectUtils.isEmpty(pageQry.getType()), Report::getType,pageQry.getType());
