@@ -15,6 +15,7 @@ import com.dtzhejiang.irs.res.bill.domain.model.AppInfo;
 import com.dtzhejiang.irs.res.bill.domain.model.HisIndices;
 import com.dtzhejiang.irs.res.bill.domain.model.Report;
 import com.dtzhejiang.irs.res.bill.domain.model.SubReport;
+import com.dtzhejiang.irs.res.bill.domain.process.valueobject.Operation;
 import com.dtzhejiang.irs.res.bill.domain.process.valueobject.ProcessInstance;
 import com.dtzhejiang.irs.res.bill.domain.subreport.SubReportNoGateway;
 import com.dtzhejiang.irs.res.bill.domain.user.gateway.UserGateway;
@@ -77,7 +78,12 @@ public class SubReportService {
         dto.setSubReport(subReport);
         if(!qry.getMyAudit()){
             try{
-                dto.setOperationDTO(processService.getCurrentOperation(subReport.getProcessId()).getData());
+                Operation operation= processService.getCurrentOperation(subReport.getProcessId()).getData();
+                if (BillPermissionEnum.generate.equals(qry.getBillPermission())&&operation != null && !operation.getOptions().iterator().next().getRefFormKey().equals("submit_btn")) {
+                    //待生成列表只有分步重新提交可以展示按钮
+                    operation=null;
+                }
+                dto.setOperationDTO(operation);
             }catch (Exception e) {
             }
         }
