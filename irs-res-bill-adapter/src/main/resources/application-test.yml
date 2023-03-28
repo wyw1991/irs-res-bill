@@ -29,6 +29,6 @@ feign:
   appSecret: YeBymaPcN4ctMmdNNevzr1U3dCmru296
 
 workflow:
-  api-url: http://59.202.44.203/flowable
+  api-url: http://127.0.0.1:8080/flowable
   ak: FPsLrGMf
   sk: 216ec704cf27c229ecc0b9db9f45ba61
