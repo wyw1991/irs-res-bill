@@ -23,6 +23,9 @@ mybatis-plus:
 shiro:
   enabled: true
 
+forest:
+  timeout: 10000
+
 feign:
   userClientHost: http://59.202.44.203/flowablecas
   appKey: irs-res-bill

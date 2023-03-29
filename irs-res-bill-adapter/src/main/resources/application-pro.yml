@@ -24,6 +24,9 @@ shiro:
   enabled: true
 
 
+forest:
+  timeout: 10000
+
 feign:
   userClientHost: http://59.202.44.204/flowablecas
   appKey: irs-res-bill
