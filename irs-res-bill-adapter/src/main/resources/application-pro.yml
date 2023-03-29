@@ -24,12 +24,15 @@ shiro:
   enabled: true
 
 
+forest:
+  timeout: 10000
+
 feign:
   userClientHost: http://59.202.44.204/flowablecas
   appKey: irs-res-bill
   appSecret:
 
 workflow:
-  api-url: http://127.0.0.1/flowable
+  api-url: http://127.0.0.1:8080/flowable
   ak: fxn5oNYX
   sk: 9066746a00b0fb0ce16a935413684a2a

@@ -7,6 +7,7 @@ import com.dtzhejiang.irs.res.bill.common.enums.FlowableEventType;
 import com.dtzhejiang.irs.res.bill.common.util.JsonUtil;
 import com.dtzhejiang.irs.res.bill.infra.mapper.SubReportMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -40,7 +41,7 @@ public class ExternalEventsController {
         }
         log.info("receive event:{},body:{}", eventType, JsonUtil.toJsonString(eventBody));
         String processInstanceId = (String) eventBody.get("processInstanceId");
-        if (FlowableEventType.TASK_CREATED.name().equals(eventType)) {
+        if (StringUtils.equalsAny(eventType, FlowableEventType.TASK_CREATED.name(), FlowableEventType.TASK_CREATE.name())) {
             List<String> taskGroup = Optional.ofNullable((List<String>) eventBody.get("taskGroup")).orElse(new ArrayList<>());
             subReportCommandHandler.updateAssignInfo(SubReportUpdateProcessInfoCmd.builder()
                     .processInstanceId(processInstanceId)
@@ -48,7 +49,7 @@ public class ExternalEventsController {
                     .taskId((String)eventBody.get("taskId"))
                     .taskName((String)eventBody.get("taskName"))
                     .taskCategory((String)eventBody.get("taskCategory"))
-                    .remark((String)eventBody.get("remark"))
+                    .remark((String)eventBody.get("remarks"))
                     .assignee((String)eventBody.get("taskAssignee"))
                     .role(String.join(",", taskGroup))
                     .build());

@@ -8,6 +8,11 @@ public enum FlowableEventType {
      * 任务创建事件
      *
      */
+    TASK_CREATE,
+    /**
+     * 任务创建事件
+     *
+     */
     TASK_CREATED,
     /**
      * 流程完成事件
