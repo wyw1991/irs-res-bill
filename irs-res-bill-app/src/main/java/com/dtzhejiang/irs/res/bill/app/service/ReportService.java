@@ -177,6 +177,8 @@ public class ReportService {
             int newVersion=Integer.parseInt(report.getVersion().replace(".0",""))+1;
             report.setVersion(newVersion+".0");
             report.setNewReport(true);
+            report.setCreateTime(new Date());
+            report.setUpdateTime(new Date());
             saveOrUpdate(report);
             subReportService.reSubmit(report.getId(),reportId);
         }else {
