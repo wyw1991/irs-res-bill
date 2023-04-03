@@ -54,6 +54,7 @@ public class HisIndicesService {
             hisIndices.setOperationIndices(f.getIndexName());
             hisIndices.setOperationIndicesCode(f.getIndexCode());
             hisIndices.setNormalValue(f.getNormalValue());
+            hisIndices.setIndexStatusType(f.getIndexStatusType());
             if(obj!=null){
                obj=obj+(!"是/否".equals(f.getIndexUnit()) ?f.getIndexUnit():"");
             }else {

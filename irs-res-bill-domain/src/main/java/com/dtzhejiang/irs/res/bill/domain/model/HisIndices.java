@@ -53,6 +53,11 @@ public class HisIndices {
     private OperationResultsStatusEnum operationResultsStatus;
 
     /**
+     * 指标状态类型
+     */
+    private String indexStatusType;
+
+    /**
      * 备注
      */
     private String remark;
