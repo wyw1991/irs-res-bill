@@ -95,7 +95,7 @@ public class SubReportService {
     }
 
     /**
-     * 子报告列表(特殊节点需要6个子报告状态一致才可统一审批)
+     * 主报告Id过滤子报告列表(特殊节点需要6个子报告状态一致才可统一审批)
      * @param qry
      * @return
      */
@@ -103,9 +103,9 @@ public class SubReportService {
         if (qry.getReportId() == null) {
             throw new BusinessException("reportId 不能为空！");
         }
-        qry.setReportId(qry.getReportId());
-        List<SubReport> list=getList(qry);
-        if (!CollectionUtils.isEmpty(list) && Boolean.FALSE.equals(qry.getMyAudit())) {
+        //应用管理员不过滤子报告权限
+        List<SubReport> list=getList(qry.getReportId());
+        if(BillPermissionEnum.audit.equals(qry.getBillPermission()) && !CollectionUtils.isEmpty(list) && Boolean.FALSE.equals(qry.getMyAudit())){
             list=filterSubId(list);
         }
         return list;
@@ -155,7 +155,6 @@ public class SubReportService {
                 wrapper.in(SubReport::getCurrentRole, userInfo.getRoleCodes());
             }
         }
-
         wrapper.eq(!ObjectUtils.isEmpty(qry.getSubType()), SubReport::getSubType,qry.getSubType());
         wrapper.eq(!ObjectUtils.isEmpty(qry.getReportId()), SubReport::getReportId,qry.getReportId());
         wrapper.orderBy(true,false, SubReport::getUpdateTime);//按照更新时间倒序
@@ -171,12 +170,7 @@ public class SubReportService {
         }
         SubReportFailDTO dto = new SubReportFailDTO();
         //应用管理员不过滤子报告权限
-        List<SubReport> list=new ArrayList<>();
-        if(BillPermissionEnum.generate.equals(qry.getBillPermission())){
-            list=getList(report.getId());
-        }else {
-            list=getList(qry);
-        }
+        List<SubReport> list=getSpecialSubList(qry);
         dto.setTotalNum(configService.getCount());
         dto.setApplication_support(convert(list,SubTypeEnum.APPLICATION_SUPPORT));
         dto.setOperation(convert(list,SubTypeEnum.OPERATION));

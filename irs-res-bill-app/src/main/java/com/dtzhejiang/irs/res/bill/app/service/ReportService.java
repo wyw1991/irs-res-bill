@@ -122,14 +122,7 @@ public class ReportService {
         if(!report.isNewReport()){
             query.setMyAudit(true);
         }
-        //应用管理员不过滤权限
-        List<SubReport> list=new ArrayList<>();
-        if(BillPermissionEnum.generate.equals(pageQry.getBillPermission())){
-            list=subReportService.getList(report.getId());
-        }else {
-            list=subReportService.getSpecialSubList(query);
-        }
-
+        List<SubReport> list=subReportService.getSpecialSubList(query);
         detail.setTypeMap(list.stream().collect(Collectors.toMap(SubReport ::getId,SubReport ::getSubType)));
         Set<SubStatusEnum> set=list.stream().map(SubReport::getSubStatus).collect(Collectors.toSet());
         //所有报告权限一致
