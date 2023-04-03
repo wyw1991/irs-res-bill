@@ -11,11 +11,11 @@ public class SubReportFailDTO {
     /**
      * 总数
      */
-    private Long totalNum;
+    private Integer totalNum;
     /**
      * 问题数
      */
-    private Long failNum=0L;
+    private Integer failNum=0;
     /**
      * 基层设施
      */
@@ -41,9 +41,9 @@ public class SubReportFailDTO {
      */
     private SubReportDTO business_application;
 
-    //public Integer getTotalNum() {
-    //    return basicFacilities.getTotalNum()+dataResources.getTotalNum()+applicationSupport.getTotalNum()+operation.getTotalNum()+networkSecurity.getTotalNum()+businessApplication.getTotalNum();
-    //}
+    public Integer getTotalNum() {
+        return basic_facilities.getTotalNum()+data_resources.getTotalNum()+application_support.getTotalNum()+operation.getTotalNum()+operation.getTotalNum()+network_security.getTotalNum();
+    }
 
     public Long getFailNum() {
         return (basic_facilities!=null?basic_facilities.getFailNum():0)

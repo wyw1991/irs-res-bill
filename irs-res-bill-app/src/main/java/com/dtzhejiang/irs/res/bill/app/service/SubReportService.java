@@ -171,7 +171,6 @@ public class SubReportService {
         SubReportFailDTO dto = new SubReportFailDTO();
         //应用管理员不过滤子报告权限
         List<SubReport> list=getSpecialSubList(qry);
-        dto.setTotalNum(configService.getCount());
         dto.setApplication_support(convert(list,SubTypeEnum.APPLICATION_SUPPORT));
         dto.setOperation(convert(list,SubTypeEnum.OPERATION));
         dto.setBasic_facilities(convert(list,SubTypeEnum.BASIC_FACILITIES));
@@ -323,6 +322,7 @@ public class SubReportService {
         SubReport subReport=list.stream().filter(f->f.getSubType().equals(subType)).findFirst().orElse(null);
         dto.setSubReport(subReport);
         dto.setHisIndicesList(subReport==null?new ArrayList<>():indicesService.getList(subReport.getId(),false));
+        dto.setTotalNum(dto.getHisIndicesList().size());
         return dto;
     }
 
