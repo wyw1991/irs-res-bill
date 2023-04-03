@@ -159,7 +159,7 @@ public class ReportService {
             report.setCreateTime(new Date());
             report.setStatus(StatusEnum.INIT);
             saveOrUpdate(report);
-            subReportService.createSubReportAndHis(reportId);
+            subReportService.createSubReportAndHis(reportId,null);
         }else if(StatusEnum.FAIL.equals(report.getStatus())) {
             //将此份报告更改为旧报告
             report.setNewReport(false);
@@ -207,7 +207,7 @@ public class ReportService {
                 entity.setStatus(StatusEnum.INIT);
                 entity.setVersion("1.0");//新数据默认为1.0
                 saveOrUpdate(entity);
-                subReportService.createSubReportAndHis(entity.getId());
+                subReportService.createSubReportAndHis(entity.getId(),null);
             }
         }
         return saveOrUpdate(entity);

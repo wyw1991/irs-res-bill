@@ -32,6 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
+import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -117,7 +118,7 @@ public class SubReportService {
         }
         //统计同一个主报告下的子报告数量,过滤出子报告个数为6个的
         Map<Long,Long> map = list.stream().filter(f->SubStatusEnum.unifyList.contains(f.getSubStatus())).collect(Collectors.groupingBy(SubReport::getReportId,Collectors.counting()));
-        List<Long>  removeIdList=map.entrySet().stream().filter(v->v.getValue()!=6).map(Map.Entry::getKey).collect(Collectors.toList());
+        List<Long>  removeIdList=map.entrySet().stream().filter(v->v.getValue()+getSuccessNum(v.getKey())!=6).map(Map.Entry::getKey).collect(Collectors.toList());
         List<SubReport>  removeList=list.stream().filter(f->removeIdList.contains(f.getReportId()) && SubStatusEnum.unifyList.contains(f.getSubStatus())).collect(Collectors.toList());
         list.removeAll(removeList);
         return list;
@@ -135,6 +136,21 @@ public class SubReportService {
         LambdaQueryWrapper<SubReport> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq( SubReport::getReportId,reportId);
        return mapper.selectList(wrapper);
+    }
+
+    /**
+     * 获取成功的子报告数量
+     * @param reportId
+     * @return
+     */
+   private Long getSuccessNum(Long reportId){
+           if (reportId == null) {
+               throw new BusinessException("reportId 不能为空！");
+           }
+           LambdaQueryWrapper<SubReport> wrapper = new LambdaQueryWrapper<>();
+           wrapper.eq( SubReport::getReportId,reportId);
+           wrapper.eq( SubReport::getSubStatus,SubStatusEnum.SUCCESS);
+        return mapper.selectCount(wrapper);
     }
 
     public List<SubReport> getList (SubReportQry qry){
@@ -216,7 +232,7 @@ public class SubReportService {
             List<HisIndices> hisList= indicesService.getList(v.getId());
             v.setId(null);
             v.setReportId(newReportId);
-            Long subId=createSubReport(newReportId,v.getSubType());//新增一条复制数据
+            Long subId=saveOrUpdate(v);//新增一条复制数据
             hisList.forEach(m->{
                 m.setId(null);
                 m.setSubReportId(subId);
@@ -224,7 +240,7 @@ public class SubReportService {
             });
         });
         //没有审核通过的根据最新数据生成
-        list.stream().filter(f->!SubStatusEnum.SUCCESS.equals(f.getSubStatus())).forEach(v-> createSubReportAndHis(newReportId));
+        list.stream().filter(f->!SubStatusEnum.SUCCESS.equals(f.getSubStatus())).forEach(v-> createSubReportAndHis(newReportId,v.getSubType()));
     }
 
     /**
@@ -238,7 +254,8 @@ public class SubReportService {
             throw new BusinessException("当前状态不可提交报告！");
         }
         List<SubReport> list = getList(reportId);
-        list.forEach(subReport -> {
+        //审核成功的不需要再次申请
+        list.stream().filter(f->f.getSubStatus()!=SubStatusEnum.SUCCESS).forEach(subReport -> {
             StartProcessCmd cmd = StartProcessCmd.builder()
                     .processKey(subReport.getSubType().getCode().toLowerCase(Locale.ROOT) + "-process")
                     .businessKey(subReport.getSubNo())
@@ -269,10 +286,11 @@ public class SubReportService {
      * @param reportId
      */
     @Transactional
-    public void createSubReportAndHis(Long reportId){
+    public void createSubReportAndHis(Long reportId,SubTypeEnum typeEnum){
         Report report=reportRepository.getById(reportId);
         AppInfo info=appInfoService.getAppInfo(report.getApplicationId());
-        Arrays.stream(SubTypeEnum.values()).forEach(f->{
+        SubTypeEnum[] list=typeEnum == null ? SubTypeEnum.values():new SubTypeEnum[] {typeEnum};
+        Arrays.stream(list).forEach(f->{
             SubReport subReport=new SubReport();
             subReport.setReportId(reportId);
             // 新增编号
@@ -285,18 +303,7 @@ public class SubReportService {
         });
     }
 
-    @Transactional
-    public Long createSubReport(Long reportId,SubTypeEnum subType){
-            SubReport subReport=new SubReport();
-            subReport.setReportId(reportId);
-            // 新增编号
-            subReport.setSubNo(subReportNoGateway.getSubReportNo());
-            subReport.setSubType(subType);
-            subReport.setName(subType.getName());
-            subReport.setSubStatus(SubStatusEnum.UN_SUBMIT);
-            saveOrUpdate(subReport);
-           return subReport.getId();
-    }
+
 
     /**
      * 更新子报告下的指标(同步接口使用)
@@ -365,11 +372,13 @@ public class SubReportService {
                 entity.setId(oldSubReport.getId());
             }
         }
-        saveOrUpdate(entity);
-        return entity.getId();
+        return saveOrUpdate(entity);
     }
-
+    @Transactional
     public Long saveOrUpdate(SubReport entity){
+        if(entity.getId()==null){
+            entity.setCreateTime(new Date());
+        }
         entity.setUpdateTime(new Date());
         subReportRepository.saveOrUpdate(entity);
         return entity.getId();
