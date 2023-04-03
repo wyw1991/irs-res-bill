@@ -104,9 +104,11 @@ public class SubReportService {
         if (qry.getReportId() == null) {
             throw new BusinessException("reportId 不能为空！");
         }
-        //应用管理员不过滤子报告权限
         List<SubReport> list=getList(qry);
-        if(BillPermissionEnum.audit.equals(qry.getBillPermission()) && !CollectionUtils.isEmpty(list) && Boolean.FALSE.equals(qry.getMyAudit())){
+        //应用管理员不过滤子报告权限
+        if(BillPermissionEnum.generate.equals(qry.getBillPermission())){
+            list=getList(qry.getReportId());
+        }else if(BillPermissionEnum.audit.equals(qry.getBillPermission()) && !CollectionUtils.isEmpty(list) && Boolean.FALSE.equals(qry.getMyAudit())){
             list=filterSubId(list);
         }
         return list;
@@ -164,7 +166,8 @@ public class SubReportService {
         } else {
             //应用管理员列表特殊处理
             // 待提交(重新提交特殊处理)
-            if(BillPermissionEnum.generate.equals(qry.getBillPermission())  ){
+            if(BillPermissionEnum.generate.equals(qry.getBillPermission())){
+
                 wrapper.eq(SubReport::getCurrentHandler, userInfo.getUserName()).eq(SubReport::getSubStatus,SubStatusEnum.UN_RE_SUBMIT);
             }else{
                 //待审核

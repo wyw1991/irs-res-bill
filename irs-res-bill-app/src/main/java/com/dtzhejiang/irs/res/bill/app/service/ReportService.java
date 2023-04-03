@@ -122,6 +122,7 @@ public class ReportService {
         if(!report.isNewReport()){
             query.setMyAudit(true);
         }
+        query.setReportId(report.getId());
         List<SubReport> list=subReportService.getSpecialSubList(query);
         detail.setTypeMap(list.stream().collect(Collectors.toMap(SubReport ::getId,SubReport ::getSubType)));
         Set<SubStatusEnum> set=list.stream().map(SubReport::getSubStatus).collect(Collectors.toSet());
