@@ -42,7 +42,7 @@ public class SubReportFailDTO {
     private SubReportDTO business_application;
 
     public Integer getTotalNum() {
-        return basic_facilities.getTotalNum()+data_resources.getTotalNum()+application_support.getTotalNum()+operation.getTotalNum()+operation.getTotalNum()+network_security.getTotalNum();
+        return basic_facilities.getTotalNum()+data_resources.getTotalNum()+application_support.getTotalNum()+operation.getTotalNum()+business_application.getTotalNum()+network_security.getTotalNum();
     }
 
     public Long getFailNum() {
