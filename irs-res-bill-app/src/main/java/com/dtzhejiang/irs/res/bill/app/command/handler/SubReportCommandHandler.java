@@ -56,6 +56,8 @@ public class SubReportCommandHandler {
         }
         subReport.setTaskId(processInfoCmd.getTaskId());
         subReport.setSubStatus(SubStatusEnum.fromCode(processInfoCmd.getStatus()));
+        subReport.setTaskId("");
+        subReport.setTaskName("");
         subReport.setCurrentHandler("");
         subReport.setCurrentRole("");
         subReport.setProcessEnd(1);

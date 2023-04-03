@@ -30,7 +30,7 @@ public class FinalCompleteCmdHandler extends BaseCompleteCmdHandler{
         Report report = reportService.getReport(cmd.getReportId());
         LambdaQueryWrapper<SubReport> query = new LambdaQueryWrapper<>();
         query.eq(SubReport::getReportId, cmd.getReportId());
-        query.ne(SubReport::getSubStatus, SubStatusEnum.SUCCESS);
+        query.eq(SubReport::getProcessEnd, 0);
         List<SubReport> list = subReportRepository.list(query);
         Collection<Long> backOffIds = cmd.getSubReportIds();
         Map<Long, SubReport> subReportMap = list.stream().collect(Collectors.toMap(SubReport::getId, Function.identity()));

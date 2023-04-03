@@ -27,7 +27,7 @@ public class CompleteSubReportCmdHandler extends BaseCompleteCmdHandler{
     public Response applyReport(CompleteReportCmd cmd) {
         LambdaQueryWrapper<SubReport> query = new LambdaQueryWrapper<>();
         query.eq(SubReport::getReportId, cmd.getReportId());
-        query.ne(SubReport::getSubStatus, SubStatusEnum.SUCCESS);
+        query.eq(SubReport::getProcessEnd, 0);
         query.select(SubReport::getId, SubReport::getProcessId, SubReport::getTaskId, SubReport::getHistoryHandler);
         List<SubReport> list = subReportRepository.list(query);
         Map<String, Object> variables = cmd.getVariables();
