@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.dtzhejiang.irs.res.bill.app.command.cmd.CompleteReportCmd;
 import com.dtzhejiang.irs.res.bill.app.command.cmd.CompleteSubReportCmd;
 import com.dtzhejiang.irs.res.bill.common.dto.Response;
+import com.dtzhejiang.irs.res.bill.common.enums.SubStatusEnum;
 import com.dtzhejiang.irs.res.bill.domain.exception.BusinessException;
 import com.dtzhejiang.irs.res.bill.domain.model.SubReport;
 import org.springframework.stereotype.Component;
@@ -26,6 +27,7 @@ public class CompleteSubReportCmdHandler extends BaseCompleteCmdHandler{
     public Response applyReport(CompleteReportCmd cmd) {
         LambdaQueryWrapper<SubReport> query = new LambdaQueryWrapper<>();
         query.eq(SubReport::getReportId, cmd.getReportId());
+        query.ne(SubReport::getSubStatus, SubStatusEnum.SUCCESS);
         query.select(SubReport::getId, SubReport::getProcessId, SubReport::getTaskId, SubReport::getHistoryHandler);
         List<SubReport> list = subReportRepository.list(query);
         Map<String, Object> variables = cmd.getVariables();
