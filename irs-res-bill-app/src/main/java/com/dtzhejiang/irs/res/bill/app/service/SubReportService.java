@@ -322,9 +322,9 @@ public class SubReportService {
 
         SubReport subReport=list.stream().filter(f->f.getSubType().equals(subType)).findFirst().orElse(null);
         dto.setSubReport(subReport);
+        dto.setHisIndicesList(subReport == null ? new ArrayList<>() : indicesService.getList(subReport.getId(), false));
         if (subReport != null) {
             List<HisIndices> allList = indicesService.getList(subReport.getId(), null);
-            dto.setHisIndicesList(subReport == null ? new ArrayList<>() : indicesService.getList(subReport.getId(), false));
             dto.setTotalNum(CollectionUtils.isEmpty(allList) ? 0 : allList.size());
         }
         return dto;
