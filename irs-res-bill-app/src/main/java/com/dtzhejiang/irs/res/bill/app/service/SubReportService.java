@@ -105,7 +105,7 @@ public class SubReportService {
             throw new BusinessException("reportId 不能为空！");
         }
         //应用管理员不过滤子报告权限
-        List<SubReport> list=getList(qry.getReportId());
+        List<SubReport> list=getList(qry);
         if(BillPermissionEnum.audit.equals(qry.getBillPermission()) && !CollectionUtils.isEmpty(list) && Boolean.FALSE.equals(qry.getMyAudit())){
             list=filterSubId(list);
         }
