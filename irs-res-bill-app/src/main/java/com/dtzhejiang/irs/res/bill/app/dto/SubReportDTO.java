@@ -16,7 +16,7 @@ public class SubReportDTO {
     /**
      * 总数
      */
-    private Integer totalNum;
+    private Integer totalNum=0;
     /**
      * 问题数
      */
@@ -31,12 +31,7 @@ public class SubReportDTO {
     private List<HisIndices> hisIndicesList;
 
     private Operation operationDTO;
-    public Integer getTotalNum() {
-        if(!CollectionUtils.isEmpty(hisIndicesList)){
-            return hisIndicesList.size();
-        }
-        return 0;
-    }
+
 
     public Long getFailNum() {
         if(!CollectionUtils.isEmpty(hisIndicesList)){
