@@ -71,7 +71,7 @@ public class HisIndicesService {
         Object result= ObjUtil.getElResult(obj,config.getCheckRule(),config.getIndexUnit());
         hisIndices.setOperationResultsStatus(OperationResultsStatusEnum.SUCCESS);
         hisIndices.setOperationResults("/");
-        if("boolean".equals(config.getIndexType()) && Boolean.FALSE.equals(result)){
+        if(ObjectUtils.isEmpty(obj) || ("boolean".equals(config.getIndexType()) && Boolean.FALSE.equals(result))){
             hisIndices.setOperationResults(!ObjectUtils.isEmpty(config.getWarnTips())?config.getWarnTips(): config.getErrorTips());
             hisIndices.setOperationResultsStatus(!ObjectUtils.isEmpty(config.getWarnTips())?OperationResultsStatusEnum.WARN:OperationResultsStatusEnum.ERROR);
         }
