@@ -161,7 +161,7 @@ public class SubReportService {
         if (Boolean.TRUE.equals(qry.getMyAudit())) {
             //已审核列表
             if(BillPermissionEnum.audit.equals(qry.getBillPermission())){
-                wrapper.apply("FIND_IN_SET ("+userInfo.getUserName()+",history_handler)");
+                wrapper.apply("FIND_IN_SET ('"+userInfo.getUserName()+"',history_handler)");
             }
         } else {
             //应用管理员列表特殊处理
