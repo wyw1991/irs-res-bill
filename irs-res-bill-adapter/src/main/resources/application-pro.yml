@@ -30,7 +30,7 @@ forest:
 feign:
   userClientHost: http://59.202.44.204/flowablecas
   appKey: irs-res-bill
-  appSecret:
+  appSecret: Mz9pcKofDAOMF85dQpz3wEI1Cqxkee94
 
 workflow:
   api-url: http://127.0.0.1:8080/flowable
