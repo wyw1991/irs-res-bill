@@ -12,6 +12,20 @@
     <name>irs-res-bill-infrastructure</name>
 
     <dependencies>
+        <!-- itext7html转pdf  -->
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>html2pdf</artifactId>
+            <version>3.0.2</version>
+        </dependency>
+        <!-- 中文字体支持 -->
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>font-asian</artifactId>
+            <version>7.1.13</version>
+        </dependency>
+
+
         <dependency>
             <groupId>com.dtzhejiang.irs</groupId>
             <artifactId>irs-res-bill-domain</artifactId>
