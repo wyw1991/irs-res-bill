@@ -2,6 +2,7 @@ package com.dtzhejiang.irs.res.bill.adapter.controller;
 
 import com.dtzhejiang.irs.res.bill.app.dto.AppInfoDTO;
 import com.dtzhejiang.irs.res.bill.app.dto.ReportDTO;
+import com.dtzhejiang.irs.res.bill.app.job.AppInfoSyncTask;
 import com.dtzhejiang.irs.res.bill.app.query.qry.ReportPageQry;
 import com.dtzhejiang.irs.res.bill.app.service.ReportService;
 import com.dtzhejiang.irs.res.bill.common.dto.MultiResponse;
@@ -21,6 +22,8 @@ public class ReportController {
 
     @Autowired
     private  ReportService service;
+    @Autowired
+    private AppInfoSyncTask task;
     /**
      * 分页查询
      */
@@ -63,6 +66,14 @@ public class ReportController {
     @GetMapping("/pdf")
     public SingleResponse<AppInfoDTO> getPdf(@NonNull Long reportId) {
         return SingleResponse.of(service.getPdf(reportId));
+    }
+
+    /**
+     * 生成主报告（首次使用）
+     */
+    @PostMapping("/sync")
+    public void sync() {
+        task.execute();
     }
 
 }

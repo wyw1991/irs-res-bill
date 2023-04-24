@@ -13,6 +13,7 @@ import com.dtzhejiang.irs.res.bill.infra.repository.AppInfoRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
@@ -37,10 +38,12 @@ public class AppInfoSyncTask {
 
     @Autowired
     private SubReportService subReportService;
+
+
     /**
      * 每天凌晨1点执行
      */
-    //@Scheduled(cron = "0 0 1 * * ?")
+    @Scheduled(cron = "0 0 1 * * ?")
     public void execute() {
       List<AppInfo> list=appInfoRepository.list();
       list.forEach(v->reportService.save(convertToReport(v)));
