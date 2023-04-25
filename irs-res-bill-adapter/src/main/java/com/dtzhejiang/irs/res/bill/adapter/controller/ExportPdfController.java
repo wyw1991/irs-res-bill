@@ -38,7 +38,7 @@ public class ExportPdfController {
     @PostMapping("/export")
     public void exportVehicleArchives(MultipartFile file, HttpServletResponse response, HttpServletRequest request) throws Exception {
         try{
-            String fileNamePrefix = "文件名称";
+            String fileNamePrefix = file.getOriginalFilename();
             String date = format(new Date(), "yy-mm-dd HH:mm");
             String fileName = fileNamePrefix + "_" + date +".pdf";
             this.resolveResponse(request,response, fileName);

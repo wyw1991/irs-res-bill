@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dtzhejiang.irs.res.bill.infra.mapper.FileMapper">
+    <select id="selectFileName" parameterType="String" resultType="String">
+        select file_name
+        from t_file_info
+        where file_id = #{fileId}
+    </select>
+
+    <select id="selectFiles" resultType="com.dtzhejiang.irs.res.bill.domain.model.FileInfo">
+        select file_name, file_id
+        from t_file_info
+        where file_id IN
+        <foreach item="fileId" index="index" collection="fileIds"
+                 open="(" separator="," close=")">
+            #{fileId}
+        </foreach>
+    </select>
+
+    <insert id="insert" parameterType="com.dtzhejiang.irs.res.bill.domain.model.FileInfo">
+        insert into t_file_info (file_id, file_name, file_url, file_size,create_time)
+        values (#{fileId,jdbcType=VARCHAR}, #{fileName,jdbcType=VARCHAR}, #{fileUrl,jdbcType=VARCHAR},
+        #{fileSize,jdbcType=DOUBLE},#{createTime,jdbcType=TIMESTAMP})
+    </insert>
+    <delete id="del" parameterType="String">
+        delete
+        from t_file_info
+        where file_id = #{fileId}
+    </delete>
+</mapper>

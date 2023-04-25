@@ -8,8 +8,10 @@ import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfReader;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.font.FontProvider;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -26,9 +28,11 @@ public class HtmlToPdfUtils {
     public static void convertToPdf(InputStream inputStream, String waterMark, String fontPath, OutputStream outputStream) throws IOException {
 
         PdfWriter pdfWriter = new PdfWriter(outputStream);
+        PdfReader reader = new PdfReader(inputStream);//读文件
         PdfDocument pdfDocument = new PdfDocument(pdfWriter);
+
         //设置为A4大小
-        pdfDocument.setDefaultPageSize(PageSize.A4);
+        pdfDocument.setDefaultPageSize(PageSize.A4.rotate());
         //添加水印
         pdfDocument.addEventHandler(PdfDocumentEvent.END_PAGE, new WaterMarkEventHandler(waterMark));
 
