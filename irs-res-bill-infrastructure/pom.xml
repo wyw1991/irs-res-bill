@@ -12,20 +12,7 @@
     <name>irs-res-bill-infrastructure</name>
 
     <dependencies>
-        <dependency>
-            <groupId>org.mozilla.intl.chardet</groupId>
-            <artifactId>chardet</artifactId>
-            <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/src/main/resources/lib/chardet-1.0.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>info.monitorenter.cpdetector</groupId>
-            <artifactId>cpdetector</artifactId>
-            <version>1.0.10</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/src/main/resources/lib/cpdetector_1.0.10.jar</systemPath>
-        </dependency>
+
         <dependency>
             <groupId>com.aliyun.oss</groupId>
             <artifactId>aliyun-sdk-oss</artifactId>
