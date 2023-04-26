@@ -36,3 +36,26 @@ feign:
   userClientHost: http://59.202.44.203/flowablecas
   appKey: irs-res-bill
   appSecret: YeBymaPcN4ctMmdNNevzr1U3dCmru296
+
+## 阿里云OSS
+aliyun:
+  oss:
+    endpoint: http://oss-cn-hangzhou-zwynet-d01-a.internet.cloud.zj.gov.cn/
+    access-key-id: wMhEw2BhpIDc1xwO
+    access-key-secret: SM4[a8cfdb030ab93caaa7a5bc3325238391614ae9a4986b51b46978e6a30c0c7ff2]
+    bucket-name: irs-yyyw
+    file-folder: IRS-net-gd/
+  net-oss:
+    endpoint: https://oss-cn-hangzhou-zwynet-d01-a.internet.cloud.zj.gov.cn/
+    pubKey: MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAKs/JBGzwUB2aVht4crBx3oIPBLNsjGsC0fTXv+nvlmklvkcolvpvXLTjaxUHR3W9LXxQ2EHXAJfCB+6H2YF1k8CAwEAAQ==
+    access-key-id: wMhEw2BhpIDc1xwO
+    access-key-secret: SM4[a8cfdb030ab93caaa7a5bc3325238391614ae9a4986b51b46978e6a30c0c7ff2]
+    bucket-name: irs-yyyw
+    file-folder: IRS-net-gd/
+    callback-url: http://formtest.irs.zj.gov.cn/gdAdapter/fileApi/callBack/
+    tmp-dir: tmp/
+  order:
+    ak: LTAI5tLZwMokv4U9MJg9yZDr
+    sk: SM4[467003415a19abc18b138d8705d09004f4766c9f9573b0861b69b0c9da7b81fe]
+    endpoint: workorder.aliyuncs.com
+    proxy: http://10.145.8.119:8090

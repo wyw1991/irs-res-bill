@@ -58,6 +58,9 @@ public class ReportService {
 
     @Autowired
     private ProcessService processService;
+
+    @Autowired
+    private FileService fileService;
     public PageResponse<Report> page(ReportPageQry pageQry){
         LambdaQueryWrapper<Report> wrapper = new LambdaQueryWrapper<>();
         //获取子报告对应的主报告ID
@@ -220,6 +223,11 @@ public class ReportService {
         return report;
     }
 
+    public void updateFileId(Long reportId,String fileId){
+        Report report=new Report(reportId,fileId);
+        reportRepository.updateById(report);
+    }
+
     public Report getReport(Long reportId){
         if (reportId == null) {
             throw new BusinessException("reportId不能为空");
@@ -227,6 +235,10 @@ public class ReportService {
         return reportRepository.getById(reportId);
     }
 
+    public String getPdfUrl(Long reportId) throws Exception {
+        String fileId=getReport(reportId).getField();
+        return fileService.netDownloadUrl(fileId);
+    }
 
     public AppInfoDTO getPdf(Long reportId){
         AppInfoDTO dto = new AppInfoDTO();

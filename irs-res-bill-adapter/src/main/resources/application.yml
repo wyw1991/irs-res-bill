@@ -24,6 +24,12 @@ logging:
 mybatis-plus:
   mapper-locations: classpath*:mapper/*.xml
 
+file:
+  #true返回的连接为本地生成的下载连接 ,false为oss提供的下载连接
+  useLocalUrl: true
+  download-request-path: '${server.servlet.context-path}/fileApi/downloadFile/'
+  net-download-request-path: '${server.servlet.context-path}/fileApi/netDownloadUrl/'
+
 shiro:
   auth-mode: unitSession
   enabled: false

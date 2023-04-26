@@ -107,5 +107,11 @@ public class Report {
     @TableField(exist = false)
     private List<SubTypeEnum> typeList;
 
+    public Report() {
+    }
 
+    public Report(Long id, String field) {
+        this.id = id;
+        this.field = field;
+    }
 }

@@ -76,4 +76,12 @@ public class ReportController {
         task.execute();
     }
 
+    /**
+     * pdf链接
+     */
+    @GetMapping("/pdfUrl")
+    public SingleResponse<String> getPdfUrl(@NonNull Long reportId) throws Exception {
+        return SingleResponse.of(service.getPdfUrl(reportId));
+    }
+
 }

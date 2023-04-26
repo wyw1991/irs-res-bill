@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
 
@@ -50,6 +51,19 @@ public class FileService {
         }
         String url = useLocalUrl ? downloadRequestPath + uuid : clientUtil.generatePresignedUrl(fileName);
         FileInfo fileInfo = buildDBEntity(url, originalFilename, uuid, uploadFile.getSize());
+        return FileResp.success(insert(fileInfo));
+    }
+
+    public FileResp uploadFile(String originalFilename,InputStream inputStream,Long fileSize) {
+
+        String uuid = UUID.randomUUID().toString().replace("-", "");
+        String fileName = handleOssFileName(originalFilename, uuid);
+        Boolean success = clientUtil.putObject(fileName, inputStream,"application/pdf","utf-8");
+        if (Boolean.FALSE.equals(success)) {
+            return FileResp.error("500", "上传文件异常");
+        }
+        String url = useLocalUrl ? downloadRequestPath + uuid : clientUtil.generatePresignedUrl(fileName);
+        FileInfo fileInfo = buildDBEntity(url, originalFilename, uuid, fileSize);
         return FileResp.success(insert(fileInfo));
     }
 

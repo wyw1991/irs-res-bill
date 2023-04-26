@@ -2,15 +2,14 @@ package com.dtzhejiang.irs.res.bill.adapter.controller;
 
 import com.dtzhejiang.irs.res.bill.app.service.ExportPdfService;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.time.Instant;
@@ -78,7 +77,7 @@ public class ExportPdfController {
     private void resetResponse(HttpServletResponse response, Exception exception)throws IOException {
         // 重置response
         response.reset();
-        response.setContentType("application/json");
+        response.setContentType("application/octet-stream");
         response.setCharacterEncoding("utf-8");
         String result = "下载文件失败，" + exception.getMessage();
         response.getWriter().println(result);
