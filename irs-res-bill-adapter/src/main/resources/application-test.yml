@@ -43,14 +43,14 @@ aliyun:
     access-key-id: wMhEw2BhpIDc1xwO
     access-key-secret: SM4[a8cfdb030ab93caaa7a5bc3325238391614ae9a4986b51b46978e6a30c0c7ff2]
     bucket-name: irs-yyyw
-    file-folder: IRS-net-gd/
+    file-folder: IRS-bill/
   net-oss:
     endpoint: https://oss-cn-hangzhou-zwynet-d01-a.internet.cloud.zj.gov.cn/
     pubKey: MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAKs/JBGzwUB2aVht4crBx3oIPBLNsjGsC0fTXv+nvlmklvkcolvpvXLTjaxUHR3W9LXxQ2EHXAJfCB+6H2YF1k8CAwEAAQ==
     access-key-id: wMhEw2BhpIDc1xwO
     access-key-secret: SM4[a8cfdb030ab93caaa7a5bc3325238391614ae9a4986b51b46978e6a30c0c7ff2]
     bucket-name: irs-yyyw
-    file-folder: IRS-net-gd/
+    file-folder: IRS-bill/
     callback-url: http://formtest.irs.zj.gov.cn/gdAdapter/fileApi/callBack/
     tmp-dir: tmp/
   order:
