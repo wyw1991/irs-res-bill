@@ -301,6 +301,7 @@ public class SubReportService {
             subReport.setSubType(f);
             subReport.setName(f.getName());
             subReport.setSubStatus(SubStatusEnum.UN_SUBMIT);
+            subReport.setHistoryHandler(report.getAppAdminId());//放入提交人
             save(subReport);
             indicesService.saveHisIndices(subReport.getId(),f,info);
         });
