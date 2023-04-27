@@ -34,14 +34,26 @@ public class ExportPdfController {
      * @param request
      * @throws Exception
      */
-    @PostMapping("/export")
-    public void exportVehicleArchives(MultipartFile file, HttpServletResponse response, HttpServletRequest request) throws Exception {
+    //@PostMapping("/export")
+    //public void exportVehicleArchives(MultipartFile file, HttpServletResponse response, HttpServletRequest request) throws Exception {
+    //    try{
+    //        String fileNamePrefix = file.getOriginalFilename();
+    //        String date = format(new Date(), "yy-mm-dd HH:mm");
+    //        String fileName = fileNamePrefix + "_" + date +".pdf";
+    //        this.resolveResponse(request,response, fileName);
+    //        this.exportPdfService.exportPdf(file, response.getOutputStream());
+    //    } catch (Exception e) {
+    //        this.resetResponse(response, e);
+    //    }
+    //}
+    @PostMapping("/exportWk")
+    public void exportWk(MultipartFile file, HttpServletResponse response, HttpServletRequest request) throws Exception {
         try{
             String fileNamePrefix = file.getOriginalFilename();
             String date = format(new Date(), "yy-mm-dd HH:mm");
             String fileName = fileNamePrefix + "_" + date +".pdf";
             this.resolveResponse(request,response, fileName);
-            this.exportPdfService.exportPdf(file, response.getOutputStream());
+            this.exportPdfService.exportPdfWk(file, response.getOutputStream());
         } catch (Exception e) {
             this.resetResponse(response, e);
         }

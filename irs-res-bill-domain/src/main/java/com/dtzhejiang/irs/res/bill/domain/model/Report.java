@@ -100,7 +100,15 @@ public class Report {
      * 更新时间
      */
     private Date updateTime;
-
+    /**
+     * oss地址
+     */
+    @TableField(exist = false)
+    private String reportOss;
+    /**
+     * oss fileId
+     */
+    private String fileIds;
     /**
      * 子报告权限列表
      */
@@ -110,8 +118,8 @@ public class Report {
     public Report() {
     }
 
-    public Report(Long id, String field) {
+    public Report(Long id, String fileIds) {
         this.id = id;
-        this.field = field;
+        this.fileIds = fileIds;
     }
 }

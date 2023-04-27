@@ -3,9 +3,7 @@ package com.dtzhejiang.irs.res.bill.app.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.dtzhejiang.irs.res.bill.app.dto.AppInfoDTO;
-import com.dtzhejiang.irs.res.bill.app.dto.HisIndicesDTO;
-import com.dtzhejiang.irs.res.bill.app.dto.ReportDTO;
+import com.dtzhejiang.irs.res.bill.app.dto.*;
 import com.dtzhejiang.irs.res.bill.app.query.qry.SubReportQry;
 import com.dtzhejiang.irs.res.bill.common.dto.PageQuery;
 import com.dtzhejiang.irs.res.bill.common.dto.PageResponse;
@@ -235,9 +233,26 @@ public class ReportService {
         return reportRepository.getById(reportId);
     }
 
-    public String getPdfUrl(Long reportId) throws Exception {
-        String fileId=getReport(reportId).getField();
-        return fileService.netDownloadUrl(fileId);
+    public AppAndReportDTO getPdfUrl(String appCode) throws Exception {
+        List<OssDTO> ossList=new ArrayList<>();
+        AppInfo info = appInfoService.getAppInfo(appCode);
+        if (info == null) {
+            throw new BusinessException ("appCode有误！");
+        }
+        AppAndReportDTO dto = new AppAndReportDTO(info.getApplicationId(),info.getName());
+        List<Report> list=mapper.selectList(new LambdaQueryWrapper<Report>().eq(Report ::getApplicationId,appCode).eq(Report::isNewReport,true));
+        list.forEach(v->{
+            OssDTO os=new OssDTO();
+            os.setReportId(v.getId().toString());
+            os.setReportName(v.getName());
+            try {
+                os.setReportOss(fileService.netDownloadUrl(v.getFileIds()));
+            } catch (Exception e) {
+            }
+            ossList.add(os);
+        });
+        dto.setResourceList(ossList);
+        return dto;
     }
 
     public AppInfoDTO getPdf(Long reportId){

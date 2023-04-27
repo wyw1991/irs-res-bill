@@ -1,5 +1,6 @@
 package com.dtzhejiang.irs.res.bill.adapter.controller;
 
+import com.dtzhejiang.irs.res.bill.app.dto.AppAndReportDTO;
 import com.dtzhejiang.irs.res.bill.app.dto.AppInfoDTO;
 import com.dtzhejiang.irs.res.bill.app.dto.ReportDTO;
 import com.dtzhejiang.irs.res.bill.app.job.AppInfoSyncTask;
@@ -10,6 +11,7 @@ import com.dtzhejiang.irs.res.bill.common.dto.PageResponse;
 import com.dtzhejiang.irs.res.bill.common.dto.SingleResponse;
 import com.dtzhejiang.irs.res.bill.domain.model.Report;
 import lombok.NonNull;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -80,8 +82,8 @@ public class ReportController {
      * pdf链接
      */
     @GetMapping("/pdfUrl")
-    public SingleResponse<String> getPdfUrl(@NonNull Long reportId) throws Exception {
-        return SingleResponse.of(service.getPdfUrl(reportId));
+    public SingleResponse<AppAndReportDTO> getPdfUrl(@NonNull String appCode) throws Exception {
+        return SingleResponse.of(service.getPdfUrl(appCode));
     }
 
 }

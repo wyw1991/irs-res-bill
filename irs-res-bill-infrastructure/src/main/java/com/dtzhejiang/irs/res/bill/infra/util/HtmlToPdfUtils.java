@@ -41,7 +41,8 @@ public class HtmlToPdfUtils {
      * @param fontPath 字体路径，ttc后缀的字体需要添加<b>,0<b/>
      * @param  outputStream 输出流
      */
-    public static InputStream convertToPdf(InputStream inputStream, String waterMark, String fontPath,OutputStream outputStream) throws IOException {
+
+    public static InputStream convertToPdf(InputStream inputStream, String waterMark, String fontPath) throws IOException {
         Document document = new Document();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PdfWriter pdfWriter = new PdfWriter(baos);
@@ -73,8 +74,7 @@ public class HtmlToPdfUtils {
 
         pdfWriter.close();
         pdfDocument.close();
-        outputStream=baos;
-        return getFile(baos) ;
+        return new ByteArrayInputStream(baos.toByteArray()) ;
     }
 
       public static InputStream getFile(ByteArrayOutputStream outputStream) throws IOException {
