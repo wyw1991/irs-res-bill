@@ -77,13 +77,6 @@ public class HtmlToPdfUtils {
         return new ByteArrayInputStream(baos.toByteArray()) ;
     }
 
-      public static InputStream getFile(ByteArrayOutputStream outputStream) throws IOException {
-
-          MultipartFile multipartFile = new OutputStreamToMultipartFile("file", "wyw", "application/octet-stream", outputStream);
-
-        return multipartFile.getInputStream();
-    }
-
 
 
 }

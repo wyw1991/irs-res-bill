@@ -38,7 +38,9 @@ public class ExportPdfService {
         InputStream inputStreamPdf=new ByteArrayInputStream(WkHtmltoxPdfUtil.getPdfByte(file));
         FileResp.FileResult obj=(FileResp.FileResult)fileService.uploadFile(file.getOriginalFilename(),inputStreamPdf,file.getSize()).getData();
         //更新fileIds
+        log.info("-------------------开始存入fileIds==================");
         reportService.updateFileId(Long.parseLong(file.getOriginalFilename().replace(".html","")), obj.getFileId());
+        log.info("-------------------结束存入fileIds=================");
     }
 
 
