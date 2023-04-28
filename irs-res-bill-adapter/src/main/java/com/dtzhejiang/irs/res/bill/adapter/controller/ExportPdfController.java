@@ -3,6 +3,7 @@ package com.dtzhejiang.irs.res.bill.adapter.controller;
 import com.dtzhejiang.irs.res.bill.app.dto.AppAndReportDTO;
 import com.dtzhejiang.irs.res.bill.app.service.ExportPdfService;
 import com.dtzhejiang.irs.res.bill.common.dto.SingleResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,6 +24,7 @@ import java.util.Date;
  * PDF资源
  */
 @RestController
+@Slf4j
 @RequestMapping("/pdf")
 public class ExportPdfController {
 
@@ -57,7 +59,8 @@ public class ExportPdfController {
             this.resolveResponse(request,response, fileName);
            return SingleResponse.of(this.exportPdfService.exportPdfWk(file, response.getOutputStream())) ;
         } catch (Exception e) {
-            this.resetResponse(response, e);
+            log.error(e.toString());
+           SingleResponse.buildFailure("500", e.getMessage());
         }
         return SingleResponse.of("null");
     }
