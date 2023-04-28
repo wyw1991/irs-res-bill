@@ -84,7 +84,7 @@ public class FileController {
     }
 
     /**
-     * 文件下载链接
+     * 临时文件下载链接
      *
      * @param: response，fileId
      * @return: void

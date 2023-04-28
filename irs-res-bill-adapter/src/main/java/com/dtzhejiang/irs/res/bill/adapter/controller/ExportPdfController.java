@@ -1,6 +1,8 @@
 package com.dtzhejiang.irs.res.bill.adapter.controller;
 
+import com.dtzhejiang.irs.res.bill.app.dto.AppAndReportDTO;
 import com.dtzhejiang.irs.res.bill.app.service.ExportPdfService;
+import com.dtzhejiang.irs.res.bill.common.dto.SingleResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -47,16 +49,17 @@ public class ExportPdfController {
     //    }
     //}
     @PostMapping("/exportWk")
-    public void exportWk(MultipartFile file, HttpServletResponse response, HttpServletRequest request) throws Exception {
+    public SingleResponse<String> exportWk(MultipartFile file, HttpServletResponse response, HttpServletRequest request) throws Exception {
         try{
             String fileNamePrefix = file.getOriginalFilename();
             String date = format(new Date(), "yy-mm-dd HH:mm");
             String fileName = fileNamePrefix + "_" + date +".pdf";
             this.resolveResponse(request,response, fileName);
-            this.exportPdfService.exportPdfWk(file, response.getOutputStream());
+           return SingleResponse.of(this.exportPdfService.exportPdfWk(file, response.getOutputStream())) ;
         } catch (Exception e) {
             this.resetResponse(response, e);
         }
+        return SingleResponse.of("null");
     }
 
     private void resolveResponse(HttpServletRequest request,HttpServletResponse response, String fileName) throws UnsupportedEncodingException {

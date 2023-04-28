@@ -27,8 +27,6 @@ public class WkHtmltoxPdfUtil {
 
     private static final Random RANDOM = new Random(100);
 
-    private static String FILEDIR_PATH = "C:\\Users\\Dell\\Desktop\\pdf\\";
-
     private static final Integer PAGE_HEIGHT = 500;
 
     private static final Integer PAGE_WIDTH = 150;
@@ -86,14 +84,13 @@ public class WkHtmltoxPdfUtil {
 
 
     private static ByteArrayOutputStream doHtml2pdf(String html, Integer pageHeight, Integer pageWidth) {
-        String dest = FILEDIR_PATH;
         String wkhtmltopdf = findExecutable();
         //将内存中的html文件存储到一个临时地方
-        File htmlTempFile = createFile(PREFIX, SUFIX_HTML, dest);
+        File htmlTempFile = createFile(PREFIX, SUFIX_HTML);
         FileUtil.writeString(html, htmlTempFile, CharsetUtil.UTF_8);
 
         //wk转换pdf之后的pdf存储文件地址
-        File wkpdfDestTempFile = createFile(PREFIX, SUFIX_PDF, dest);
+        File wkpdfDestTempFile = createFile(PREFIX, SUFIX_PDF);
 
         if (StrUtil.isBlank(wkhtmltopdf)) {
             log.info("no wkhtmltopdf found!");
@@ -160,9 +157,9 @@ public class WkHtmltoxPdfUtil {
         }
     }
 
-    public static File createFile(String prefix, String sufix, String fileDirPath) {
+    public static File createFile(String prefix, String sufix) {
         File file = null;
-        File fileDir = new File(fileDirPath);
+        File fileDir = new File("");
         try {
             file = File.createTempFile(prefix, sufix, fileDir);
         } catch (IOException e) {
