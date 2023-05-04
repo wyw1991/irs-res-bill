@@ -27,9 +27,9 @@ public class WkHtmltoxPdfUtil {
 
     private static final Random RANDOM = new Random(100);
 
-    private static final Integer PAGE_HEIGHT = 250;
+    private static final Integer PAGE_HEIGHT = 274;
 
-    private static final Integer PAGE_WIDTH = 150;
+    private static final Integer PAGE_WIDTH = 207;
 
 
 
@@ -106,7 +106,7 @@ public class WkHtmltoxPdfUtil {
             log.info("create dir for new file,{}", dirsCreation);
         }
 
-        String finalCmd = buildCmdParam(srcAbsolutePath, destAbsolutePath, pageHeight, pageWidth);
+        String finalCmd = buildCmdParam(srcAbsolutePath, destAbsolutePath);
 
         return doProcess(finalCmd, htmlTempFile, wkpdfDestTempFile);
 
@@ -168,21 +168,21 @@ public class WkHtmltoxPdfUtil {
         return file;
     }
 
-    private static String buildCmdParam(String srcAbsolutePath, String destAbsolutePath, Integer pageHeight, Integer pageWidth) {
+    private static String buildCmdParam(String srcAbsolutePath, String destAbsolutePath) {
         StringBuilder cmd = new StringBuilder();
         cmd.append(findExecutable()).append(space)
                 .append("--margin-left").append(space)
-                .append("0").append(space)
+                .append("8").append(space)
                 .append("--margin-right").append(space)
-                .append("0").append(space)
+                .append("8").append(space)
                 .append("--margin-top").append(space)
                 .append("10").append(space)
                 .append("--margin-bottom").append(space)
-                .append("10").append(space)
+                .append("2").append(space)
                 .append("--page-height").append(space)
-                .append(pageHeight).append(space)
+                .append(273.5).append(space)
                 .append("--page-width").append(space)
-                .append(pageWidth).append(space)
+                .append(207).append(space)
 
                 .append(srcAbsolutePath).append(space)
                 //.append("--footer-center").append(space)

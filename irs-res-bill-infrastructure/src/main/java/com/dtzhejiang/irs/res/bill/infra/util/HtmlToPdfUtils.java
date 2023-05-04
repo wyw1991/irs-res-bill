@@ -79,7 +79,7 @@ public class HtmlToPdfUtils {
         PdfContentByte content;
         BaseFont base = BaseFont.createFont("STSong-Light", "UniGB-UCS2-H", BaseFont.EMBEDDED);
         PdfGState gs1 = new PdfGState();
-        gs1.setFillOpacity(0.2f);//设置透明度
+        gs1.setFillOpacity(0.15f);//设置透明度
         PdfGState gs2 = new PdfGState();
         gs2.setFillOpacity(1f);
         for (int i = 1; i < total; i++) {
@@ -88,19 +88,19 @@ public class HtmlToPdfUtils {
             //水印内容
             content.setGState(gs1);
             content.beginText();
-            content.setColorFill(BaseColor.GRAY);
+            content.setColorFill(BaseColor.BLACK);
             content.setFontAndSize(base, 30);
-            content.setTextMatrix(70, 100);
+            content.setTextMatrix(120, 100);
             //350为x坐标 350y坐标  45为旋转45度
-            content.showTextAligned(Element.ALIGN_CENTER, text, 200, 350, 30);
+            content.showTextAligned(Element.ALIGN_CENTER, text, 250, 350, 30);
             content.endText();//结束文字
             //页脚内容
             content.setGState(gs2);
             content.beginText();
             content.setColorFill(BaseColor.BLACK);
             content.setFontAndSize(base, 12);
-            content.setTextMatrix(70, 200);
-            content.showTextAligned(Element.ALIGN_CENTER, "第"+i+ "页,共"+(total-1)+"页", 200, 10, 0);
+            content.setTextMatrix(100, 200);
+            content.showTextAligned(Element.ALIGN_CENTER, "第"+i+ "页,共"+(total-1)+"页", 300, 10, 0);
             content.endText();
         }
         stamper.close();
