@@ -1,5 +1,7 @@
 package com.dtzhejiang.irs.res.bill.app.service;
 import com.dtzhejiang.irs.res.bill.app.response.FileResp;
+import com.dtzhejiang.irs.res.bill.common.util.DateUtil;
+import com.dtzhejiang.irs.res.bill.domain.model.Report;
 import com.dtzhejiang.irs.res.bill.infra.util.HtmlToPdfUtils;
 import com.dtzhejiang.irs.res.bill.infra.util.WkHtmltoxPdfUtil;
 import com.itextpdf.io.source.ByteArrayOutputStream;
@@ -25,22 +27,24 @@ public class ExportPdfService {
         String waterMarkText = "自定义水印";
         InputStream inputStream = file.getInputStream();
         //微软雅黑在windows系统里的位置如下，linux系统直接拷贝该文件放在linux目录下即可
-        InputStream inputStreamPdf=HtmlToPdfUtils.convertToPdf(inputStream, waterMarkText, "");
+        InputStream inputStreamPdf=HtmlToPdfUtils.updatePdf(inputStream, waterMarkText, "");
         FileResp.FileResult obj=(FileResp.FileResult)fileService.uploadFile(file.getOriginalFilename(),inputStreamPdf,file.getSize()).getData();
         //更新fileIds
         reportService.updateFileId(Long.parseLong(file.getOriginalFilename()), obj.getFileId());
     }
 
     public String exportPdfWk(MultipartFile file, ServletOutputStream outputStream) throws Exception {
-        String waterMarkText = "自定义水印";
-        InputStream inputStream = file.getInputStream();
         //微软雅黑在windows系统里的位置如下，linux系统直接拷贝该文件放在linux目录下即可
         log.error("-------------------wyw:开始转化file==================");
         InputStream inputStreamPdf=new ByteArrayInputStream(WkHtmltoxPdfUtil.getPdfByte(file));
         log.error("-------------------wyw:开始获取reportId==================");
         Long reportId=Long.parseLong(file.getOriginalFilename().substring(0,file.getOriginalFilename().lastIndexOf(".")));
         log.error("-------------------wyw:开始获取reportName==================");
-        String name=reportService.getReport(reportId).getName()+".html";
+        Report report=reportService.getReport(reportId);
+        //组装水印
+        String waterMarkText = "IRS应用试运行报告"+ DateUtil.convertLocalDate(DateUtil.toLocalDate(report.getFinishTime()));
+        inputStreamPdf=HtmlToPdfUtils.setWatermarkText(inputStreamPdf, waterMarkText);
+        String name=report.getName()+".html";
         log.error("-------------------wyw:开始上传file==================");
         FileResp.FileResult obj=(FileResp.FileResult)fileService.uploadFile(name,inputStreamPdf,file.getSize()).getData();
         //更新fileIds

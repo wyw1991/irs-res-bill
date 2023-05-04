@@ -27,7 +27,7 @@ public class WkHtmltoxPdfUtil {
 
     private static final Random RANDOM = new Random(100);
 
-    private static final Integer PAGE_HEIGHT = 500;
+    private static final Integer PAGE_HEIGHT = 250;
 
     private static final Integer PAGE_WIDTH = 150;
 
@@ -176,27 +176,27 @@ public class WkHtmltoxPdfUtil {
                 .append("--margin-right").append(space)
                 .append("0").append(space)
                 .append("--margin-top").append(space)
-                .append("0").append(space)
+                .append("10").append(space)
                 .append("--margin-bottom").append(space)
-                .append("0").append(space)
+                .append("10").append(space)
                 .append("--page-height").append(space)
                 .append(pageHeight).append(space)
                 .append("--page-width").append(space)
                 .append(pageWidth).append(space)
 
                 .append(srcAbsolutePath).append(space)
-//                .append("--footer-center").append(space)
-//                .append("[page]").append(space)
-//                .append("--footer-font-size").append(space)
-//                .append("14").append(space)
-//
-//                .append("--disable-smart-shrinking").append(space)
-//                .append("--load-media-error-handling").append(space)
-//                .append("ignore").append(space)
-//                .append("--load-error-handling").append(space)
-//                .append("ignore").append(space)
-//                .append("--footer-right").append(space)
-//                .append("WanG提供技术支持").append(space)
+                //.append("--footer-center").append(space)
+                //.append("[page]").append(space)
+                .append("--footer-font-size").append(space)
+                .append("14").append(space)
+
+
+                //.append("--disable-smart-shrinking").append(space)
+                //.append("--load-media-error-handling").append(space)
+                //.append("ignore").append(space)
+                //.append("--load-error-handling").append(space)
+                //.append("ignore").append(space)
+                //.append("--footer-right").append(space)
                 .append(destAbsolutePath);
         return cmd.toString();
     }

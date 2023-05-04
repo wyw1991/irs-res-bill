@@ -12,7 +12,11 @@ import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.font.FontProvider;
+import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.pdf.*;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.ByteArrayInputStream;
@@ -28,7 +32,7 @@ public class HtmlToPdfUtils {
      * @param fontPath 字体路径，ttc后缀的字体需要添加<b>,0<b/>
      */
 
-    public static InputStream convertToPdf(InputStream inputStream, String waterMark, String fontPath) throws IOException {
+    public static InputStream updatePdf(InputStream inputStream, String waterMark, String fontPath) throws IOException {
         Document document = new Document();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PdfWriter pdfWriter = new PdfWriter(baos);
@@ -38,7 +42,6 @@ public class HtmlToPdfUtils {
         pdfDocument.setDefaultPageSize(PageSize.A4.rotate());
         //添加水印
         pdfDocument.addEventHandler(PdfDocumentEvent.END_PAGE, new WaterMarkEventHandler(waterMark));
-
         //添加页码
         pdfDocument.addEventHandler(PdfDocumentEvent.END_PAGE,new PageEventHandler());
         //添加中文字体支持
@@ -55,14 +58,53 @@ public class HtmlToPdfUtils {
         }*/
 
         properties.setFontProvider(fontProvider);
-
         HtmlConverter.convertToPdf(inputStream, pdfDocument, properties);
-
         pdfWriter.close();
         pdfDocument.close();
         return new ByteArrayInputStream(baos.toByteArray()) ;
     }
-
-
+    /**
+     * 设置文字水印
+     * @param input
+     * @param text
+     * @throws DocumentException
+     * @throws IOException
+     */
+    public static InputStream setWatermarkText(InputStream input, String text)
+            throws DocumentException, IOException, com.lowagie.text.DocumentException {
+        PdfReader reader = new PdfReader(input);
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        PdfStamper stamper = new PdfStamper(reader, bos);
+        int total = reader.getNumberOfPages()+1;
+        PdfContentByte content;
+        BaseFont base = BaseFont.createFont("STSong-Light", "UniGB-UCS2-H", BaseFont.EMBEDDED);
+        PdfGState gs1 = new PdfGState();
+        gs1.setFillOpacity(0.2f);//设置透明度
+        PdfGState gs2 = new PdfGState();
+        gs2.setFillOpacity(1f);
+        for (int i = 1; i < total; i++) {
+            content = stamper.getOverContent(i);// 在内容上方加水印
+            //content = stamper.getUnderContent(i);//在内容下方加水印
+            //水印内容
+            content.setGState(gs1);
+            content.beginText();
+            content.setColorFill(BaseColor.GRAY);
+            content.setFontAndSize(base, 30);
+            content.setTextMatrix(70, 100);
+            //350为x坐标 350y坐标  45为旋转45度
+            content.showTextAligned(Element.ALIGN_CENTER, text, 200, 350, 30);
+            content.endText();//结束文字
+            //页脚内容
+            content.setGState(gs2);
+            content.beginText();
+            content.setColorFill(BaseColor.BLACK);
+            content.setFontAndSize(base, 12);
+            content.setTextMatrix(70, 200);
+            content.showTextAligned(Element.ALIGN_CENTER, "第"+i+ "页,共"+(total-1)+"页", 200, 10, 0);
+            content.endText();
+        }
+        stamper.close();
+        return new ByteArrayInputStream(bos.toByteArray()) ;
+    }
 
 }

@@ -84,4 +84,6 @@ public class ReportDTO {
     private Boolean canOperate=false;
 
     private Operation operationDTO;
+
+    private String fileIds;
 }

@@ -2,7 +2,7 @@ spring:
   datasource:
     url: jdbc:mysql://rm-vy2opkp6nf0208y31.mysql.rds.cloud-inner.zj.gov.cn:3306/irs-res-bill?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai
     username: irs_res_bill
-    password: SM4[01cc88713373ff418ae2d997c0074b8c5e316eb85405ef3d89531afae112f312]
+    password: 4vidZBiUEXU*kvQLh@GH
   redis:
     host: r-vy26ed4485bab654.redis.rds.cloud-inner.zj.gov.cn
     port: 6379

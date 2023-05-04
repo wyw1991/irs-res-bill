@@ -12,7 +12,6 @@
     <name>irs-res-bill-infrastructure</name>
 
     <dependencies>
-
         <dependency>
             <groupId>org.mozilla.intl.chardet</groupId>
             <artifactId>chardet</artifactId>
@@ -72,6 +71,11 @@
             <groupId>com.itextpdf</groupId>
             <artifactId>font-asian</artifactId>
             <version>7.1.13</version>
+        </dependency>
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>itext-asian</artifactId>
+            <version>5.2.0</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.xhtmlrenderer/flying-saucer-pdf -->
         <dependency>

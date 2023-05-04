@@ -41,7 +41,6 @@ public class ExportPdfController {
     @PostMapping("/exportWk")
     public SingleResponse<String> exportWk(MultipartFile file, HttpServletResponse response, HttpServletRequest request) throws Exception {
         try{
-            log.error("-------------------wyw:controller开始转化file=================="+file.getOriginalFilename());
             String fileNamePrefix = file.getOriginalFilename();
             String date = format(new Date(), "yy-mm-dd HH:mm");
             String fileName = fileNamePrefix + "_" + date +".pdf";
