@@ -3,19 +3,13 @@ package com.dtzhejiang.irs.res.bill.app.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.dtzhejiang.irs.res.bill.app.dto.AppAndReportDTO;
-import com.dtzhejiang.irs.res.bill.app.dto.AppInfoDTO;
-import com.dtzhejiang.irs.res.bill.app.dto.OssDTO;
-import com.dtzhejiang.irs.res.bill.app.dto.ReportDTO;
+import com.dtzhejiang.irs.res.bill.app.dto.*;
 import com.dtzhejiang.irs.res.bill.app.query.qry.DemandPageQry;
 import com.dtzhejiang.irs.res.bill.app.query.qry.ReportPageQry;
 import com.dtzhejiang.irs.res.bill.app.query.qry.SubReportQry;
 import com.dtzhejiang.irs.res.bill.common.dto.PageQuery;
 import com.dtzhejiang.irs.res.bill.common.dto.PageResponse;
-import com.dtzhejiang.irs.res.bill.common.enums.ApplicationStatusEnum;
-import com.dtzhejiang.irs.res.bill.common.enums.BillPermissionEnum;
-import com.dtzhejiang.irs.res.bill.common.enums.StatusEnum;
-import com.dtzhejiang.irs.res.bill.common.enums.SubStatusEnum;
+import com.dtzhejiang.irs.res.bill.common.enums.*;
 import com.dtzhejiang.irs.res.bill.common.util.ObjUtil;
 import com.dtzhejiang.irs.res.bill.domain.exception.BusinessException;
 import com.dtzhejiang.irs.res.bill.domain.model.*;
@@ -59,27 +53,32 @@ public class DemandService {
     public PageResponse<Demand> page(DemandPageQry pageQry){
         LambdaQueryWrapper<Demand> wrapper = new LambdaQueryWrapper<>();
         UserInfo userInfo = userGateway.getUserInfoAndOrgId();
-        if (Boolean.TRUE.equals(pageQry.getMyOwn())) {
-            //我发起的
-            wrapper.eq(Demand::getUserId, userInfo.getUserName());
-        }else  if (Boolean.TRUE.equals(pageQry.getMyAudit())) {
-            //已审核列表
-             wrapper.apply("FIND_IN_SET ('"+userInfo.getUserName()+"',history_handler)");
-        } else {
-            //待审核
-            wrapper.in(Demand::getCurrentRole, userInfo.getRoleCodes());
-            //区划码为区县级能看到自己的，市级能看到区县的,省级能看到所有的
-            String regionCode = userInfo.getAddressCode();
-            if(regionCode.startsWith("00", 4)){
-                if(regionCode.startsWith("00", 2)){
-                    wrapper.likeRight(Demand::getRegionCode, regionCode.substring(0,2));
+        switch (pageQry.getTableType()){
+            case 1:  //我发起的
+                wrapper.eq(Demand::getUserId, userInfo.getUserName());
+                break;
+            case 2 : //待审核
+                wrapper.in(Demand::getCurrentRole, userInfo.getRoleCodes());
+                //区划码为区县级能看到自己的，市级能看到区县的,省级能看到所有的
+                String regionCode = userInfo.getAddressCode();
+                if(regionCode.startsWith("00", 4)){
+                    if(regionCode.startsWith("00", 2)){
+                        wrapper.likeRight(Demand::getRegionCode, regionCode.substring(0,2));
+                    }else {
+                        wrapper.likeRight(Demand::getRegionCode, regionCode.substring(0,4));
+                    }
                 }else {
-                    wrapper.likeRight(Demand::getRegionCode, regionCode.substring(0,4));
+                    wrapper.eq(Demand::getRegionCode, regionCode);
                 }
-            }else {
-                wrapper.eq(Demand::getRegionCode, regionCode);
-            }
+                break;
+            case 3 : //我审核的
+                wrapper.apply("FIND_IN_SET ('"+userInfo.getUserName()+"',history_handler)");
+                break;
+            case 4 ://需求池
+                wrapper.eq(Demand::getStatus, DemandStatusEnum.SUCCESS);
+                break;
         }
+
         wrapper.like(!ObjectUtils.isEmpty(pageQry.getName()), Demand::getName,pageQry.getName());
         wrapper.like(!ObjectUtils.isEmpty(pageQry.getDescribe()), Demand::getDescription,pageQry.getDescribe());
         wrapper.eq(!ObjectUtils.isEmpty(pageQry.getType()), Demand::getType,pageQry.getType());
@@ -92,18 +91,41 @@ public class DemandService {
         return PageResponse.of(page.getRecords(),page.getTotal(), page.getSize(), page.getCurrent());
     }
 
+    /**
+     *  获取未关联指标的需求列表
+     */
+    public Map<Long,String> getUnBandQuotaList(){
+        LambdaQueryWrapper<Demand> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Demand::getStatus, DemandStatusEnum.SUCCESS);
+        wrapper.eq(Demand::getQuotaId, null);
+        List<Demand> demands = mapper.selectList(wrapper);
+        if(CollectionUtils.isEmpty(demands)){
+            return Collections.emptyMap();
+        }
+        return demands.stream().collect(Collectors.toMap(Demand::getId,Demand::getName));
+    }
 
     /**
      * 查询需求详情
      * @return
      */
-    public Demand getDetail(DemandPageQry pageQry){
-        Demand detail=new Demand();
+    public DemandDTO getDetail(DemandPageQry pageQry){
         Demand demand = mapper.selectById(pageQry.getId());
         if (demand == null) {
             throw new BusinessException("demandId 有误");
         }
-        return detail;
+        DemandDTO demandDTO = new DemandDTO();
+        BeanUtils.copyProperties(demand,demandDTO);
+        //放入审批按钮信息
+        try {
+            Operation operation= processService.getCurrentOperation(demand.getProcessId()).getData();
+            if (operation != null && !operation.getOptions().iterator().next().getRefFormKey().equals("submit_btn")) {
+                demandDTO.setCanOperate(true);
+                demandDTO.setOperationDTO(operation);
+            }
+        }catch (Exception e) {
+        }
+        return demandDTO;
     }
 
     /**
@@ -116,17 +138,7 @@ public class DemandService {
         demandRepository.saveOrUpdate(demand);
         return demand;
     }
-    /**
-     * 新增需求
-     * @param demand
-     * @return
-     */
-    public Demand  insert(Demand demand){
-        demand.setId(null);
 
-        saveOrUpdate(demand);
-        return demand;
-    }
 
     /**
      * 更新需求
@@ -153,6 +165,7 @@ public class DemandService {
         saveOrUpdate(newDemand);
         return true;
     }
+
 
 
 

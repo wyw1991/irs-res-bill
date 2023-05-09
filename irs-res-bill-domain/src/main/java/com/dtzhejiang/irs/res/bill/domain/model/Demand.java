@@ -1,6 +1,7 @@
 package com.dtzhejiang.irs.res.bill.domain.model;
 
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.dtzhejiang.irs.res.bill.common.enums.DemandStatusEnum;
 import com.dtzhejiang.irs.res.bill.common.enums.DemandTypeEnum;
 import lombok.Getter;
 import lombok.Setter;
@@ -117,7 +118,7 @@ public class Demand {
     /**
      * 报告状态：UN_SUBMIT待提交，UN_AUDIT-待审批，AUDIT审批中，FAIL-已拒绝，SUCCESS-已通过
      */
-    private String status;
+    private DemandStatusEnum status;
 
     /**
      * 更新时间

@@ -1,6 +1,5 @@
 package com.dtzhejiang.irs.res.bill.domain.user.valueobject;
 
-import com.bees.shirocas.model.OrganizationRes;
 import lombok.Data;
 import lombok.experimental.SuperBuilder;
 

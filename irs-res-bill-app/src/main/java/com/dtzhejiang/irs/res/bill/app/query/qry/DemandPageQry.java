@@ -43,9 +43,9 @@ public class DemandPageQry extends PageQuery {
      */
     private String orgCode;
     /**
-     * 我发起的列表: true
+     * 列表type:1-我发起的列表,2-待我审核的列表,3-已审核的列表,4-需求池
      */
-    private Boolean myOwn=false;
+    private Integer tableType;
 
 
 }

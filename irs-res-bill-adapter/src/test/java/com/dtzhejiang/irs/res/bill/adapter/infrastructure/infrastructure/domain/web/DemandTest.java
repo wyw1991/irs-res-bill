@@ -39,8 +39,6 @@ public class DemandTest {
     @Test
     public void testList(){
         DemandPageQry pageQry=new DemandPageQry();
-        pageQry.setMyAudit(false);
-        pageQry.setMyOwn(true);
         Set<String> roleCodes=new HashSet<>();
         roleCodes.add("a");
         roleCodes.add("b");
@@ -48,27 +46,7 @@ public class DemandTest {
 
         LambdaQueryWrapper<Demand> wrapper = new LambdaQueryWrapper<>();
         UserInfo userInfo =UserInfo.builder().userName("2").roleCodes(roleCodes).addressCode("330001").build();
-        if (Boolean.TRUE.equals(pageQry.getMyOwn())) {
-            //我发起的
-            wrapper.eq(Demand::getUserId, userInfo.getUserName());
-        }else  if (Boolean.TRUE.equals(pageQry.getMyAudit())) {
-            //已审核列表
-            wrapper.apply("FIND_IN_SET ('"+userInfo.getUserName()+"',history_handler)");
-        } else {
-            //待审核
-            wrapper.in(Demand::getCurrentRole, userInfo.getRoleCodes());
-            //区划码为市级能看到区县的
-            String regionCode = userInfo.getAddressCode();
-            if(regionCode.startsWith("00", 4)){
-                if(regionCode.startsWith("00", 2)){
-                    wrapper.likeRight(Demand::getRegionCode, regionCode.substring(0,2));
-                }else {
-                    wrapper.likeRight(Demand::getRegionCode, regionCode.substring(0,4));
-                }
-            }else {
-                wrapper.eq(Demand::getRegionCode, regionCode);
-            }
-        }
+
         wrapper.like(!ObjectUtils.isEmpty(pageQry.getName()), Demand::getName,pageQry.getName());
         wrapper.like(!ObjectUtils.isEmpty(pageQry.getDescribe()), Demand::getDescription,pageQry.getDescribe());
         wrapper.eq(!ObjectUtils.isEmpty(pageQry.getType()), Demand::getType,pageQry.getType());
