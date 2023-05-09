@@ -5,7 +5,6 @@ package com.dtzhejiang.irs.res.bill.common.enums;
  **/
 public enum QuotaStatusEnum {
 
-
     PROCESS("PROCESS", "待报告出具"),
 
     ON_LINE("ON_LINE", "已上线"),

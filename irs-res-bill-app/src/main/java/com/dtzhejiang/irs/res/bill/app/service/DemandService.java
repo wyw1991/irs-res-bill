@@ -88,7 +88,9 @@ public class DemandService {
         wrapper.orderBy(true,false, Demand::getId);//按照ID倒序
         Page<Demand> queryPage = new Page<>(pageQry.getPageIndex(),pageQry.getPageSize());
         Page<Demand> page = mapper.selectPage(queryPage, wrapper);
-        return PageResponse.of(page.getRecords(),page.getTotal(), page.getSize(), page.getCurrent());
+        List<Demand> list = page.getRecords();
+        //todo 获取当前绑定指标的状态
+        return PageResponse.of(list,page.getTotal(), page.getSize(), page.getCurrent());
     }
 
     /**

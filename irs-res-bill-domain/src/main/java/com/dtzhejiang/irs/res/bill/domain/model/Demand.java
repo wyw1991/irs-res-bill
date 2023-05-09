@@ -3,6 +3,7 @@ package com.dtzhejiang.irs.res.bill.domain.model;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.dtzhejiang.irs.res.bill.common.enums.DemandStatusEnum;
 import com.dtzhejiang.irs.res.bill.common.enums.DemandTypeEnum;
+import com.dtzhejiang.irs.res.bill.common.enums.QuotaStatusEnum;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -79,6 +80,10 @@ public class Demand {
      * 指标Id
      */
     private Long quotaId;
+    /**
+     * 指标状态 PROCESS-待报告出具,ON_LINE-已上线,OFF_LINE-已下线
+     */
+    private QuotaStatusEnum quotaStatus;
 
     /**
      * 审批ID
