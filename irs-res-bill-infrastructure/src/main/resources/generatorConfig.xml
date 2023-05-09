@@ -37,7 +37,7 @@
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
 
-        <table domainObjectName="IndexConfig" tableName="index_config">
+        <table domainObjectName="QuotaVersion" tableName="quota_version">
             <generatedKey column="id" sqlStatement="MYSQL" identity="true" type="post"/>
         </table>
     </context>
