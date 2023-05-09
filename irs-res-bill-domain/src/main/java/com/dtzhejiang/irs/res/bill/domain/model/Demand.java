@@ -1,6 +1,7 @@
 package com.dtzhejiang.irs.res.bill.domain.model;
 
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.dtzhejiang.irs.res.bill.common.enums.DemandTypeEnum;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,7 +23,7 @@ public class Demand {
     /**
      * 应用类型： APP-应用、DATA-数据、COMPONENT-组件、CLOUD-云资源、OTHER-其它  
      */
-    private String type;
+    private DemandTypeEnum type;
 
     /**
      * 频率：分钟级、小时级、每日、每月、每周、每季度、每年、不定期
@@ -32,7 +33,7 @@ public class Demand {
     /**
      * 描述
      */
-    private String describe;
+    private String description;
 
     /**
      * 计算逻辑
@@ -48,6 +49,10 @@ public class Demand {
      * 需求联系人
      */
     private String contacts;
+    /**
+     * 用户Id
+     */
+    private String userId;
 
     /**
      * 联系人电话
@@ -124,5 +129,5 @@ public class Demand {
      */
     private Date createTime;
 
-   
+
 }

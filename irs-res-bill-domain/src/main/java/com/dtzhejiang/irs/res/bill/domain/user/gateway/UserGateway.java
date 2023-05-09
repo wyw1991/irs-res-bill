@@ -9,5 +9,6 @@ import java.util.List;
 public interface UserGateway {
     User getCurrentUser();
     UserInfo getUserInfo();
+    UserInfo getUserInfoAndOrgId();
     List<RoleInfo> getRolesByPermission(String permissionCode);
 }

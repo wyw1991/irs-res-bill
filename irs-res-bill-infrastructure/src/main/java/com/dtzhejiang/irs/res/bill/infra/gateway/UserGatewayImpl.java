@@ -1,5 +1,6 @@
 package com.dtzhejiang.irs.res.bill.infra.gateway;
 
+import com.bees.shirocas.model.OrganizationRes;
 import com.bees.shirocas.principal.UserPrincipal;
 import com.dtzhejiang.common.entity.resp.JsonResult;
 import com.dtzhejiang.irs.res.bill.domain.user.gateway.UserGateway;
@@ -53,6 +54,20 @@ public class UserGatewayImpl implements UserGateway {
                 .displayName(userDetailRep.getDisplayName())
                 .roleCodes(userDetailRep.getRoles())
                 .build();
+    }
+    @Override
+    public UserInfo getUserInfoAndOrgId() {
+       UserInfo userInfo = getUserInfo();
+        UserPrincipal userPrincipal = (UserPrincipal) SecurityUtils.getSubject().getPrincipal();
+       List<OrganizationRes> organizationList = userPrincipal.getOrganizationList();
+       if (organizationList.size() == 0) {
+           return userInfo;
+       }
+       ;
+        userInfo.setOrgCode(organizationList.get(0).getCode());
+        userInfo.setOrgName(organizationList.get(0).getName());
+        userInfo.setAddressCode(organizationList.get(0).getAddressCode());
+       return userInfo;
     }
 
 

@@ -1,5 +1,6 @@
 package com.dtzhejiang.irs.res.bill.domain.user.valueobject;
 
+import com.bees.shirocas.model.OrganizationRes;
 import lombok.Data;
 import lombok.experimental.SuperBuilder;
 
@@ -21,6 +22,20 @@ public class UserInfo extends User{
      */
     private String currentPermission;
 
+
+    /**
+     * 部门code
+     */
+    private  String orgCode;
+    /**
+     * 部门名称
+     */
+    private String orgName;
+
+    /**
+     * 行政区划code
+     */
+    private String addressCode;
 
     /**
      * 是否是应用管理员
