@@ -1,5 +1,7 @@
 package com.dtzhejiang.irs.res.bill.domain.model;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.dtzhejiang.irs.res.bill.common.enums.DemandStatusEnum;
 import com.dtzhejiang.irs.res.bill.common.enums.DemandTypeEnum;
@@ -15,6 +17,7 @@ public class Demand {
     /**
      * 自增主键
      */
+    @TableId(value = "id",type = IdType.AUTO)
     private Long id;
 
     /**

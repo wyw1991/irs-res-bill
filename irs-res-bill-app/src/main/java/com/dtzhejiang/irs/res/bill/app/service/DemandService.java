@@ -99,7 +99,7 @@ public class DemandService {
     public Map<Long,String> getUnBandQuotaList(){
         LambdaQueryWrapper<Demand> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(Demand::getStatus, DemandStatusEnum.SUCCESS);
-        wrapper.eq(Demand::getQuotaId, null);
+        wrapper.isNull(Demand::getQuotaId);
         List<Demand> demands = mapper.selectList(wrapper);
         if(CollectionUtils.isEmpty(demands)){
             return Collections.emptyMap();
